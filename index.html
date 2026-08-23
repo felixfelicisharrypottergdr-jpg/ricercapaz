@@ -1,3 +1,4 @@
+<!-- Revisione v5: quote numerici semplificati — la Gravità 1d100 non elenca più 100 corrispondenze identiche, mentre restano complete le vere tabelle casuali e le soglie -->
 <!-- Revisione v3: standard completo Ricerche + testata preservata fuori dal workspace; Configurazione/Riepilogo/Fasi/Esito, BBCode completo, copia stabile, popup locale e ripresa intelligente -->
 <!-- Revisione Firebase: sessioni multiple, autosalvataggio, ripresa, sola lettura e cancellazione definitiva protetta -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
@@ -1287,7 +1288,7 @@ function rawSubAnswers(){
   var t=currentTipo(),tables=subTables();if(!t||!tables||!tables[t])return '';
   var a=tables[t].tab||[],out=[];for(var i=0;i<a.length;i++)out.push((i+1)+'. '+a[i]);return out.join('\n');
 }
-function gravityAnswers(){var out=[];for(var i=1;i<=100;i++)out.push(i+'. '+i+'% di danno');return out.join('\n');}
+function gravityAnswers(){return 'Il risultato del dado corrisponde direttamente alla percentuale di Danno subita dal Paziente.';}
 function patientForumCopy(targetId,raw){
   raw=String(raw||'').trim();
   if(targetId==='rp_diceTipo'){
