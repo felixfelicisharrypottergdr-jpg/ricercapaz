@@ -1,0 +1,1476 @@
+<!-- Revisione v3: standard completo Ricerche + testata preservata fuori dal workspace; Configurazione/Riepilogo/Fasi/Esito, BBCode completo, copia stabile, popup locale e ripresa intelligente -->
+<!-- Revisione Firebase: sessioni multiple, autosalvataggio, ripresa, sola lettura e cancellazione definitiva protetta -->
+<div class="foglio" style="background:#351512"><style>#rp-pazienti {--bg: #160909; 
+ --bg2: #0D0505; 
+ --panel: #24100E; 
+ --panel2: #351512; 
+ --line: #684038; 
+ --gold: #9E1F28; 
+ --gold-soft: #E2B7AA; 
+ --parchment: #F0E1DC; 
+ --parchment-dim: #BE978D; 
+ --teal: #C97C68; 
+ --red: #D34A45; 
+ --red-bg: #431313; 
+ --green: #AEBB8F; 
+ --green-bg: #242B1E; 
+ --serif:"Iowan Old Style", "Palatino Linotype", Palatino, Georgia, "Times New Roman", serif; 
+ --sans:"Avenir Next", "Segoe UI", Helvetica, Arial, sans-serif; 
+ --mono:consolas, "Courier New", monospace; 
+ width: 100%; 
+ max-width:none; 
+ margin: 0; 
+ padding: 0 0 80px; 
+ background: 
+ radial-gradient(circle at 15% 0%, rgba(53, 21, 18, .78) 0%, transparent 45%), 
+ radial-gradient(circle at 85% 10%, rgba(104, 64, 56, .22) 0%, transparent 40%), 
+ var(--bg2); 
+ color:var(--parchment); 
+ font-family:var(--sans); 
+ font-size: 16px; 
+ line-height: 1.5; 
+ box-sizing:border-box; 
+ overflow:hidden} 
+#rp-pazienti, #rp-pazienti * {box-sizing:border-box} 
+#rp-pazienti .wrap {width: 100%!important; 
+ max-width: 1120px!important; 
+ margin: 0 auto!important; 
+ padding: 0 24px!important} 
+ 
+/* Testata */ 
+#rp-pazienti header.top {padding: 48px 20px 32px; 
+ text-align:center; 
+ border-bottom: 1px solid var(--line); 
+ background:linear-gradient(180deg, var(--panel2), rgba(36, 16, 14, .72) 55%, transparent)} 
+#rp-pazienti .seal {width: 58px; 
+ height: 58px; 
+ margin: 0 auto 17px; 
+ border: 1px solid var(--gold); 
+ border-radius: 50%; 
+ display:flex; 
+ align-items:center; 
+ justify-content:center; 
+ font-size: 26px; 
+ color:var(--gold-soft); 
+ background:var(--panel2); 
+ box-shadow: 0 0 0 4px rgba(158, 31, 40, .12), 0 0 28px rgba(158, 31, 40, .12)} 
+#rp-pazienti .eyebrow {font-family:var(--sans); 
+ letter-spacing:.16em; 
+ text-transform:uppercase; 
+ font-size:.72em; 
+ color:var(--teal); 
+ margin-bottom: 6px} 
+#rp-pazienti h1.title {font-family:var(--serif); 
+ font-size: 2.6em; 
+ line-height: 1.1; 
+ margin: 0 0 8px; 
+ color:var(--gold-soft); 
+ font-weight: 600; 
+ letter-spacing:.03em; 
+ text-shadow: 0 0 24px rgba(158, 31, 40, .20)} 
+#rp-pazienti .subtitle {color:var(--parchment-dim); 
+ font-size:.98em; 
+ max-width: 640px; 
+ margin: 0 auto; 
+ line-height: 1.55} 
+ 
+/* Navigazione fasi */ 
+#rp-pazienti nav.steps {position:sticky; 
+ top: 0; 
+ z-index: 9; 
+ display:flex; 
+ gap: 8px; 
+ padding: 12px 24px; 
+ background:rgba(13, 5, 5, .96); 
+ border-bottom: 1px solid var(--line)} 
+#rp-pazienti nav.steps button {flex: 1 1 150px; 
+ min-height: 48px; 
+ padding: 9px 12px; 
+ background:var(--panel); 
+ border: 1px solid var(--line); 
+ border-radius: 8px; 
+ color:var(--parchment-dim); 
+ font-family:var(--sans); 
+ font-size:.84em; 
+ letter-spacing: 0; 
+ text-transform:none; 
+ cursor:pointer; 
+ transition:all .15s ease} 
+#rp-pazienti nav.steps button:hover:not(:disabled) {color:var(--parchment); 
+ border-color:var(--teal); 
+ background:var(--panel2)} 
+#rp-pazienti nav.steps button.active {color:var(--gold-soft); 
+ border-color:var(--gold); 
+ background:var(--panel2)} 
+#rp-pazienti nav.steps button:disabled {opacity:.45; cursor:not-allowed} 
+#rp-pazienti nav.steps .num {display:inline; 
+ margin: 0 6px 0 0; 
+ font-size: 1.15em; 
+ line-height: 1; 
+ font-family:var(--serif); 
+ color:var(--gold-soft)} 
+ 
+/* Fasi e titoli */ 
+#rp-pazienti section.fase {display:none; padding-top: 32px} 
+#rp-pazienti section.fase.active {display:block} 
+#rp-pazienti h2.fase-title {font-family:var(--serif); 
+ font-size: 1.55em; 
+ line-height: 1.25; 
+ color:var(--gold-soft); 
+ font-weight: 600; 
+ border-left: 3px solid var(--gold); 
+ padding-left: 14px; 
+ margin: 0 0 10px} 
+#rp-pazienti p.fase-intro {color:var(--parchment-dim); 
+ margin: 0 0 26px; 
+ max-width: 820px; 
+ font-size: 16px; 
+ line-height: 1.7} 
+ 
+/* Pannelli */ 
+#rp-pazienti .card, 
+#rp-pazienti .pg-card, 
+#rp-pazienti .attempts-box {background:var(--panel); 
+ border: 1px solid var(--line); 
+ border-radius: 12px; 
+ box-shadow: 0 1px 0 rgba(226, 183, 170, .04)} 
+#rp-pazienti .card {padding: 22px 24px; 
+ margin-bottom: 26px} 
+#rp-pazienti .card h3 {margin: 0 0 8px; 
+ color:var(--gold-soft); 
+ font-family:var(--serif); 
+ font-size: 1.3em; 
+ font-weight: 600} 
+#rp-pazienti .card .desc, #rp-pazienti .desc {color:var(--parchment-dim); 
+ font-size: 15px; 
+ line-height: 1.65; 
+ margin: 0 0 16px} 
+#rp-pazienti .pg-card {background:var(--panel2); 
+ padding: 18px 18px 16px; 
+ margin: 16px 0 20px; 
+ position:relative} 
+#rp-pazienti .pg-head {display:flex; 
+ justify-content:space-between; 
+ align-items:center; 
+ gap: 12px; 
+ margin-bottom: 16px; 
+ padding-bottom: 10px; 
+ border-bottom: 1px dashed rgba(226, 183, 170, .18)} 
+#rp-pazienti .pg-head input.nome {width: 100%; 
+ min-width: 0; 
+ min-height: 42px; 
+ padding: 7px 10px; 
+ background:var(--bg2); 
+ border: 1px solid var(--line); 
+ border-radius: 8px; 
+ color:var(--parchment); 
+ font-family:var(--serif); 
+ font-size: 1.15em; 
+ font-weight: 600} 
+#rp-pazienti .pg-head input.nome:focus {outline:none; border-color:var(--gold)} 
+ 
+/* Note */ 
+#rp-pazienti .nota, #rp-pazienti .esempio {margin: 16px 0; 
+ padding: 14px 16px; 
+ background:rgba(201, 124, 104, .10); 
+ border: 1px solid rgba(201, 124, 104, .28); 
+ border-left: 3px solid var(--teal); 
+ border-radius: 8px; 
+ color:var(--parchment); 
+ font-size: 15px; 
+ line-height: 1.6} 
+#rp-pazienti .esempio {background:rgba(158, 31, 40, .12); 
+ border-color:rgba(158, 31, 40, .34); 
+ border-left-color:var(--gold)} 
+#rp-pazienti .nota b, #rp-pazienti .esempio b {color:var(--gold-soft)} 
+#rp-pazienti details {margin: 12px 0} 
+#rp-pazienti details summary {cursor:pointer; 
+ color:var(--teal); 
+ font-family:var(--sans); 
+ font-size: 14px} 
+ 
+/* Campi */ 
+#rp-pazienti .field-row {display:grid; 
+ grid-template-columns:repeat(auto-fit, minmax(220px, 1fr)); 
+ gap: 16px 18px; 
+ align-items:end; 
+ margin: 8px 0 14px} 
+#rp-pazienti .field {min-width: 0!important} 
+#rp-pazienti .field label {display:block; 
+ margin: 0 0 7px; 
+ font-family:var(--serif); 
+ font-size: 14px; 
+ line-height: 1.35; 
+ color:var(--gold-soft); 
+ text-transform:none; 
+ letter-spacing: 0} 
+#rp-pazienti .field input, #rp-pazienti .field select {width: 100%!important; 
+ min-width: 0!important; 
+ min-height: 48px; 
+ padding: 11px 14px; 
+ background:var(--bg2); 
+ border: 1px solid var(--line); 
+ border-radius: 8px; 
+ color:var(--parchment); 
+ font-family:var(--sans); 
+ font-size: 17px; 
+ line-height: 1.2} 
+#rp-pazienti .field input:focus, #rp-pazienti .field select:focus {outline:none; 
+ border-color:var(--gold); 
+ box-shadow: 0 0 0 2px rgba(158, 31, 40, .12)} 
+#rp-pazienti .field select option {background:var(--bg2); color:var(--parchment)} 
+#rp-pazienti .checkline {display:flex!important; 
+ align-items:center; 
+ gap: 9px; 
+ min-height: 48px; 
+ padding: 10px 12px; 
+ background:var(--bg2); 
+ border: 1px solid var(--line); 
+ border-radius: 8px; 
+ color:var(--parchment)!important; 
+ font-family:var(--sans)!important; 
+ font-size: 15px!important; 
+ text-transform:none!important; 
+ letter-spacing: 0!important; 
+ white-space:normal} 
+#rp-pazienti .checkline input {width: 17px!important; 
+ height: 17px!important; 
+ min-height: 0!important; 
+ padding: 0!important; 
+ accent-color:var(--gold); 
+ margin: 0; 
+ flex: 0 0 auto} 
+ 
+/* Soglie, dadi, risultati */ 
+#rp-pazienti .soglia-box {display:flex; 
+ align-items:baseline; 
+ gap: 8px; 
+ flex-wrap:wrap; 
+ margin: 14px 0 10px; 
+ padding: 13px 15px; 
+ background:var(--panel); 
+ border: 1px solid var(--line); 
+ border-radius: 8px; 
+ font-family:var(--sans); 
+ font-size: 15px; 
+ line-height: 1.6; 
+ color:var(--parchment-dim)} 
+#rp-pazienti .soglia-box .val {font-size: 1.25em; 
+ color:var(--gold-soft); 
+ font-family:var(--serif); 
+ font-weight: 600} 
+#rp-pazienti .dice-tag {display:flex; 
+ gap: 12px; 
+ align-items:stretch; 
+ flex-wrap:wrap; 
+ margin: 14px 0} 
+#rp-pazienti .dice-tag textarea {flex: 1 1 420px; 
+ min-width: 0; 
+ min-height: 46px; 
+ height:auto; 
+ resize:none; 
+ overflow:hidden; 
+ padding: 11px 14px; 
+ background:var(--bg2); 
+ border: 1px solid var(--gold); 
+ border-radius: 8px; 
+ color:var(--gold-soft); 
+ font-family:var(--mono); 
+ font-size: 16px; 
+ line-height: 1.25} 
+#rp-pazienti .copy-btn {min-height: 46px; 
+ padding: 0 16px; 
+ background:var(--panel2); 
+ border: 1px solid var(--gold); 
+ border-radius: 8px; 
+ color:var(--gold-soft); 
+ cursor:pointer; 
+ font-family:var(--sans); 
+ font-size: 15px; 
+ white-space:nowrap; 
+ transition:all .15s ease} 
+#rp-pazienti .copy-btn:hover {background:rgba(158, 31, 40, .20)} 
+#rp-pazienti .copy-btn.copied {background:var(--green-bg); border-color:var(--green); color:var(--green)} 
+#rp-pazienti .result-row {display:flex; 
+ align-items:center; 
+ gap: 12px; 
+ margin-top: 12px; 
+ flex-wrap:wrap} 
+#rp-pazienti .result-row label {font-family:var(--serif); 
+ font-size: 15px; 
+ color:var(--gold-soft); 
+ text-transform:none; 
+ letter-spacing: 0} 
+#rp-pazienti .result-row input {width: 100px; 
+ min-height: 46px; 
+ padding: 10px 12px; 
+ background:var(--bg2); 
+ border: 1px solid var(--line); 
+ border-radius: 8px; 
+ color:var(--parchment); 
+ font-family:var(--mono); 
+ font-size: 19px; 
+ text-align:center} 
+#rp-pazienti .result-row input:focus {outline:none; border-color:var(--gold)} 
+#rp-pazienti .result-row input:disabled {opacity:.55; cursor:not-allowed} 
+#rp-pazienti .outcome {display:inline-flex; 
+ align-items:center; 
+ justify-content:center; 
+ min-height: 42px; 
+ padding: 8px 16px; 
+ border-radius: 999px; 
+ font-family:var(--sans); 
+ font-size: 15px; 
+ font-weight: 700; 
+ letter-spacing: 0} 
+#rp-pazienti .outcome.success {background:var(--green-bg); color:var(--green); border: 1px solid var(--green)} 
+#rp-pazienti .outcome.fail {background:var(--red-bg); color:var(--red); border: 1px solid var(--red)} 
+#rp-pazienti .outcome.pending {background:var(--panel2); color:var(--parchment-dim); border: 1px solid var(--line)} 
+ 
+/* Pulsanti */ 
+#rp-pazienti .remove-btn, #rp-pazienti .retry-btn, #rp-pazienti .add-btn, #rp-pazienti .nav-btn {cursor:pointer; 
+ font-family:var(--sans); 
+ transition:all .15s ease} 
+#rp-pazienti .remove-btn, #rp-pazienti .retry-btn {min-height: 38px; 
+ padding: 7px 12px; 
+ border-radius: 8px; 
+ font-size: 13px; 
+ white-space:nowrap} 
+#rp-pazienti .remove-btn {background:transparent; 
+ border: 1px solid var(--line); 
+ color:var(--parchment-dim)} 
+#rp-pazienti .remove-btn:hover:not(:disabled) {border-color:var(--red); color:var(--red); background:rgba(211, 74, 69, .06)} 
+#rp-pazienti .retry-btn {background:transparent; 
+ border: 1px dashed var(--line); 
+ color:var(--parchment-dim)} 
+#rp-pazienti .retry-btn:hover:not(:disabled) {color:var(--teal); border-color:var(--teal)} 
+#rp-pazienti .remove-btn:disabled, #rp-pazienti .retry-btn:disabled {opacity:.4; cursor:not-allowed} 
+#rp-pazienti .add-btn, #rp-pazienti .nav-btn {min-height: 46px; 
+ padding: 10px 16px; 
+ background:var(--panel2); 
+ border: 1px solid var(--gold); 
+ border-radius: 8px; 
+ color:var(--gold-soft); 
+ font-size: 15px} 
+#rp-pazienti .add-btn:hover, #rp-pazienti .nav-btn:hover:not(:disabled) {background:rgba(158, 31, 40, .20); border-color:var(--teal)} 
+#rp-pazienti .nav-btn:disabled {opacity:.45; cursor:not-allowed} 
+ 
+/* Esiti e box secondari */ 
+#rp-pazienti .esito-nome {margin-top: 14px; 
+ padding: 13px 16px; 
+ background:var(--panel2); 
+ border: 1px solid var(--gold); 
+ border-radius: 8px; 
+ font-size: 15px; 
+ line-height: 1.55; 
+ color:var(--gold-soft)} 
+#rp-pazienti .esito-nome .lbl {display:block; 
+ margin-bottom: 4px; 
+ font-family:var(--sans); 
+ font-size: 12px; 
+ color:var(--teal); 
+ text-transform:uppercase; 
+ letter-spacing:.08em} 
+#rp-pazienti .attempts-box {display:flex; 
+ align-items:center; 
+ justify-content:space-between; 
+ gap: 16px; 
+ padding: 18px 20px; 
+ margin-bottom: 26px} 
+#rp-pazienti .attempts-box .n {font-family:var(--serif); 
+ font-size: 1.7em; 
+ font-weight: 600; 
+ color:var(--gold-soft)} 
+#rp-pazienti .reward-table {width: 100%; 
+ border-collapse:separate; 
+ border-spacing: 0; 
+ margin-top: 14px; 
+ font-size: 15px; 
+ overflow:hidden; 
+ border: 1px solid var(--line); 
+ border-radius: 8px} 
+#rp-pazienti .reward-table td {padding: 11px 13px; 
+ border: 0; 
+ border-bottom: 1px solid var(--line)} 
+#rp-pazienti .reward-table tr:last-child td {border-bottom: 0} 
+#rp-pazienti .reward-table td.k {width: 40%; 
+ color:var(--teal); 
+ font-family:var(--serif); 
+ font-size: 14px; 
+ font-weight: 600} 
+#rp-pazienti .step-nav-bottom {display:flex; 
+ justify-content:space-between; 
+ gap: 12px; 
+ margin-top: 32px; 
+ padding-bottom: 6px} 
+#rp-pazienti .divider-label {font-family:var(--serif); 
+ font-size: 1.28em; 
+ font-weight: 600; 
+ letter-spacing: 0; 
+ text-transform:none; 
+ color:var(--gold-soft); 
+ margin: 34px 0 16px; 
+ display:flex; 
+ align-items:center; 
+ gap: 14px} 
+#rp-pazienti .divider-label::after {content:""; flex: 1; height: 1px; background:var(--line)} 
+#rp-pazienti a {color:var(--gold-soft)} 
+#rp-pazienti .inline-warn {font-family:var(--sans); font-size: 13px; color:var(--red); margin-top: 8px} 
+ 
+/* leggibilità degli stati disabilitati senza cambiare palette */ 
+#rp-pazienti input:disabled, #rp-pazienti select:disabled, #rp-pazienti textarea:disabled {opacity:.65} 
+ 
+@media(max-width: 760px) {#rp-pazienti .wrap {padding: 0 14px!important} 
+ #rp-pazienti nav.steps {padding: 10px 14px; gap: 6px} 
+ #rp-pazienti nav.steps button {padding: 9px 7px; font-size:.78em} 
+ #rp-pazienti .field-row {grid-template-columns: 1fr; gap: 14px} 
+ #rp-pazienti .card, #rp-pazienti .pg-card {padding: 18px 16px} 
+ #rp-pazienti .dice-tag {flex-direction:column} 
+ #rp-pazienti .copy-btn {width: 100%} 
+ #rp-pazienti .attempts-box {align-items:flex-start; flex-direction:column} 
+ #rp-pazienti .step-nav-bottom {flex-direction:column} 
+ #rp-pazienti .nav-btn {width: 100%}} 
+@media(max-width: 600px) {#rp-pazienti h1.title {font-size: 2em} 
+ #rp-pazienti nav.steps .num {font-size: 1em}}
+
+/* ================================================================
+   SESSIONI FIREBASE — Ricerca Pazienti
+================================================================ */
+#rp-pazienti .session-home,
+#rp-pazienti .session-toolbar-card{
+  width:100%;max-width:1120px;margin:28px auto 0;padding:0 24px;
+}
+#rp-pazienti .session-card,
+#rp-pazienti .session-toolbar-inner{
+  background:var(--panel);border:1px solid var(--line);border-radius:12px;
+  box-shadow:0 1px 0 rgba(226,183,170,.05);overflow:hidden;
+}
+#rp-pazienti .session-card-head{
+  padding:18px 22px 14px;border-bottom:1px solid rgba(226,183,170,.14);
+  background:linear-gradient(180deg,rgba(158,31,40,.12),transparent);
+}
+#rp-pazienti .session-card-head h2{
+  margin:0;font-family:var(--serif);font-size:1.45rem;color:var(--gold-soft)!important;
+}
+#rp-pazienti .session-card-body{padding:20px 22px 22px;}
+#rp-pazienti .session-card-body p{margin:.2em 0 1em;color:var(--parchment-dim)!important;line-height:1.65;}
+#rp-pazienti .session-warning,
+#rp-pazienti .readonly-banner{
+  margin:14px 0;padding:13px 15px;border:1px solid var(--line);border-left:4px solid var(--gold);
+  border-radius:8px;background:var(--panel2);color:var(--parchment-dim)!important;font-size:14px;line-height:1.6;
+}
+#rp-pazienti .readonly-banner{border-left-color:var(--teal);background:var(--panel);}
+#rp-pazienti .session-warning b,
+#rp-pazienti .readonly-banner b{color:var(--gold-soft)!important;}
+#rp-pazienti .session-new-row,
+#rp-pazienti .session-actions,
+#rp-pazienti .session-topbar,
+#rp-pazienti .session-item-row{
+  display:flex;gap:10px;align-items:center;flex-wrap:wrap;
+}
+#rp-pazienti .session-new-row{margin-top:16px;align-items:stretch;}
+#rp-pazienti .session-new-row input{
+  flex:1 1 280px;min-width:0;min-height:46px;padding:10px 12px;border:1px solid var(--line);
+  border-radius:8px;background:var(--bg2);color:var(--parchment);font-family:var(--sans);font-size:16px;
+}
+#rp-pazienti .session-btn,
+#rp-pazienti .session-danger-btn{
+  min-height:44px;padding:9px 15px;border-radius:8px;font-family:var(--sans);font-size:14px;
+  font-weight:700;cursor:pointer;transition:all .15s ease;
+}
+#rp-pazienti .session-btn{
+  border:1px solid var(--gold);background:var(--panel2);color:var(--gold-soft);
+}
+#rp-pazienti .session-btn:hover{background:rgba(158,31,40,.20);border-color:var(--teal);}
+#rp-pazienti .session-btn.ghost{background:transparent;border-color:var(--line);color:var(--parchment-dim);}
+#rp-pazienti .session-btn.ghost:hover{border-color:var(--teal);color:var(--parchment);}
+#rp-pazienti .session-danger-btn{
+  border:1px solid var(--red);background:var(--red-bg);color:#F0B3AA;
+}
+#rp-pazienti .session-danger-btn:hover{background:#551919;border-color:#F16C64;color:#FFD3CD;}
+#rp-pazienti .session-danger-btn:disabled{opacity:.45;cursor:not-allowed;}
+#rp-pazienti .session-status{margin-top:10px;color:var(--parchment-dim)!important;font-size:13px;line-height:1.5;}
+#rp-pazienti .session-status.ok{color:var(--green)!important;}
+#rp-pazienti .session-status.bad{color:var(--red)!important;}
+#rp-pazienti .session-list{display:flex;flex-direction:column;gap:10px;margin-top:18px;}
+#rp-pazienti .session-item{
+  padding:14px 15px;background:var(--bg2);border:1px solid var(--line);border-radius:9px;
+}
+#rp-pazienti .session-item-row{justify-content:space-between;align-items:center;}
+#rp-pazienti .session-title{font-family:var(--serif);font-size:1.1rem;font-weight:600;color:var(--gold-soft)!important;}
+#rp-pazienti .session-meta{margin-top:3px;color:var(--parchment-dim)!important;font-size:12px;}
+#rp-pazienti .session-owner{
+  display:inline-flex;margin-top:7px;padding:3px 8px;border:1px solid var(--line);border-radius:999px;
+  color:var(--parchment-dim)!important;font-size:11px;
+}
+#rp-pazienti .session-owner.mine{border-color:var(--green);color:var(--green)!important;}
+#rp-pazienti .session-toolbar-card{margin-top:22px;margin-bottom:0;}
+#rp-pazienti .session-toolbar-inner{padding:16px 18px;}
+#rp-pazienti .session-topbar{justify-content:space-between;align-items:flex-start;}
+#rp-pazienti .session-actions{justify-content:flex-end;}
+#rp-pazienti .session-modal{
+  position:fixed;inset:0;z-index:99999;display:none;align-items:center;justify-content:center;
+  padding:20px;background:rgba(8,2,2,.84);
+}
+#rp-pazienti .session-modal.open{display:flex;}
+#rp-pazienti .session-modal-box{
+  width:min(620px,100%);max-height:90vh;overflow:auto;padding:24px;background:var(--panel);
+  border:1px solid var(--line);border-radius:12px;box-shadow:0 24px 70px rgba(0,0,0,.55);
+}
+#rp-pazienti .session-modal-box h3{
+  margin:0 0 14px;font-family:var(--serif);font-size:1.55rem;color:#F0AAA1!important;
+}
+#rp-pazienti .session-modal-box p{color:var(--parchment-dim)!important;line-height:1.65;}
+#rp-pazienti .delete-confirm-line{
+  display:flex;align-items:flex-start;gap:10px;margin:18px 0;padding:13px 14px;border:1px solid var(--line);
+  border-radius:8px;background:var(--red-bg);
+}
+#rp-pazienti .delete-confirm-line input{margin-top:4px;transform:scale(1.12);}
+#rp-pazienti .delete-confirm-line span{color:#F0C2BA!important;font-size:14px;line-height:1.55;}
+@media(max-width:760px){
+  #rp-pazienti .session-home,#rp-pazienti .session-toolbar-card{padding:0 14px;}
+  #rp-pazienti .session-card-body{padding:18px 16px 20px;}
+  #rp-pazienti .session-card-head{padding:16px;}
+  #rp-pazienti .session-actions,#rp-pazienti .session-new-row{width:100%;}
+  #rp-pazienti .session-actions .session-btn,#rp-pazienti .session-actions .session-danger-btn,
+  #rp-pazienti .session-new-row .session-btn{width:100%;}
+  #rp-pazienti .session-item-row{align-items:stretch;}
+  #rp-pazienti .session-item-row>*{width:100%;}
+}
+
+
+
+/* ================================================================
+   REVISIONE V2 — flusso Configurazione / Riepilogo / Fasi / Esito
+   ================================================================ */
+#rp-pazienti .rp-flow-nav{
+  display:grid;
+  grid-template-columns:repeat(6,minmax(0,1fr));
+  gap:8px;
+  width:100%;
+  max-width:1120px;
+  margin:22px auto 18px;
+  padding:0 24px;
+}
+#rp-pazienti .rp-flow-btn{
+  min-height:46px;
+  padding:9px 10px;
+  border:1px solid var(--line);
+  border-radius:8px;
+  background:var(--panel);
+  color:var(--parchment-dim);
+  font-family:var(--sans);
+  font-size:13px;
+  font-weight:700;
+  cursor:pointer;
+  transition:all .15s ease;
+}
+#rp-pazienti .rp-flow-btn:hover:not(:disabled){border-color:var(--red);color:var(--parchment);background:var(--panel2)}
+#rp-pazienti .rp-flow-btn.active{background:var(--red-dark);border-color:var(--red);color:#fff}
+#rp-pazienti .rp-flow-btn:disabled{opacity:.42;cursor:not-allowed}
+#rp-pazienti nav.steps{display:none!important}
+#rp-pazienti .rp-summary-card,
+#rp-pazienti .rp-final-card{
+  display:none;
+  max-width:1120px;
+  margin:0 auto 26px;
+  padding:24px;
+  border:1px solid var(--line);
+  border-radius:12px;
+  background:var(--panel);
+  color:var(--parchment);
+}
+#rp-pazienti .rp-summary-card h2,
+#rp-pazienti .rp-final-card h2{
+  margin:0 0 8px;
+  color:var(--red-soft);
+  font-family:'magic',var(--serif);
+  font-size:1.65rem;
+  font-weight:normal;
+}
+#rp-pazienti .rp-summary-lead{margin:0 0 18px;color:var(--parchment-dim);line-height:1.65}
+#rp-pazienti .rp-summary-section{margin-top:20px;padding-top:18px;border-top:1px solid rgba(237,205,181,.14)}
+#rp-pazienti .rp-summary-section h3{margin:0 0 10px;color:var(--red-soft);font-family:var(--serif);font-size:1.18rem}
+#rp-pazienti .rp-summary-list{margin:8px 0 0;padding-left:22px;color:var(--parchment-dim);line-height:1.75}
+#rp-pazienti .rp-summary-list b{color:var(--parchment)}
+#rp-pazienti .rp-summary-note{margin-top:18px;padding:12px 14px;border-left:4px solid var(--red);background:rgba(158,31,40,.08);color:var(--parchment-dim);line-height:1.6}
+#rp-pazienti .rp-summary-copy{margin-top:20px;padding-top:18px;border-top:1px solid rgba(237,205,181,.14)}
+#rp-pazienti .rp-summary-bb{white-space:pre-wrap;word-break:break-word;margin:10px 0 14px;padding:12px 14px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--parchment-dim);font-family:var(--mono);font-size:12px;line-height:1.55;max-height:250px;overflow:auto}
+#rp-pazienti .rp-flow-actions{display:flex;justify-content:flex-end;gap:10px;flex-wrap:wrap;margin-top:20px}
+#rp-pazienti .rp-flow-action{
+  min-height:44px;padding:9px 15px;border:1px solid var(--red);border-radius:8px;background:var(--red-dark);color:#fff;font-family:var(--sans);font-size:14px;font-weight:700;cursor:pointer
+}
+#rp-pazienti .rp-flow-action.ghost{background:transparent;border-color:var(--line);color:var(--parchment-dim)}
+#rp-pazienti .rp-flow-action:disabled{opacity:.42;cursor:not-allowed}
+#rp-pazienti.rp-flow-summary .wrap > section.fase,
+#rp-pazienti.rp-flow-esito .wrap > section.fase{display:none!important}
+#rp-pazienti.rp-flow-summary .rp-summary-card{display:block}
+#rp-pazienti.rp-flow-esito .rp-final-card{display:block}
+#rp-pazienti.rp-flow-config #rp_fase1 .dice-tag,
+#rp-pazienti.rp-flow-config #rp_fase1 .result-row,
+#rp-pazienti.rp-flow-config #rp_fase1 .step-nav-bottom,
+#rp-pazienti.rp-flow-config #rp_fase1 .rp-next-phase{display:none!important}
+#rp-pazienti.rp-flow-f1 #rp_fase1 .field-row,
+#rp-pazienti.rp-flow-f1 #rp_fase1 .pg-head .remove-btn,
+#rp-pazienti.rp-flow-f1 #rp_addPgBtn,
+#rp-pazienti.rp-flow-f1 #rp_fase1 .step-nav-bottom,
+#rp-pazienti.rp-flow-f1 #rp_fase1 .rp-to-summary{display:none!important}
+#rp-pazienti.rp-flow-f2 #rp_fase2 .step-nav-bottom,
+#rp-pazienti.rp-flow-f3 #rp_fase3 .step-nav-bottom{display:none!important}
+#rp-pazienti .rp-to-summary,
+#rp-pazienti .rp-next-phase{margin-top:20px}
+#rp-pazienti .rp-config-caption{display:none;margin:2px 0 12px;color:var(--parchment-dim);font-size:13px}
+#rp-pazienti.rp-flow-f1 #rp_fase1 .rp-config-caption{display:block}
+#rp-pazienti .session-modal.rp-local-modal{align-items:flex-start!important}
+#rp-pazienti .session-modal.rp-local-modal .session-modal-box{margin-top:var(--rp-modal-top,20px)}
+@media(max-width:780px){
+  #rp-pazienti .rp-flow-nav{grid-template-columns:repeat(2,minmax(0,1fr));padding:0 14px}
+  #rp-pazienti .rp-summary-card,#rp-pazienti .rp-final-card{margin-left:14px;margin-right:14px;padding:18px 16px}
+}
+
+</style> 
+ 
+<div id="rp-pazienti">
+
+<header class="top"> 
+ <div class="seal"><i class="fa-solid fa-hospital"></i></div> 
+ <div class="eyebrow" style="font-size:30px; font-family:magic">• Ricerca Pazienti •</div> 
+<p class="subtitle">Per PG Medimagi e Ars</p> 
+</header> 
+
+<section id="pazienti-session-home" class="session-home">
+  <div class="session-card">
+    <div class="session-card-head"><h2>Ricerche Pazienti in corso</h2></div>
+    <div class="session-card-body">
+      <p>Crea una sessione per la tua Ricerca Pazienti oppure riaprine una già iniziata. I dati vengono salvati automaticamente mentre compili la Ricerca.</p>
+      <div class="session-warning"><b>Le sessioni in corso sono personali.</b> Puoi visualizzare quelle degli altri giocatori, ma non modificarle o concluderle. Solo chi ha creato la sessione e il Narratore possono intervenire sui suoi dati.</div>
+      <div id="firebase-auth-status" class="session-status">Connessione a Firebase…</div>
+      <div class="session-new-row">
+        <input id="new-session-pg" type="text" maxlength="80" placeholder="Nome del PG principale (es. Coral)">
+        <button class="session-btn" id="btn-new-session" type="button" data-session-control="1">+ Nuova Ricerca</button>
+        <button class="session-btn ghost" id="btn-refresh-sessions" type="button" data-session-control="1">Aggiorna elenco</button>
+      </div>
+      <div id="session-home-msg" class="session-status"></div>
+      <div id="session-list" class="session-list"></div>
+    </div>
+  </div>
+</section>
+
+<div id="pazienti-workspace" style="display:none">
+  <div class="session-toolbar-card">
+    <div class="session-toolbar-inner">
+      <div class="session-topbar">
+        <div>
+          <div id="current-session-title" class="session-title">Ricerca Pazienti in corso</div>
+          <div id="current-session-meta" class="session-meta"></div>
+          <div id="save-status" class="session-status"></div>
+        </div>
+        <div class="session-actions">
+          <button class="session-btn ghost" id="btn-back-sessions" type="button" data-session-control="1">← Torna alle Ricerche</button>
+          <button class="session-danger-btn" id="btn-delete-session" type="button" data-session-control="1">Concludi ed elimina Ricerca</button>
+        </div>
+      </div>
+      <div id="readonly-banner" class="readonly-banner" style="display:none">Stai visualizzando la Ricerca Pazienti di un altro giocatore. Puoi consultarla, cambiare Fase e copiare i dadi, ma solo chi l'ha creata o il Narratore può modificarla o eliminarla.</div>
+    </div>
+  </div>
+ 
+<nav class="steps"> 
+ <button type="button" data-step="1" class="active"><span class="num">I</span>Arrivo</button> 
+ <button type="button" data-step="2" disabled><span class="num">II</span>Diagnosi del caso</button> 
+ <button type="button" data-step="3" disabled><span class="num">III</span>Cura</button> 
+</nav> 
+<div class="wrap"> 
+<section class="fase active" id="rp_fase1"> 
+ <h2 class="fase-title">Fase 1 — Arriva un'emergenza?</h2> 
+ <p class="fase-intro">Ogni PG in attesa lancia 1d30. La chiamata avviene se il risultato rientra in <b>Tecnica + Sapienza Medimagica/5</b>, con divisione arrotondata per difetto. Un Medimago in servizio aggiunge +2 possibilità soltanto in questa fase.</p> 
+ <div class="nota"><br> 
+ <b>Partecipanti — </b>la Ricerca Pazienti si svolge con almeno due PG. Possono essere Medimaghi in servizio oppure PG Ars presenti al San Mungo come assistenti. Ogni PG può ritentare il tiro in ogni proprio post, senza limiti.</div> 
+ <div id="rp_pgList"></div> 
+ <button type="button" class="add-btn" id="rp_addPgBtn">+ Aggiungi personaggio in attesa</button> 
+ <div class="nota" style="margin-top:24px"><br> 
+ <b>Missione FantaWiz — </b>curare un Paziente tramite questa Ricerca permette di completare il Livello Difficile della missione "Il Medimago", anche se il PG è un Ars di mestiere diverso da Medimago.</div> 
+ <div class="step-nav-bottom"><span></span><button type="button" class="nav-btn" id="rp_toFase2" disabled>Qualcuno è stato chiamato &#8594; Fase 2</button></div> 
+</section> 
+<section class="fase" id="rp_fase2"> 
+ <h2 class="fase-title">Fase 2 — Che Paziente arriva?</h2> 
+ <p class="fase-intro">Stabilisci il Tipo di Danno, la causa specifica e la Gravità. Si può prendere in cura un solo Paziente per role.</p> 
+ <div class="attempts-box"> 
+ <div><div style="font-family:var(--mono);font-size:11px;color:var(--teal);text-transform:uppercase;letter-spacing:.06em">Rinunce disponibili</div><div class="desc" style="margin:2px 0 0">puoi rinunciare a un Paziente completamente pescato e ritentare l'arrivo fino a un massimo di 3 volte per role</div></div> 
+ <div style="display:flex;align-items:center;gap:14px"><span class="n" id="rp_attemptsN">3</span><button type="button" class="retry-btn" id="rp_renounceBtn" disabled>Rinuncia e ritenta l'arrivo</button></div> 
+ </div> 
+ <div class="card"> 
+ <h3>1 · Tipo di Danno</h3><p class="desc">1d5 stabilisce la macro-categoria del danno subito dal Paziente.</p> 
+ <div class="dice-tag"><textarea readonly id="rp_diceTipo">[dice=1d5]Tipo di Danno - Ricerca Pazienti[/dice]</textarea><button type="button" class="copy-btn" data-target="rp_diceTipo">Copia</button></div> 
+ <div class="result-row"><label>Risultato</label><input type="number" id="rp_tipoInput" min="1" max="5" step="1"><span class="outcome pending" id="rp_tipoOutcome">in attesa</span></div> 
+ <div id="rp_tipoLabel" class="esito-nome" style="display:none"></div> 
+ </div> 
+ <div class="card" id="rp_subTableCard" style="display:none"> 
+ <h3 id="rp_subTableTitle">2 · Causa specifica</h3><p class="desc" id="rp_subTableDesc"></p> 
+ <div class="dice-tag"><textarea readonly id="rp_diceSub"></textarea><button type="button" class="copy-btn" data-target="rp_diceSub">Copia</button></div> 
+ <div class="result-row"><label>Risultato</label><input type="number" id="rp_subInput" min="1" step="1"><span class="outcome pending" id="rp_subOutcome">in attesa</span></div> 
+ <div id="rp_subLabel" class="esito-nome" style="display:none"></div> 
+ </div> 
+ <div class="card"> 
+ <h3>3 · Gravità del Danno</h3><p class="desc">1d100: il risultato corrisponde alla percentuale di danno subito. Consulta poi i Sintomi della causa specifica nell'Enciclopedia Medimagica.</p> 
+ <div class="dice-tag"><textarea readonly id="rp_diceGravita">[dice=1d100]Gravità del Danno - Ricerca Pazienti[/dice]</textarea><button type="button" class="copy-btn" data-target="rp_diceGravita">Copia</button></div> 
+ <div class="result-row"><label>Risultato</label><input type="number" id="rp_gravitaInput" min="1" max="100" step="1"><span class="outcome pending" id="rp_gravitaOutcome">in attesa</span></div> 
+ <div id="rp_gravitaLabel" class="esito-nome" style="display:none"></div> 
+ </div> 
+ <div class="esempio"><b>Esempio — </b>esce 5 al primo dado: Ferite da Piante e Creature Magiche. Il dado specifico è 1d100 e dà <b>10</b>: Dugbog (morso). Il tiro di Gravità dà 85: il Paziente ha subito l'85% di danno. I Sintomi si leggono nella tabella dedicata al Dugbog nell'Enciclopedia Medimagica.</div> 
+ <div class="step-nav-bottom"><button type="button" class="nav-btn" id="rp_toFase1From2">&#8592; Torna alla Fase 1</button><button type="button" class="nav-btn" id="rp_toFase3" disabled>Paziente identificato &#8594; Fase 3</button></div> 
+</section> 
+<section class="fase" id="rp_fase3"> 
+ <h2 class="fase-title">Fase 3 — Curare il Paziente</h2> 
+ <p class="fase-intro">Diagnosi, Terapia e Chirurgia seguono le formule della Guida alla Medimagia. In questa Ricerca la dinamica dell'accaduto è già nota, quindi la Diagnosi riceve sempre +3 possibilità; le Componenti del Rimedio ONGame sono sempre disponibili al San Mungo.</p> 
+ <div class="nota"><br> 
+ <b>Bonus medimagici — </b>quando una Conoscenza Medimagica applicabile concede possibilità extra, inserisci il bonus nella singola riga. Il campo è limitato a un massimo complessivo di +5. Le Pozioni Oltre Ogni Previsione ed Eccezionali, quando previste, hanno invece il proprio selettore.</div> 
+ <div class="nota"><br> 
+ <b>Fonti — </b><a href="https://felixfelicisharrypottergdr.forumfree.it/?t=80630315#sintomilista" target="_blank">Lista dei Sintomi</a> · <a href="https://felixfelicisharrypottergdr.forumfree.it/?t=80630315#elencosintomi" target="_blank">Elenco Sintomi</a> · <a href="https://felixfelicisharrypottergdr.forumfree.it/?t=80630315#conomedimag" target="_blank">Incantesimi e Tecniche Medimagiche</a></div> 
+ <div class="divider-label">Diagnosi dei Sintomi</div> 
+ <p class="desc">1d40 per ogni Classificazione effettivamente manifestata (X-XXXXX). Individuando almeno il 60% dei Sintomi totali diventa nota anche la causa scatenante. Costo: -2 Fatica per Diagnosi. In questa Ricerca un fallimento può essere ritentato senza il tiro di recupero previsto dalla Guida.</p> 
+ <div id="rp_diagList"></div><button type="button" class="add-btn" id="rp_addDiagBtn">+ Aggiungi personaggio diagnosta</button> 
+ <div class="divider-label">Terapia — Sintomi X, XX, XXX</div> 
+ <p class="desc">1d40 per ogni singolo Sintomo. Fino a 3 Sintomi per post; se la cura prosegue in post successivi puoi aggiungere altre righe. Costo: -0,5 Fatica per Sintomo, a prescindere dall'esito. Il fallimento causa la Complicazione prevista dal Sintomo.</p> 
+ <div id="rp_terapiaList"></div><button type="button" class="add-btn" id="rp_addTerapiaBtn">+ Aggiungi personaggio terapista</button> 
+ <div class="divider-label">Chirurgia — Sintomi XXXX, XXXXX</div> 
+ <p class="desc">1d35 per ogni singolo Sintomo. Fino a 3 Sintomi per post; se l'intervento prosegue in post successivi puoi aggiungere altre righe. Costo: -1 Fatica per Sintomo. Senza Chirurgo né Sapienza Medimagica 1+ il fallimento è autoconclusivo.</p> 
+ <div id="rp_chirurgiaList"></div><button type="button" class="add-btn" id="rp_addChirurgiaBtn">+ Aggiungi personaggio chirurgo</button> 
+ <div class="divider-label">Post-operazione</div> 
+ <div class="card"><h3>Chiusura dell'intervento</h3><p class="desc">Una volta eseguite Diagnosi, Terapia e/o Chirurgia, l'intervento è concluso e si riscatta il Livello Difficile della missione "Il Medimago".</p><table class="reward-table"><tr><td class="k">Requisiti</td><td>PG Medimago, oppure PG Ars anche non Medimago</td></tr><tr><td class="k">Ricompensa</td><td>2 PP per post (fino a un massimo di 5) · +2 Prestigio · +1 Virtuoso o Sinistro</td></tr></table></div> 
+ <div class="step-nav-bottom"><button type="button" class="nav-btn" id="rp_toFase2From3">&#8592; Torna alla Fase 2</button><button type="button" class="nav-btn" id="rp_resetAll">Ricomincia una nuova Ricerca</button></div> 
+</section> 
+</div> 
+ 
+<script type="text/javascript"> 
+(function(){ 
+var root = document.getElementById('rp-pazienti'); 
+if(!root){ return; } 
+var evtName = 'cli' + 'ck'; 
+var pgCounter = 0; 
+var curaRowCounter = 0; 
+var curaCardCounter = 0; 
+var diagNameCounter = 0; 
+var terapiaNameCounter = 0; 
+var chirurgiaNameCounter = 0; 
+var attemptsLeft = 3; 
+var lastTipo = null; 
+ 
+var TAB_MALATTIE = ["Absorbite","Acne Purulenta","Algabranchite","Ammuffamento da Bundinum","Artigliatite","Borbottite","Bundimia","Cataratta Spettrale","Chizpiculosi","Colpo della Fenice","Diricella","Erboruto","Indigestione da Pozioni","Infestazione Intestinale di Glowbug","Intossicazione da Polvere di Fata","Ira","Falangelate","Farfalle Vomitose","Febbre Malarica","Kappalitosi","Lavandite","Leviostosi","Malattia di Wilbur Dream","Malattia Fantasma","Medusite","Nundacea","Pelle Autofertilizzante","Pustole di Fuoco","Radigordillo","Scrofungulus","Sindrome Canterina","Sindrome dell'Augurey","Sindrome di Gulp","Sindrome di Proteuster","Sindrome di Scrooge","Solletico Messicano","Sparizione","Spine Estroverse","Spruzzolosi","Stridulite","Trucco del Jobberknoll","Vaiolo di Drago","Vetustella","Voglia Vampirella"]; 
+ 
+var TAB_LESIONI = ["Esorcismo","Sbalzamento da Linea dell'Eta","Spezzamento","Atterraggio sbagliato da Ascendio","Disintegramento da Repello Inimicum","Aerem","Aqua Eructo","Defodio","Dominusterra (Colpito dai detriti)","Elettro","Elettro Maxima","Glacius Maxima","Incendio","Incendio Maxima","Meteo Canis (Fulmine)","Meteo Canis (Nebbia)","Meteo Canis (Neve)","Meteo Canis (Pioggia)","Meteo Canis (Vento)","Ventus Maxima","Ad Caelum","Ardor","Bombarda (Detriti)","Bombarda Maxima (Detriti)","Deprimo","Depulso","Diffindo","Energia Magica Offensiva","Everte Statim","Expulso","Exulcero","Mobilicorpus (Caduta)","Waddiwasi","Ardemonium","Confringo","Damnum","Dolohoferio","Flagrante","Flipendo","Gemino","Incatenamento da Patto di Sangue","Sectumsempra","Zilerius","Spaccamento","Gas Strozzante","Pozione Atomica","Pozione Esplosiva"]; 
+ 
+var TAB_MANUFATTI = ["Bacchetta nell'occhio, nel naso o nell'orecchio","Caduta da una Creatura in corsa o in volo","Caduta da una Scopa in volo","Colpo di un Bolide","Esplosione di un calderone","Malessere da Passaporta","Rifiuto da Passaporta","Ritorno di fiamma della Bacchetta","Schianto in volo su una Scopa","Ustione da Metropolvere"]; 
+ 
+var TAB_VELENI = ["Albero di Biancaneve","Assenzio","Belladonna","Brugmansia","Bucaneve","Cicuta","Erbaschiuma (Veleno)","Erba Stregata","Fagioli Sopoforosi","Funghi Allucinogeni","Ortica","Platano Colombiano (Pistilli essiccati)","Ricino","Ruta","Starnutaria","Tentacula Velenosa","Vischio","Pozione Alitosa","Veleno Arsenicum","Veleno di Mirtillo","Veleno Erbefolli","Veleno di Semi di Luna","Veleno Tentacolare","Veleno Cappello della Morte","Veleno del Bacio Mortale","Veleno del Diavolo","Veleno Noxius","Veleno Radice Insanguinata"]; 
+ 
+var TAB_FERITE = ["Avvincino (avvinghiamento)","Avvincino (morso)","Ippocampo (attacco)","Fata (ebbrezza polvere)","Abarimon (graffio o morso a scelta dei PG)","Ashwinder (esplosione uova)","Berretto Rosso (randellate)","Crup (morso)","Doxy (morso)","Dugbog (morso)","Fiammagranchio (fiammata)","Hodag (infilzata corno)","Ippogrifo (artigliata)","Lobalug (veleno)","Oni (fulmine)","Oni (mazzata)","Pogrebin (morso)","Salamandra (fiammata)","Serpente Marino (morso)","Streeler (bruciatura)","Alastridente (azzannata)","Bicorno (carica)","Bicorno (corno)","Cavallo Alato (morso)","Cavallo Alato (morso)","Centauro (frecce)","Centauro (zoccolata)","Erumpent (carica)","Erumpent (corno)","Erumpent (esplosione corno)","Graphorn (artigliata)","Graphorn (carica)","Graphorn (morso)","Grifone (artigliata)","Grifone (morso)","Kappa (morso)","Kelpie (morso)","Lupo Mannaro (morso)","Matagot (graffi)","Matagot (morso)","Nascondombra (morso)","Occamy (beccata)","Occamy (strangolamento)","Re'em (carica)","Re'em (corno)","Schiopodo Sparacoda (dissanguamento da femmina)","Schiopodo Sparacoda (fiammata)","Schiopodo Sparacoda (puntura)","Schiopodo Sparacoda (strangolamento)","Sfinge (artigliata)","Sfinge (morso)","Tebo (azzannata)","Tebo (carica)","Thestral (morso)","Thestral (zoccolata)","Troll (carica)","Troll (mazzata)","Tuono Alato (artigliata)","Tuono Alato (fulmine)","Tuono Alato (morso)","Velenottero (morso)","Acromantula (morso)","Basilisco (morso)","Cane a tre teste (artigliata)","Cane a tre teste (morso)","Chimera (artigliata)","Chimera (fuoco)","Chimera (morso)","Cornolungo Rumeno (Drago - corno)","Drago (artigliata)","Drago (carica)","Drago (fuoco)","Drago (morso)","Drago (ustione da fuoco)","Lethifold (strangolamento)","Lupo Mannaro (graffio)","Lupo Mannaro (morso)","Manticora (strangolamento)","Nero delle Ebridi (Drago - codata)","Nundu (morso)","Runespoor (codata)","Runespoor (morso)","Serpecorno (morso)","Serpecorno (strangolamento)","Quintaped (carica)","Quintaped (morso)","Vipertooth Peruviano (Drago - azzannata)","Yeti (calpestata)","Wampus (morso)","Carica da Ciclope, Orco o Gigante","Colpo di Accetta, Mazzata, Martello o Falce di Ciclope, Orco o Gigante","Colpo di Ascia di Nano","Morso di Vampiro","Sfera di Fuoco di Veela","Trauma da Ammuntandore o Dissennatore","Ipnosi da Gytrash","Morso di Inferius","Strangolamento da Inferius","Sfera di fuoco lanciata da Marciotto","Morso di Zombie"]; 
+ 
+var SUBTABLES = { 
+ 1: { faces:44, nome:"Malattia Magica", tab:TAB_MALATTIE, link:"https://felixfelicisharrypottergdr.forumfree.it/?t=80630315#malattie" }, 
+ 2: { faces:47, nome:"Lesione da Incantesimo o Trauma da Pozione", tab:TAB_LESIONI, link:"https://felixfelicisharrypottergdr.forumfree.it/?t=80630315#lesioniinca" }, 
+ 3: { faces:10, nome:"Incidente da Manufatti", tab:TAB_MANUFATTI, link:"https://felixfelicisharrypottergdr.forumfree.it/?t=80630315#manufatti" }, 
+ 4: { faces:28, nome:"Avvelenamento da Piante e Pozioni", tab:TAB_VELENI, link:"https://felixfelicisharrypottergdr.forumfree.it/?t=80630315#avvelenamentopp" }, 
+ 5: { faces:100, nome:"Ferita da Piante e Creature Magiche", tab:TAB_FERITE, link:"https://felixfelicisharrypottergdr.forumfree.it/?t=80630315#creatureepiante" } 
+}; 
+ 
+window.__RP_SUBTABLES=SUBTABLES;
+var TIPO_LABELS = { 1:"Malattie Magiche", 2:"Lesioni da Incantesimi e Traumi da Pozioni", 3:"Incidenti da Manufatti", 4:"Avvelenamento da Piante e Pozioni", 5:"Ferite da Piante e Creature Magiche" }; 
+ 
+var DIAG_LEVELS = [ 
+ {label:'Adulto senza Diagnosta',base:11}, {label:'Diagnosta Lv I',base:12}, {label:'Diagnosta Lv II',base:13}, 
+ {label:'Diagnosta Lv III',base:14}, {label:'Diagnosta Lv IV',base:15}, {label:'Diagnosta Lv V',base:16} 
+]; 
+var DIAG_CLASS = [{label:'X',bonus:4},{label:'XX',bonus:3},{label:'XXX',bonus:2},{label:'XXXX',bonus:1},{label:'XXXXX',bonus:0}]; 
+var TER_LEVELS = [ 
+ {label:'Adulto senza Terapista',base:11}, {label:'Terapista Lv I',base:12}, {label:'Terapista Lv II',base:13}, 
+ {label:'Terapista Lv III',base:14}, {label:'Terapista Lv IV',base:15}, {label:'Terapista Lv V',base:16} 
+]; 
+var TER_CLASS = [{label:'X',bonus:5},{label:'XX',bonus:4},{label:'XXX',bonus:3}]; 
+var CHIR_LEVELS = [ 
+ {label:'Nessuna competenza (fallimento automatico)',base:null}, {label:'Sapienza Medimagica 1-5',base:4}, 
+ {label:'Sapienza Medimagica 6-10',base:5}, {label:'Sapienza Medimagica 11-15',base:6}, {label:'Chirurgo Lv I',base:7}, 
+ {label:'Chirurgo Lv II',base:8}, {label:'Chirurgo Lv III',base:9}, {label:'Chirurgo Lv IV',base:10}, {label:'Chirurgo Lv V',base:11} 
+]; 
+var CHIR_CLASS = [{label:'XXXX',bonus:1},{label:'XXXXX',bonus:0}]; 
+var POZIONE_BONUS = [{label:'Nessuna Pozione',bonus:0},{label:'Pozione Oltre Ogni Previsione',bonus:1},{label:'Pozione Eccezionale',bonus:2}]; 
+ 
+function byId(id){ return document.getElementById(id); } 
+function isIntInRange(v,min,max){ return typeof v === 'number' && isFinite(v) && Math.floor(v) === v && v >= min && v <= max; } 
+function inputInt(id){ var el=byId(id); if(!el || el.value===''){return null;} var n=Number(el.value); return (isFinite(n) && Math.floor(n)===n) ? n : NaN; } 
+function setOutcome(el,text,kind){ if(!el){return;} el.textContent=text; el.className='outcome ' + kind; } 
+function copyTextFrom(id,btn){ 
+ var el=byId(id); if(!el){return;} var text=el.value; 
+ function done(){btn.textContent='Copiato';btn.classList.add('copied');setTimeout(function(){btn.textContent='Copia';btn.classList.remove('copied');},1400);} 
+ if(navigator.clipboard && navigator.clipboard.writeText){navigator.clipboard.writeText(text).then(done)['catch'](function(){el.select();document.execCommand('copy');done();});} 
+ else {el.select();document.execCommand('copy');done();} 
+} 
+root.addEventListener(evtName,function(e){var t=e.target;if(t.classList && t.classList.contains('copy-btn')){copyTextFrom(t.getAttribute('data-target'),t);}}); 
+ 
+function currentStep(){ var s=root.querySelector('section.fase.active'); return s ? parseInt(s.getAttribute('data-step') || s.id.replace('rp_fase',''),10) : 1; } 
+function calledAvailable(){ return !!root.querySelector('#rp_pgList .outcome.success'); } 
+function validTipo(){ var v=inputInt('rp_tipoInput'); return isIntInRange(v,1,5) ? v : null; } 
+function validSub(){ var t=validTipo(); if(t===null){return null;} var sub=SUBTABLES[t]; var v=inputInt('rp_subInput'); return isIntInRange(v,1,sub.faces) ? v : null; } 
+function validGravita(){ var v=inputInt('rp_gravitaInput'); return isIntInRange(v,1,100) ? v : null; } 
+function patientComplete(){ return validTipo()!==null && validSub()!==null && validGravita()!==null; } 
+function updateLocks(){ 
+ var called=calledAvailable(), complete=patientComplete(); 
+ var nav2=root.querySelector('nav.steps button[data-step="2"]'), nav3=root.querySelector('nav.steps button[data-step="3"]'); 
+ if(nav2){nav2.disabled=!called;} if(nav3){nav3.disabled=!(called && complete);} 
+ byId('rp_toFase2').disabled=!called; 
+ byId('rp_toFase3').disabled=!(called && complete); 
+ byId('rp_renounceBtn').disabled=!(complete && attemptsLeft>0); 
+} 
+function goToFase(n){ 
+ n=parseInt(n,10); if(n===2 && !calledAvailable()){return;} if(n===3 && !(calledAvailable() && patientComplete())){return;} 
+ var sections=root.querySelectorAll('.fase'), i; for(i=0;i<sections.length;i++){sections[i].classList.remove('active');} 
+ var target=byId('rp_fase'+n); if(target){target.classList.add('active');} 
+ var btns=root.querySelectorAll('nav.steps button'); for(i=0;i<btns.length;i++){btns[i].classList.remove('active');} 
+ var b=root.querySelector('nav.steps button[data-step="'+n+'"]'); if(b){b.classList.add('active');} 
+ if(root.scrollIntoView){root.scrollIntoView({behavior:'smooth',block:'start'});} 
+} 
+var navButtons=root.querySelectorAll('nav.steps button'); 
+for(var ni=0;ni<navButtons.length;ni++){navButtons[ni].addEventListener(evtName,function(){if(!this.disabled){goToFase(this.getAttribute('data-step'));}});} 
+byId('rp_toFase2').addEventListener(evtName,function(){goToFase(2);}); 
+byId('rp_toFase1From2').addEventListener(evtName,function(){goToFase(1);}); 
+byId('rp_toFase3').addEventListener(evtName,function(){goToFase(3);}); 
+byId('rp_toFase2From3').addEventListener(evtName,function(){goToFase(2);}); 
+ 
+/* ---------- Fase 1 ---------- */ 
+function sapienzaBonus(v){ return Math.floor(v/5); } 
+function buildDiceTagArrivo(nome,tecnica,sapienza,medimago){ 
+ var sBonus=sapienzaBonus(sapienza), m=medimago?2:0, soglia=tecnica+sBonus+m; 
+ var formula=tecnica+' Tecnica + '+sapienza+'/5 Sapienza Medimagica (='+sBonus+')'; 
+ if(medimago){formula+=' + 2 Medimago in servizio';} 
+ return {soglia:soglia,sBonus:sBonus,tag:'[dice=1d30]Arrivo Paziente - '+(nome||'PG')+' (Riesce se 1-'+soglia+': '+formula+' = '+soglia+')[/dice]'}; 
+} 
+function refreshRemoveButtons(){ 
+ var cards=root.querySelectorAll('#rp_pgList .pg-card'), disabled=cards.length<=2; 
+ for(var i=0;i<cards.length;i++){var b=cards[i].querySelector('.remove-btn');if(b){b.disabled=disabled;}} 
+} 
+function refreshPgCard(card){ 
+ var id=card.getAttribute('data-id'), nome=byId('rp_pgNome_'+id).value; 
+ var tecnica=inputInt('rp_pgTecnica_'+id), sapienza=inputInt('rp_pgSapienza_'+id), medimago=byId('rp_pgMedimago_'+id).checked; 
+ var sogliaEl=byId('rp_pgSoglia_'+id), sbEl=byId('rp_pgSapBonus_'+id), dice=byId('rp_diceArrivo_'+id), out=byId('rp_pgArrivoOutcome_'+id); 
+ if(!isIntInRange(tecnica,0,20) || !isIntInRange(sapienza,0,25)){ 
+ sogliaEl.textContent='—'; sbEl.textContent='—'; dice.value='Inserisci Tecnica 0-20 e Sapienza Medimagica 0-25.'; setOutcome(out,'dati non validi','fail'); updateLocks(); return; 
+ } 
+ var r=buildDiceTagArrivo(nome,tecnica,sapienza,medimago); sogliaEl.textContent='1–'+r.soglia; sbEl.textContent='+'+r.sBonus; dice.value=r.tag; 
+ var val=inputInt('rp_pgArrivoResult_'+id); 
+ if(val===null){setOutcome(out,'in attesa','pending');} 
+ else if(!isIntInRange(val,1,30)){setOutcome(out,'RISULTATO IMPOSSIBILE','fail');} 
+ else if(val<=r.soglia){setOutcome(out,'CHIAMATO','success');} 
+ else {setOutcome(out,'nessuna chiamata','fail');} 
+ updateLocks(); 
+} 
+function clearArrivalResults(){ 
+ var inputs=root.querySelectorAll('#rp_pgList .arrivo-result'); 
+ for(var i=0;i<inputs.length;i++){inputs[i].value=''; var card=inputs[i].closest('.pg-card'); if(card){refreshPgCard(card);}} 
+} 
+function addPgCard(){ 
+ pgCounter++; var id=pgCounter, card=document.createElement('div'); card.className='pg-card'; card.setAttribute('data-id',id); 
+ card.innerHTML='' 
+ +'<div class="pg-head"><input class="nome" id="rp_pgNome_'+id+'" type="text" value="Personaggio '+id+'"><button type="button" class="remove-btn">rimuovi</button></div>' 
+ +'<div class="field-row"><div class="field"><label>Tecnica</label><input class="tecnica" id="rp_pgTecnica_'+id+'" type="number" value="0" min="0" max="20" step="1"></div>' 
+ +'<div class="field"><label>Sapienza Medimagica</label><input class="sapienza" id="rp_pgSapienza_'+id+'" type="number" value="0" min="0" max="25" step="1"></div>' 
+ +'<div class="field" style="display:flex;align-items:flex-end"><label class="checkline"><input class="medimago" id="rp_pgMedimago_'+id+'" type="checkbox">Medimago in servizio (+2)</label></div></div>' 
+ +'<div class="soglia-box">Bonus Sapienza <span id="rp_pgSapBonus_'+id+'">+0</span> · Soglia di chiamata <span class="val" id="rp_pgSoglia_'+id+'">1–0</span> su 1d30</div>' 
+ +'<div class="dice-tag"><textarea readonly id="rp_diceArrivo_'+id+'"></textarea><button type="button" class="copy-btn" data-target="rp_diceArrivo_'+id+'">Copia</button></div>' 
+ +'<div class="result-row"><label>Risultato 1d30</label><input class="arrivo-result" id="rp_pgArrivoResult_'+id+'" type="number" min="1" max="30" step="1"><span class="outcome pending arrivo-outcome" id="rp_pgArrivoOutcome_'+id+'">in attesa</span><button type="button" class="retry-btn arrivo-retry">Nuovo tentativo</button></div>'; 
+ byId('rp_pgList').appendChild(card); 
+ card.querySelector('.remove-btn').addEventListener(evtName,function(){if(root.querySelectorAll('#rp_pgList .pg-card').length<=2){return;} card.parentNode.removeChild(card);refreshRemoveButtons();updateLocks();}); 
+ var watched=card.querySelectorAll('.nome,.tecnica,.sapienza,.medimago,.arrivo-result'); 
+ for(var i=0;i<watched.length;i++){watched[i].addEventListener('input',function(){refreshPgCard(card);});watched[i].addEventListener('change',function(){refreshPgCard(card);});} 
+ card.querySelector('.arrivo-retry').addEventListener(evtName,function(){byId('rp_pgArrivoResult_'+id).value='';refreshPgCard(card);}); 
+ refreshPgCard(card); refreshRemoveButtons(); 
+} 
+byId('rp_addPgBtn').addEventListener(evtName,addPgCard); 
+ 
+/* ---------- Fase 2 ---------- */ 
+function updateOutcomeGeneric(inputId,outcomeId,min,max){ 
+ var out=byId(outcomeId), v=inputInt(inputId); if(v===null){setOutcome(out,'in attesa','pending');return null;} 
+ if(!isIntInRange(v,min,max)){setOutcome(out,'RISULTATO IMPOSSIBILE','fail');return null;} 
+ setOutcome(out,'registrato','success'); return v; 
+} 
+function resetSub(){byId('rp_subInput').value='';setOutcome(byId('rp_subOutcome'),'in attesa','pending');byId('rp_subLabel').style.display='none';} 
+function aggiornaTipoDanno(){ 
+ var v=updateOutcomeGeneric('rp_tipoInput','rp_tipoOutcome',1,5), label=byId('rp_tipoLabel'), subCard=byId('rp_subTableCard'); 
+ if(v===null){label.style.display='none';subCard.style.display='none';lastTipo=null;resetSub();updateLocks();return;} 
+ var sub=SUBTABLES[v]; label.style.display='block'; label.innerHTML='<span class="lbl">Tipo di danno</span>'+TIPO_LABELS[v]+' — <a href="'+sub.link+'" target="_blank">vedi tabella</a>'; 
+ subCard.style.display='block'; byId('rp_subTableTitle').textContent='2 · '+sub.nome; byId('rp_subTableDesc').textContent='1d'+sub.faces+' individua la causa specifica tra le voci della tabella '+sub.nome+'.'; 
+ byId('rp_diceSub').value='[dice=1d'+sub.faces+']'+sub.nome+' - Ricerca Pazienti[/dice]'; byId('rp_subInput').setAttribute('max',sub.faces); 
+ if(lastTipo!==v){resetSub();lastTipo=v;} aggiornaCausaSpecifica(); updateLocks(); 
+} 
+function aggiornaCausaSpecifica(){ 
+ var t=validTipo(), label=byId('rp_subLabel'); if(t===null){label.style.display='none';updateLocks();return;} 
+ var sub=SUBTABLES[t], v=updateOutcomeGeneric('rp_subInput','rp_subOutcome',1,sub.faces); if(v===null){label.style.display='none';updateLocks();return;} 
+ label.style.display='block'; label.innerHTML='<span class="lbl">Causa</span>'+sub.tab[v-1]+' — <a href="'+sub.link+'" target="_blank">vedi Sintomi</a>'; updateLocks(); 
+} 
+function aggiornaGravita(){ 
+ var v=updateOutcomeGeneric('rp_gravitaInput','rp_gravitaOutcome',1,100), label=byId('rp_gravitaLabel'); 
+ if(v===null){label.style.display='none';updateLocks();return;} label.style.display='block'; label.innerHTML='<span class="lbl">Danno rilevato</span>'+v+'% — consulta la tabella Sintomi corrispondente nell’Enciclopedia Medimagica'; updateLocks(); 
+} 
+byId('rp_tipoInput').addEventListener('input',aggiornaTipoDanno); byId('rp_tipoInput').addEventListener('change',aggiornaTipoDanno); 
+byId('rp_subInput').addEventListener('input',aggiornaCausaSpecifica); byId('rp_subInput').addEventListener('change',aggiornaCausaSpecifica); 
+byId('rp_gravitaInput').addEventListener('input',aggiornaGravita); byId('rp_gravitaInput').addEventListener('change',aggiornaGravita); 
+function resetPatient(){ 
+ byId('rp_tipoInput').value='';setOutcome(byId('rp_tipoOutcome'),'in attesa','pending');byId('rp_tipoLabel').style.display='none'; 
+ byId('rp_subTableCard').style.display='none';resetSub();lastTipo=null; 
+ byId('rp_gravitaInput').value='';setOutcome(byId('rp_gravitaOutcome'),'in attesa','pending');byId('rp_gravitaLabel').style.display='none';updateLocks(); 
+} 
+byId('rp_renounceBtn').addEventListener(evtName,function(){if(attemptsLeft<=0 || !patientComplete()){return;} attemptsLeft--;byId('rp_attemptsN').textContent=attemptsLeft;resetPatient();clearArrivalResults();updateLocks();goToFase(1);}); 
+ 
+/* ---------- Fase 3 ---------- */ 
+function buildOptionsHtml(list){var h='';for(var i=0;i<list.length;i++){h+='<option value="'+i+'">'+list[i].label+'</option>';}return h;} 
+function buildCuraCard(config){ 
+ curaCardCounter++; var cid=curaCardCounter, card=document.createElement('div'); card.className='pg-card'; card.setAttribute('data-cura-id',cid); 
+ card.innerHTML='<div class="pg-head"><input class="nome" id="rp_curaNome_'+cid+'" type="text" value="'+config.defaultName+'"><button type="button" class="remove-btn">rimuovi</button></div>' 
+ +'<div class="field-row"><div class="field"><label>'+config.levelLabel+'</label><select class="livello" id="rp_curaLivello_'+cid+'">'+buildOptionsHtml(config.levels)+'</select></div><div class="field"><label>Tecnica</label><input class="tecnica" id="rp_curaTecnica_'+cid+'" type="number" value="0" min="0" max="20" step="1"></div></div>' 
+ +'<div class="rowsList"></div><button type="button" class="add-btn addRowBtn" style="padding:8px 16px;font-size:13px">+ Aggiungi '+config.rowNoun+'</button>'; 
+ byId(config.listId).appendChild(card); 
+ function getBase(){var idx=parseInt(byId('rp_curaLivello_'+cid).value,10);return config.levels[idx].base;} 
+ function recomputeAll(){var rows=card.querySelectorAll('.curaRow');for(var i=0;i<rows.length;i++){refreshRow(rows[i]);}} 
+ function refreshRow(row){ 
+ var rid=row.getAttribute('data-row-id'), nome=byId('rp_curaNome_'+cid).value, base=getBase(), tecnica=inputInt('rp_curaTecnica_'+cid); 
+ var classIdx=parseInt(byId('rp_curaClass_'+rid).value,10), classBonus=config.classList[classIdx].bonus, classLabel=config.classList[classIdx].label; 
+ var cono=inputInt('rp_curaCono_'+rid), pBonus=0, pSel=byId('rp_curaPozione_'+rid); 
+ if(pSel){pBonus=POZIONE_BONUS[parseInt(pSel.value,10)].bonus;} 
+ var textarea=byId('rp_diceRow_'+rid), out=byId('rp_curaOutcome_'+rid), input=byId('rp_curaResult_'+rid), note=byId('rp_curaNote_'+rid); 
+ note.style.display='none'; note.textContent=''; input.disabled=false; 
+ if(!isIntInRange(tecnica,0,20)){textarea.value='Inserisci una Tecnica valida da 0 a 20.';setOutcome(out,'dati non validi','fail');return;} 
+ if(!isIntInRange(cono,0,5)){textarea.value='Il Bonus Conoscenze Medimagiche deve essere compreso tra 0 e 5.';setOutcome(out,'dati non validi','fail');return;} 
+ if(base===null){textarea.value='Nessun tiro: '+config.tagName+' '+classLabel+' - '+(nome||'PG')+' — fallimento autoconclusivo, competenza assente.';note.style.display='block';note.textContent='Senza Conoscenza Avanzata Chirurgo né Sapienza Medimagica 1+, la Chirurgia fallisce autoconclusivamente.';input.value='';input.disabled=true;setOutcome(out,'fallimento automatico','fail');return;} 
+ var extra=config.fixedExtra||0, soglia=base+tecnica+classBonus+pBonus+cono+extra; 
+ var parts=base+' '+config.levelWord+' + '+tecnica+' Tecnica + '+classBonus+' Classificazione '+classLabel; 
+ if(pSel){parts+=' + '+pBonus+' Pozione';} parts+=' + '+cono+' Conoscenze Medimagiche'; if(extra){parts+=' + '+extra+' dinamica già nota';} 
+ var auto=soglia>config.faces, label=config.tagName+' '+classLabel+' - '+(nome||'PG'); 
+ if(auto){textarea.value='SUCCESSO AUTOMATICO — '+label+' (soglia '+soglia+'/'+config.faces+': '+parts+' = '+soglia+')';note.style.display='block';note.textContent='Soglia superiore a '+config.faces+': successo autoconclusivo, il tiro non è necessario.';input.value='';input.disabled=true;setOutcome(out,config.successWord+' · AUTOMATICO','success');return;} 
+ textarea.value='[dice=1d'+config.faces+']'+label+' (Riesce se 1-'+soglia+': '+parts+' = '+soglia+')[/dice]'; 
+ var v=inputInt('rp_curaResult_'+rid); if(v===null){setOutcome(out,'in attesa','pending');return;} if(!isIntInRange(v,1,config.faces)){setOutcome(out,'RISULTATO IMPOSSIBILE','fail');return;} 
+ if(v<=soglia){setOutcome(out,config.successWord,'success');}else{setOutcome(out,config.failWord,'fail');} 
+ } 
+ function addRow(){ 
+ curaRowCounter++; var rid=curaRowCounter, row=document.createElement('div'); row.className='curaRow'; row.setAttribute('data-row-id',rid); row.style.borderTop='1px dashed var(--line)'; row.style.paddingTop='14px'; row.style.marginTop='14px'; 
+ var h='<div class="field-row"><div class="field"><label>Classificazione</label><select class="classSel" id="rp_curaClass_'+rid+'">'+buildOptionsHtml(config.classList)+'</select></div>'; 
+ if(config.showPozione){h+='<div class="field"><label>Pozione usata</label><select class="pozioneSel" id="rp_curaPozione_'+rid+'">'+buildOptionsHtml(POZIONE_BONUS)+'</select></div>';} 
+ h+='<div class="field"><label>Bonus Conoscenze Medimagiche (0-5)</label><input class="conoBonus" id="rp_curaCono_'+rid+'" type="number" min="0" max="5" step="1" value="0"></div><div class="field" style="display:flex;align-items:flex-end;justify-content:flex-end"><button type="button" class="remove-btn removeRowBtn">rimuovi '+config.rowNoun+'</button></div></div>' 
+ +'<div class="nota autoNote" id="rp_curaNote_'+rid+'" style="display:none;padding:8px 14px;font-size:12.5px"></div><div class="dice-tag"><textarea readonly id="rp_diceRow_'+rid+'"></textarea><button type="button" class="copy-btn" data-target="rp_diceRow_'+rid+'">Copia</button></div><div class="result-row"><label>Risultato 1d'+config.faces+'</label><input class="rowResult" id="rp_curaResult_'+rid+'" type="number" min="1" max="'+config.faces+'" step="1"><span class="outcome pending" id="rp_curaOutcome_'+rid+'">in attesa</span></div>'; 
+ row.innerHTML=h; card.querySelector('.rowsList').appendChild(row); 
+ row.querySelector('.removeRowBtn').addEventListener(evtName,function(){row.parentNode.removeChild(row);}); 
+ var watched=row.querySelectorAll('.classSel,.pozioneSel,.conoBonus,.rowResult');for(var i=0;i<watched.length;i++){watched[i].addEventListener('input',function(){refreshRow(row);});watched[i].addEventListener('change',function(){refreshRow(row);});} 
+ refreshRow(row); 
+ } 
+ var head=card.querySelectorAll('.nome,.livello,.tecnica');for(var i=0;i<head.length;i++){head[i].addEventListener('input',recomputeAll);head[i].addEventListener('change',recomputeAll);} 
+ card.querySelector('.remove-btn').addEventListener(evtName,function(){card.parentNode.removeChild(card);}); card.querySelector('.addRowBtn').addEventListener(evtName,addRow); addRow(); 
+} 
+function addDiagCard(){diagNameCounter++;buildCuraCard({listId:'rp_diagList',defaultName:'Personaggio '+diagNameCounter,levelLabel:'Livello Diagnosta',levels:DIAG_LEVELS,levelWord:'Guida alla Medimagia',classList:DIAG_CLASS,rowNoun:'Classificazione',faces:40,fixedExtra:3,showPozione:false,tagName:'Diagnosi',successWord:'sintomi individuati',failWord:'sintomo mancato — puoi ritentare'});} 
+function addTerapiaCard(){terapiaNameCounter++;buildCuraCard({listId:'rp_terapiaList',defaultName:'Personaggio '+terapiaNameCounter,levelLabel:'Livello Terapista',levels:TER_LEVELS,levelWord:'Guida alla Medimagia',classList:TER_CLASS,rowNoun:'Sintomo',faces:40,fixedExtra:0,showPozione:true,tagName:'Terapia',successWord:'sintomo trattato',failWord:'complicazione'});} 
+function addChirurgiaCard(){chirurgiaNameCounter++;buildCuraCard({listId:'rp_chirurgiaList',defaultName:'Personaggio '+chirurgiaNameCounter,levelLabel:'Competenza Chirurgica',levels:CHIR_LEVELS,levelWord:'Guida alla Medimagia',classList:CHIR_CLASS,rowNoun:'Sintomo',faces:35,fixedExtra:0,showPozione:true,tagName:'Chirurgia',successWord:'sintomo trattato',failWord:'complicazione'});} 
+byId('rp_addDiagBtn').addEventListener(evtName,addDiagCard);byId('rp_addTerapiaBtn').addEventListener(evtName,addTerapiaCard);byId('rp_addChirurgiaBtn').addEventListener(evtName,addChirurgiaCard); 
+ 
+/* ---------- reset ---------- */ 
+function resetAll(){ 
+ byId('rp_pgList').innerHTML='';byId('rp_diagList').innerHTML='';byId('rp_terapiaList').innerHTML='';byId('rp_chirurgiaList').innerHTML=''; 
+ pgCounter=0;curaRowCounter=0;curaCardCounter=0;diagNameCounter=0;terapiaNameCounter=0;chirurgiaNameCounter=0;attemptsLeft=3;byId('rp_attemptsN').textContent='3'; 
+ resetPatient();addPgCard();addPgCard();addDiagCard();addTerapiaCard();addChirurgiaCard();refreshRemoveButtons();updateLocks();goToFase(1); 
+} 
+byId('rp_resetAll').addEventListener(evtName,resetAll); 
+resetAll(); 
+})(); 
+</script>
+
+</div><!-- /#pazienti-workspace -->
+
+<div class="session-modal" id="delete-session-modal" aria-hidden="true">
+  <div class="session-modal-box" role="dialog" aria-modal="true" aria-labelledby="delete-session-title">
+    <h3 id="delete-session-title">Attenzione: eliminazione definitiva</h3>
+    <p>Concludendo questa Ricerca, <b>tutti i dati salvati verranno cancellati definitivamente.</b></p>
+    <p><b>La Ricerca non potrà essere recuperata.</b> Se vorrai giocarla nuovamente, dovrai creare una nuova sessione e reinserire da zero i PG, il Paziente, la Diagnosi, le Terapie, le Chirurgie e tutti i risultati ottenuti.</p>
+    <label class="delete-confirm-line">
+      <input type="checkbox" id="delete-session-check" data-session-control="1">
+      <span><b>Ho capito che questa Ricerca verrà cancellata definitivamente e che, se mi servirà ancora, dovrò rifarla da zero.</b></span>
+    </label>
+    <div class="session-actions">
+      <button class="session-btn ghost" id="btn-cancel-delete" type="button" data-session-control="1">Annulla</button>
+      <button class="session-danger-btn" id="btn-confirm-delete" type="button" data-session-control="1" disabled>Elimina definitivamente la Ricerca</button>
+    </div>
+    <div id="delete-session-msg" class="session-status bad"></div>
+  </div>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
+<script type="text/javascript">
+(function(){
+'use strict';
+var EVT='cli'+'ck';
+var FIREBASE_CONFIG={
+  apiKey:"AIzaSyCvd56bSEL02s2OY2PSk7uyFX-CYRB4Vz0",
+  authDomain:"conteggi-eee1b.firebaseapp.com",
+  projectId:"conteggi-eee1b",
+  storageBucket:"conteggi-eee1b.firebasestorage.app",
+  messagingSenderId:"481320219586",
+  appId:"1:481320219586:web:87e974d618a302adfadc5b",
+  measurementId:"G-EFHVL4H1XW"
+};
+var SESSION_COLLECTION='ricerca_pazienti';
+var NARRATOR_UID='TFgqfVrFLjW5SwqRFXmEi8tDhtM2';
+var FB={app:null,auth:null,db:null,user:null};
+var CURRENT_SESSION=null,CURRENT_SESSION_DATA=null,SESSION_READONLY=false;
+var SESSION_ACTIONS=[],RESTORING_SESSION=false,SAVE_TIMER=null,SAVE_IN_FLIGHT=false,PENDING_SAVE=false;
+
+function sq(id){return document.getElementById(id);}
+function workspace(){return sq('pazienti-workspace');}
+function sessionCanEdit(data){return !!(FB.user&&data&&(data.ownerUid===FB.user.uid||FB.user.uid===NARRATOR_UID));}
+function setStatus(id,text,kind){var n=sq(id);if(!n)return;n.textContent=text||'';n.className='session-status'+(kind?' '+kind:'');}
+function formatTs(ts){try{var d=ts&&typeof ts.toDate==='function'?ts.toDate():null;return d?d.toLocaleString('it-IT',{dateStyle:'short',timeStyle:'short'}):'';}catch(e){return '';}}
+function sessionIdFromHash(){var h=String(window.location.hash||'').replace(/^#/,'');if(h.indexOf('session=')!==0)return '';try{return decodeURIComponent(h.slice(8));}catch(e){return h.slice(8);}}
+function navigateToSession(id){window.location.hash='session='+encodeURIComponent(id);window.location.reload();}
+function navigateToDashboard(){if(window.location.hash){try{history.replaceState(null,'',window.location.pathname+window.location.search);}catch(e){window.location.hash='';}}window.location.reload();}
+function cleanLabel(text,prefix,suffix){
+  var t=String(text||'').trim();
+  if(prefix)t=t.replace(new RegExp('^'+prefix+'\\s*','i'),'');
+  if(suffix)t=t.replace(new RegExp('\\s*—?\\s*'+suffix+'\\s*$','i'),'');
+  return t.trim();
+}
+function primaryPgName(){
+  var inp=sq('rp_pgList')?sq('rp_pgList').querySelector('.pg-card .nome'):null;
+  var n=inp&&inp.value?String(inp.value).trim():'';
+  if(n&&!/^Personaggio\s*\d+$/i.test(n))return n;
+  return (CURRENT_SESSION_DATA&&(CURRENT_SESSION_DATA.initialPgName||CURRENT_SESSION_DATA.pgName))||'PG';
+}
+function patientLabel(){
+  var sub=sq('rp_subLabel');
+  if(sub&&sub.style.display!=='none'&&String(sub.textContent||'').trim()){
+    var s=cleanLabel(sub.textContent,'Causa','vedi Sintomi');if(s)return s;
+  }
+  var tipo=sq('rp_tipoLabel');
+  if(tipo&&tipo.style.display!=='none'&&String(tipo.textContent||'').trim()){
+    var t=cleanLabel(tipo.textContent,'Tipo di danno','vedi tabella');if(t)return t;
+  }
+  return 'Paziente da determinare';
+}
+function activeLabel(){return primaryPgName()+' — '+patientLabel();}
+function updateToolbar(){
+  if(!CURRENT_SESSION_DATA)return;
+  if(sq('current-session-title'))sq('current-session-title').textContent=activeLabel();
+  var mine=FB.user&&CURRENT_SESSION_DATA.ownerUid===FB.user.uid,narr=FB.user&&FB.user.uid===NARRATOR_UID,parts=[];
+  parts.push(mine?'Sessione creata da questo browser':(narr?'Gestione Narratore':'Sessione di un altro giocatore'));
+  var t=formatTs(CURRENT_SESSION_DATA.updatedAt);if(t)parts.push('ultimo salvataggio '+t);
+  if(sq('current-session-meta'))sq('current-session-meta').textContent=parts.join(' · ');
+  if(sq('readonly-banner'))sq('readonly-banner').style.display=SESSION_READONLY?'block':'none';
+  if(sq('btn-delete-session'))sq('btn-delete-session').style.display=sessionCanEdit(CURRENT_SESSION_DATA)?'inline-block':'none';
+}
+function elementPath(target){
+  var w=workspace();if(!w||!target||!w.contains(target))return null;
+  if(target.id)return {id:target.id};
+  var path=[],n=target;
+  while(n&&n!==w){var par=n.parentElement;if(!par)return null;var idx=Array.prototype.indexOf.call(par.children,n);if(idx<0)return null;path.unshift(idx);n=par;}
+  return n===w?{path:path}:null;
+}
+function resolveTarget(a){
+  var w=workspace();if(!w)return null;
+  if(a.loc&&a.loc.id){var by=sq(a.loc.id);return by&&w.contains(by)?by:null;}
+  var n=w,arr=a.loc&&a.loc.path?a.loc.path:[];
+  for(var i=0;i<arr.length;i++){if(!n||!n.children||!n.children[arr[i]])return null;n=n.children[arr[i]];}
+  return n===w?null:n;
+}
+function isCopyButton(b){return !!(b&&(b.classList&&b.classList.contains('copy-btn')));}
+function actionFromEvent(e){
+  var w=workspace(),target=e.target;if(!target||!w||!w.contains(target))return null;
+  if(target.closest&&target.closest('[data-session-control="1"]'))return null;
+  if(e.type==='click'){
+    var b=target.closest?target.closest('button'):null;if(!b||!w.contains(b)||isCopyButton(b))return null;
+    return {type:'click',loc:elementPath(b)};
+  }
+  if(['INPUT','SELECT','TEXTAREA'].indexOf(target.tagName)===-1||target.readOnly)return null;
+  if(target.tagName==='SELECT'&&e.type!=='change')return null;
+  if(target.tagName!=='SELECT'&&e.type!=='input')return null;
+  return {type:e.type,loc:elementPath(target),value:target.value,checked:!!target.checked};
+}
+function sameLoc(a,b){return JSON.stringify(a||null)===JSON.stringify(b||null);}
+function recordAction(e){
+  if(RESTORING_SESSION||SESSION_READONLY||!CURRENT_SESSION||!sessionCanEdit(CURRENT_SESSION_DATA))return;
+  var a=actionFromEvent(e);if(!a||!a.loc)return;
+  var last=SESSION_ACTIONS.length?SESSION_ACTIONS[SESSION_ACTIONS.length-1]:null;
+  if(last&&a.type===last.type&&(a.type==='input'||a.type==='change')&&sameLoc(a.loc,last.loc))SESSION_ACTIONS[SESSION_ACTIONS.length-1]=a;
+  else SESSION_ACTIONS.push(a);
+  updateToolbar();scheduleSave();
+}
+function attachRecorder(){var w=workspace();if(!w||w.getAttribute('data-session-recorder')==='1')return;w.setAttribute('data-session-recorder','1');['input','change','click'].forEach(function(ev){w.addEventListener(ev,recordAction,true);});}
+function replayActions(actions){
+  RESTORING_SESSION=true;
+  try{
+    (actions||[]).forEach(function(a){
+      var t=resolveTarget(a);if(!t){console.warn('Ricerca Pazienti: azione di ripristino non trovata',a);return;}
+      if(a.type==='click'){if(!t.disabled&&typeof t.click==='function')t.click();}
+      else{if('value' in t)t.value=a.value==null?'':String(a.value);if('checked' in t)t.checked=!!a.checked;t.dispatchEvent(new Event(a.type,{bubbles:true}));}
+    });
+  }finally{RESTORING_SESSION=false;}
+}
+function setWorkspaceReadOnly(ro){
+  SESSION_READONLY=!!ro;var w=workspace();if(!w)return;
+  if(SESSION_READONLY){
+    Array.prototype.forEach.call(w.querySelectorAll('input,select,textarea'),function(n){if(n.getAttribute('data-session-control')==='1')return;n.disabled=true;});
+    Array.prototype.forEach.call(w.querySelectorAll('button'),function(n){
+      if(n.getAttribute('data-session-control')==='1')return;
+      if(isCopyButton(n)){n.disabled=false;return;}
+      if(n.closest&&n.closest('nav.steps'))return;
+      n.disabled=true;
+    });
+  }
+  updateToolbar();
+}
+function payload(){
+  var name=primaryPgName(),paz=patientLabel();
+  return {
+    ownerUid:CURRENT_SESSION_DATA.ownerUid,
+    initialPgName:CURRENT_SESSION_DATA.initialPgName||name,
+    pgName:name,
+    tipoPaziente:paz,
+    updatedAt:firebase.firestore.FieldValue.serverTimestamp(),
+    toolVersion:'v2-standard',
+    actionLog:SESSION_ACTIONS
+  };
+}
+function scheduleSave(){if(!CURRENT_SESSION||SESSION_READONLY||!sessionCanEdit(CURRENT_SESSION_DATA))return;setStatus('save-status','Salvataggio automatico…','');if(SAVE_TIMER)clearTimeout(SAVE_TIMER);SAVE_TIMER=setTimeout(saveNow,850);}
+function saveNow(){
+  if(!CURRENT_SESSION||SESSION_READONLY||!sessionCanEdit(CURRENT_SESSION_DATA))return Promise.resolve();
+  if(SAVE_IN_FLIGHT){PENDING_SAVE=true;return Promise.resolve();}
+  SAVE_IN_FLIGHT=true;PENDING_SAVE=false;var p=payload();
+  return FB.db.collection(SESSION_COLLECTION).doc(CURRENT_SESSION).set(p,{merge:true}).then(function(){
+    Object.keys(p).forEach(function(k){if(k!=='updatedAt')CURRENT_SESSION_DATA[k]=p[k];});
+    setStatus('save-status','Ricerca salvata automaticamente ✓','ok');updateToolbar();
+  }).catch(function(err){console.error(err);setStatus('save-status','Errore di salvataggio: non chiudere la pagina.','bad');}).finally(function(){SAVE_IN_FLIGHT=false;if(PENDING_SAVE){PENDING_SAVE=false;scheduleSave();}});
+}
+function seedInitialPgName(){
+  if(SESSION_ACTIONS.length||!CURRENT_SESSION_DATA)return;
+  var first=sq('rp_pgList')?sq('rp_pgList').querySelector('.pg-card .nome'):null;
+  var name=(CURRENT_SESSION_DATA.initialPgName||CURRENT_SESSION_DATA.pgName||'').trim();
+  if(first&&name){first.value=name;first.dispatchEvent(new Event('input',{bubbles:true}));}
+}
+function openSessionDoc(id,data){
+  CURRENT_SESSION=id;CURRENT_SESSION_DATA=data;SESSION_ACTIONS=Array.isArray(data.actionLog)?data.actionLog.slice():[];SESSION_READONLY=!sessionCanEdit(data);
+  if(sq('pazienti-session-home'))sq('pazienti-session-home').style.display='none';if(workspace())workspace().style.display='block';
+  replayActions(SESSION_ACTIONS);seedInitialPgName();setWorkspaceReadOnly(SESSION_READONLY);updateToolbar();
+  setStatus('save-status',SESSION_READONLY?'Modalità sola lettura.':'Ricerca caricata · autosalvataggio attivo',SESSION_READONLY?'':'ok');
+  setTimeout(function(){window.scrollTo({top:0,behavior:'smooth'});},20);
+}
+function loadSession(id){
+  setStatus('session-home-msg','Caricamento Ricerca…','');
+  return FB.db.collection(SESSION_COLLECTION).doc(id).get().then(function(doc){if(!doc.exists)throw new Error('La Ricerca non esiste più.');openSessionDoc(doc.id,doc.data());setStatus('session-home-msg','','');}).catch(function(err){console.error(err);setStatus('session-home-msg','Impossibile aprire la Ricerca: '+err.message,'bad');if(sq('pazienti-session-home'))sq('pazienti-session-home').style.display='block';});
+}
+function loadSessionList(){
+  var host=sq('session-list');if(!host||!FB.db||!FB.user)return;host.innerHTML='<div class="session-status">Caricamento sessioni…</div>';
+  FB.db.collection(SESSION_COLLECTION).get().then(function(snap){
+    var rows=[];snap.forEach(function(doc){rows.push({id:doc.id,data:doc.data()});});
+    rows.sort(function(a,b){var at=a.data.updatedAt&&a.data.updatedAt.seconds?a.data.updatedAt.seconds:0,bt=b.data.updatedAt&&b.data.updatedAt.seconds?b.data.updatedAt.seconds:0;return bt-at;});host.innerHTML='';
+    if(!rows.length){host.innerHTML='<div class="session-status">Non ci sono Ricerche Pazienti in corso. Puoi crearne una qui sopra.</div>';return;}
+    rows.forEach(function(r){
+      var d=r.data,mine=d.ownerUid===FB.user.uid,narr=FB.user.uid===NARRATOR_UID;
+      var box=document.createElement('div');box.className='session-item';var row=document.createElement('div');row.className='session-item-row';
+      var left=document.createElement('div');var ti=document.createElement('div');ti.className='session-title';ti.textContent=(d.pgName||d.initialPgName||'PG')+' — '+(d.tipoPaziente||'Paziente da determinare');left.appendChild(ti);
+      var meta=document.createElement('div');meta.className='session-meta';var dt=formatTs(d.updatedAt);meta.textContent=dt?'Aggiornata '+dt:'';left.appendChild(meta);
+      var own=document.createElement('span');own.className='session-owner'+(mine?' mine':'');own.textContent=mine?'Tua Ricerca':(narr?'Gestibile dal Narratore':'Altro giocatore');left.appendChild(own);
+      var b=document.createElement('button');b.type='button';b.className='session-btn'+((mine||narr)?'':' ghost');b.setAttribute('data-session-control','1');b.textContent=(mine||narr)?'Riprendi':'Visualizza';b.addEventListener(EVT,function(){navigateToSession(r.id);});
+      row.appendChild(left);row.appendChild(b);box.appendChild(row);host.appendChild(box);
+    });
+  }).catch(function(err){console.error(err);host.innerHTML='<div class="session-status bad">Non riesco a leggere le Ricerche in corso: '+String(err.message||err)+'</div>';});
+}
+function createSession(){
+  var inp=sq('new-session-pg'),name=(inp&&inp.value?inp.value:'').trim();
+  if(!name){setStatus('session-home-msg','Inserisci prima il nome del PG principale.','bad');if(inp)inp.focus();return;}
+  if(!FB.user){setStatus('session-home-msg','Firebase non è ancora pronto. Riprova tra un momento.','bad');return;}
+  setStatus('session-home-msg','Creazione della Ricerca…','');
+  var data={ownerUid:FB.user.uid,initialPgName:name,pgName:name,tipoPaziente:'Paziente da determinare',createdAt:firebase.firestore.FieldValue.serverTimestamp(),updatedAt:firebase.firestore.FieldValue.serverTimestamp(),toolVersion:'v2-standard',actionLog:[]};
+  FB.db.collection(SESSION_COLLECTION).add(data).then(function(ref){navigateToSession(ref.id);}).catch(function(err){console.error(err);setStatus('session-home-msg','Impossibile creare la Ricerca: '+err.message,'bad');});
+}
+function openDeleteModal(){if(!CURRENT_SESSION||!sessionCanEdit(CURRENT_SESSION_DATA))return;sq('delete-session-check').checked=false;sq('btn-confirm-delete').disabled=true;sq('delete-session-msg').textContent='';sq('delete-session-modal').classList.add('open');sq('delete-session-modal').setAttribute('aria-hidden','false');}
+function closeDeleteModal(){var m=sq('delete-session-modal');if(!m)return;m.classList.remove('open');m.setAttribute('aria-hidden','true');}
+function deleteCurrentSession(){
+  if(!CURRENT_SESSION||!sessionCanEdit(CURRENT_SESSION_DATA)||!sq('delete-session-check').checked)return;
+  var id=CURRENT_SESSION;sq('btn-confirm-delete').disabled=true;sq('delete-session-msg').textContent='Eliminazione definitiva in corso…';
+  FB.db.collection(SESSION_COLLECTION).doc(id).delete().then(function(){CURRENT_SESSION=null;CURRENT_SESSION_DATA=null;SESSION_ACTIONS=[];closeDeleteModal();try{sessionStorage.setItem('rp_deleted_notice','1');}catch(e){}navigateToDashboard();}).catch(function(err){console.error(err);sq('delete-session-msg').textContent='Eliminazione non riuscita: '+err.message;sq('btn-confirm-delete').disabled=false;});
+}
+function backToDashboard(){var done=Promise.resolve();if(CURRENT_SESSION&&sessionCanEdit(CURRENT_SESSION_DATA))done=saveNow();done.finally(function(){navigateToDashboard();});}
+function setupControls(){
+  attachRecorder();
+  sq('btn-new-session').addEventListener(EVT,createSession);
+  sq('new-session-pg').addEventListener('keydown',function(e){if(e.key==='Enter'){e.preventDefault();createSession();}});
+  sq('btn-refresh-sessions').addEventListener(EVT,loadSessionList);
+  sq('btn-back-sessions').addEventListener(EVT,backToDashboard);
+  sq('btn-delete-session').addEventListener(EVT,openDeleteModal);
+  sq('btn-cancel-delete').addEventListener(EVT,closeDeleteModal);
+  sq('delete-session-check').addEventListener('change',function(){sq('btn-confirm-delete').disabled=!sq('delete-session-check').checked;});
+  sq('btn-confirm-delete').addEventListener(EVT,deleteCurrentSession);
+  sq('delete-session-modal').addEventListener(EVT,function(e){if(e.target===sq('delete-session-modal'))closeDeleteModal();});
+  document.addEventListener('visibilitychange',function(){if(document.visibilityState==='hidden'&&CURRENT_SESSION&&!SESSION_READONLY)saveNow();});
+  window.addEventListener('pagehide',function(){if(CURRENT_SESSION&&!SESSION_READONLY)saveNow();});
+}
+function setupFirebase(){
+  setupControls();if(workspace())workspace().style.display='none';if(sq('pazienti-session-home'))sq('pazienti-session-home').style.display='block';var st=sq('firebase-auth-status');
+  try{
+    if(typeof firebase==='undefined')throw new Error('SDK Firebase non caricato');
+    if(!firebase.apps.length)firebase.initializeApp(FIREBASE_CONFIG);FB.app=firebase.app();FB.auth=firebase.auth();FB.db=firebase.firestore();
+    FB.auth.onAuthStateChanged(function(user){
+      if(user){
+        FB.user=user;if(st){st.textContent=user.uid===NARRATOR_UID?'Firebase connesso · modalità Narratore':'Firebase connesso · sessione anonima attiva';st.className='session-status ok';}
+        var sid=sessionIdFromHash();if(sid)loadSession(sid);else{try{if(sessionStorage.getItem('rp_deleted_notice')==='1'){sessionStorage.removeItem('rp_deleted_notice');setStatus('session-home-msg','Ricerca eliminata definitivamente. Per giocarla di nuovo dovrà essere ricreata da zero.','ok');}}catch(e){}loadSessionList();}return;
+      }
+      FB.auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL).then(function(){return FB.auth.signInAnonymously();}).catch(function(err){console.error(err);if(st){st.textContent='Errore autenticazione Firebase: '+err.message;st.className='session-status bad';}});
+    });
+  }catch(err){console.error(err);if(st){st.textContent='Firebase non disponibile: '+err.message;st.className='session-status bad';}}
+}
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',setupFirebase);else setupFirebase();
+})();
+</script>
+
+
+<script type="text/javascript">
+(function(){
+'use strict';
+var root=document.getElementById('rp-pazienti');
+if(!root)return;
+var EVT='cli'+'ck';
+var FLOW={page:'config',summaryVisited:false,esitoVisited:false};
+var flowNav=null,summaryCard=null,finalCard=null;
+var refreshToken=0;
+
+function q(id){return document.getElementById(id);}
+function qa(sel,host){return Array.prototype.slice.call((host||root).querySelectorAll(sel));}
+function intVal(el){if(!el||el.value==='')return null;var n=Number(el.value);return isFinite(n)&&Math.floor(n)===n?n:null;}
+function validInt(el,min,max){var n=intVal(el);return n!==null&&n>=min&&n<=max;}
+function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
+function sessionId(){var h=String(location.hash||'').replace(/^#/,'');if(h.indexOf('session=')!==0)return '';try{return decodeURIComponent(h.slice(8));}catch(e){return h.slice(8);}}
+function flowStorageKey(){var s=sessionId();return s?'rp_flow_page_'+s:'';}
+function saveFlowPage(){var k=flowStorageKey();if(!k)return;try{sessionStorage.setItem(k,FLOW.page);}catch(e){}}
+function storedFlowPage(){var k=flowStorageKey();if(!k)return '';try{return sessionStorage.getItem(k)||'';}catch(e){return '';}}
+
+/* ---------- Testata sempre visibile, anche nell'elenco sessioni ---------- */
+function placeHeaderOutsideWorkspace(){
+  var h=root.querySelector('header.top'),home=q('pazienti-session-home');
+  if(h&&home&&h.parentNode!==root)root.insertBefore(h,home);
+}
+
+/* ---------- Copia stabile + BBCode completo ---------- */
+function thresholdAnswers(th,faces){
+  th=Math.floor(Number(th));faces=Math.floor(Number(faces));
+  if(!isFinite(th)||!isFinite(faces)||faces<1)return '';
+  if(th<1)return '1-'+faces+'. Fallimento';
+  if(th>=faces)return '1-'+faces+'. Successo';
+  return '1-'+th+'. Successo\n'+(th+1)+'-'+faces+'. Fallimento';
+}
+function forumBlock(question,answers,dice){
+  var out='<b>'+question+'</b>';
+  if(answers)out+='\n[quote]'+answers+'[/quote]';
+  if(dice)out+='\n\n'+dice;
+  return out;
+}
+function currentTipo(){var e=q('rp_tipoInput'),v=intVal(e);return v&&v>=1&&v<=5?v:null;}
+function tipoLabels(){return {1:'Malattie Magiche',2:'Lesioni da Incantesimi e Traumi da Pozioni',3:'Incidenti da Manufatti',4:'Avvelenamento da Piante e Pozioni',5:'Ferite da Piante e Creature Magiche'};}
+function subTables(){
+  /* Usa le tabelle reali già definite dal tool senza duplicarne la logica. */
+  try{return window.__RP_SUBTABLES||null;}catch(e){return null;}
+}
+function rawSubAnswers(){
+  var t=currentTipo(),tables=subTables();if(!t||!tables||!tables[t])return '';
+  var a=tables[t].tab||[],out=[];for(var i=0;i<a.length;i++)out.push((i+1)+'. '+a[i]);return out.join('\n');
+}
+function gravityAnswers(){var out=[];for(var i=1;i<=100;i++)out.push(i+'. '+i+'% di danno');return out.join('\n');}
+function patientForumCopy(targetId,raw){
+  raw=String(raw||'').trim();
+  if(targetId==='rp_diceTipo'){
+    var m=tipoLabels(),arr=[];for(var i=1;i<=5;i++)arr.push(i+'. '+m[i]);
+    return forumBlock('Qual è il Tipo di Danno del Paziente?',arr.join('\n'),raw);
+  }
+  if(targetId==='rp_diceSub'){
+    var t=currentTipo(),m2=tipoLabels();
+    return forumBlock(t?'Qual è la causa specifica del Paziente per «'+m2[t]+'»?':'Qual è la causa specifica del Paziente?',rawSubAnswers(),raw);
+  }
+  if(targetId==='rp_diceGravita')return forumBlock('Qual è la gravità del Danno del Paziente?',gravityAnswers(),raw);
+  var a=raw.match(/^\[dice=1d30\]Arrivo Paziente - (.*?) \(Riesce se 1-(-?\d+):/i);
+  if(a)return forumBlock((a[1]||'Il PG')+' viene chiamato per l’emergenza?',thresholdAnswers(Number(a[2]),30),raw);
+  var c=raw.match(/^\[dice=1d(40|35)\](Diagnosi|Terapia|Chirurgia) ([X]+) - (.*?) \(Riesce se 1-(-?\d+):/i);
+  if(c){
+    var faces=Number(c[1]),kind=c[2],cl=c[3],name=c[4]||'Il PG',question='';
+    if(kind==='Diagnosi')question=name+' individua correttamente i Sintomi di Classificazione '+cl+'?';
+    else if(kind==='Terapia')question=name+' tratta con successo il Sintomo di Classificazione '+cl+' con la Terapia?';
+    else question=name+' tratta con successo il Sintomo di Classificazione '+cl+' con la Chirurgia?';
+    return forumBlock(question,thresholdAnswers(Number(c[5]),faces),raw);
+  }
+  if(/^SUCCESSO AUTOMATICO/i.test(raw)){
+    var ca=raw.match(/^SUCCESSO AUTOMATICO — (Diagnosi|Terapia|Chirurgia) ([X]+) - (.*?)(?: \(|$)/i);
+    if(ca){var qn=ca[3]+' supera automaticamente la prova di '+ca[1]+' per la Classificazione '+ca[2]+'?';return forumBlock(qn,'Successo automatico: la soglia supera il massimo del dado.',raw);}
+  }
+  if(/^Nessun tiro:/i.test(raw))return forumBlock('Qual è l’esito previsto senza tiro?','Fallimento automatico: manca la competenza minima richiesta.',raw);
+  return raw;
+}
+function stableCopy(text,done){
+  text=String(text||'');var sx=window.scrollX||0,sy=window.scrollY||0;
+  function restore(){try{window.scrollTo(sx,sy);}catch(e){}requestAnimationFrame(function(){try{window.scrollTo(sx,sy);}catch(e){}});setTimeout(function(){try{window.scrollTo(sx,sy);}catch(e){}},0);}
+  function fallback(){var ta=document.createElement('textarea');ta.value=text;ta.setAttribute('readonly','');ta.style.position='fixed';ta.style.left='0';ta.style.top='0';ta.style.width='1px';ta.style.height='1px';ta.style.opacity='0';ta.style.pointerEvents='none';document.body.appendChild(ta);try{ta.select();document.execCommand('copy');}catch(e){}document.body.removeChild(ta);restore();if(done)done();}
+  if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(text).then(function(){restore();if(done)done();}).catch(fallback);}else fallback();
+}
+root.addEventListener(EVT,function(e){
+  var b=e.target&&e.target.closest?e.target.closest('.copy-btn'):null;if(!b||!root.contains(b))return;
+  e.preventDefault();e.stopImmediatePropagation();
+  var id=b.getAttribute('data-target'),el=q(id),text=patientForumCopy(id,el?el.value:'');
+  stableCopy(text,function(){var old=b.textContent;b.textContent='Copiato';b.classList.add('copied');setTimeout(function(){b.textContent=old||'Copia';b.classList.remove('copied');},1400);});
+},true);
+
+/* ---------- Configurazione e riepilogo ---------- */
+function pgCards(){return qa('#rp_pgList .pg-card');}
+function configReady(){
+  var cards=pgCards();if(cards.length<2)return false;
+  for(var i=0;i<cards.length;i++){
+    var id=cards[i].getAttribute('data-id'),name=q('rp_pgNome_'+id),tec=q('rp_pgTecnica_'+id),sap=q('rp_pgSapienza_'+id);
+    if(!name||!String(name.value||'').trim()||!validInt(tec,0,20)||!validInt(sap,0,25))return false;
+  }
+  return true;
+}
+function called(){return qa('#rp_pgList .outcome.success').length>0;}
+function patientCompleteNow(){return validInt(q('rp_tipoInput'),1,5)&&currentSubValid()&&validInt(q('rp_gravitaInput'),1,100);}
+function currentSubValid(){var t=currentTipo(),tables=subTables(),e=q('rp_subInput');if(!t||!tables||!tables[t])return false;return validInt(e,1,tables[t].faces);}
+function arrivalProgress(){return qa('#rp_pgList .arrivo-result').some(function(e){return e.value!=='';});}
+function cureProgress(){return qa('#rp_fase3 .rowResult').some(function(e){return e.value!=='';});}
+function pct(x){return Math.round(x*1000)/10;}
+function summaryData(){
+  if(!configReady())return null;
+  var cards=pgCards(),items=[],copy=[];var miss=1;
+  for(var i=0;i<cards.length;i++){
+    var id=cards[i].getAttribute('data-id'),name=String(q('rp_pgNome_'+id).value||'PG').trim(),tec=Number(q('rp_pgTecnica_'+id).value),sap=Number(q('rp_pgSapienza_'+id).value),med=!!q('rp_pgMedimago_'+id).checked;
+    var sb=Math.floor(sap/5),th=tec+sb+(med?2:0),eff=Math.max(0,Math.min(30,th)),p=eff/30;miss*=1-p;
+    var role=med?'Medimago in servizio (+2)':'PG Ars / non in servizio';
+    items.push('<li><b>'+esc(name)+'</b>: Tecnica '+tec+' · Sapienza Medimagica '+sap+' (bonus +'+sb+') · '+esc(role)+' → soglia di chiamata <b>'+eff+'/30</b></li>');
+    copy.push('• <b>'+name+'</b>: Tecnica '+tec+' · Sapienza Medimagica '+sap+' (bonus +'+sb+') · '+role+' → soglia di chiamata <b>'+eff+'/30</b>');
+  }
+  var any=1-miss,prob=pct(any);
+  var html='<div class="rp-summary-section" style="margin-top:0;padding-top:0;border-top:0"><h3>Partecipanti e soglie iniziali</h3><ul class="rp-summary-list">'+items.join('')+'</ul></div>'+
+    '<div class="rp-summary-section"><h3>Impatto previsto sulle Fasi</h3><ul class="rp-summary-list"><li><b>Fase I — Arrivo:</b> probabilità esatta che almeno un PG venga chiamato con la configurazione attuale: <b>'+prob+'%</b>.</li><li><b>Fase II — Paziente:</b> determinazione casuale di Tipo di Danno, causa specifica e Gravità; non è sensato stimarla prima dei tiri.</li><li><b>Fase III — Cura:</b> dipenderà dai Parametri di Diagnosi, Terapia/Chirurgia e dalle Classificazioni dei Sintomi effettivamente manifestati.</li></ul></div>'+
+    '<div class="rp-summary-note">La <b>Difficoltà complessiva stimata della Ricerca</b> non viene classificata prima della Fase I: Tipo di Danno, Gravità e configurazione della cura sono ancora ignoti. In questo modo il tool non inventa una difficoltà basata su dati futuri.</div>';
+  var bb='[spoiler=Situazione iniziale della Ricerca Pazienti]\n<b>Partecipanti e soglie iniziali</b>\n'+copy.join('\n')+'\n\n<b>Impatto previsto sulle Fasi</b>\n• Fase I — Arrivo: probabilità esatta che almeno un PG venga chiamato: <b>'+prob+'%</b>.\n• Fase II — Paziente: determinazione casuale di Tipo di Danno, causa specifica e Gravità.\n• Fase III — Cura: dipenderà dai Parametri di Diagnosi, Terapia/Chirurgia e dalle Classificazioni dei Sintomi.\n\nLa difficoltà complessiva non viene classificata prima della Fase I perché mancano ancora Tipo di Danno, Gravità e configurazione della cura.\n[/spoiler]';
+  return {html:html,copy:bb};
+}
+function renderSummary(){
+  if(!summaryCard)return;var d=summaryData(),c=q('rp-summary-content'),bb=q('rp-summary-bb');
+  if(!d){c.innerHTML='<div class="rp-summary-note">Completa prima i dati obbligatori dei partecipanti nella Configurazione.</div>';bb.textContent='';return;}
+  c.innerHTML=d.html;bb.textContent=d.copy;
+}
+
+/* ---------- Flusso a pagine ---------- */
+function oldNavButton(n){return root.querySelector('nav.steps button[data-step="'+n+'"]');}
+function openOldPhase(n){var b=oldNavButton(n);if(b&&!b.disabled){b.click();return true;}return n===1;}
+function clearFlowClasses(){['rp-flow-config','rp-flow-summary','rp-flow-f1','rp-flow-f2','rp-flow-f3','rp-flow-esito'].forEach(function(c){root.classList.remove(c);});}
+function pageReachable(page){
+  if(page==='config')return true;
+  if(page==='summary')return configReady();
+  if(page==='f1')return configReady()&&(FLOW.summaryVisited||arrivalProgress()||called());
+  if(page==='f2')return called();
+  if(page==='f3')return called()&&patientCompleteNow();
+  if(page==='esito')return called()&&patientCompleteNow()&&(FLOW.esitoVisited||cureProgress());
+  return false;
+}
+function updateFlowButtons(){
+  if(!flowNav)return;
+  var map={config:true,summary:configReady(),f1:pageReachable('f1'),f2:pageReachable('f2'),f3:pageReachable('f3'),esito:pageReachable('esito')};
+  Object.keys(map).forEach(function(k){var b=q('rp-flow-'+k);if(b){b.disabled=!map[k];b.classList.toggle('active',FLOW.page===k);}});
+  var s=q('rp-flow-summary-next');if(s)s.disabled=!configReady();
+  var c=q('rp-flow-to-summary');if(c)c.disabled=!configReady();
+  var n2=q('rp-flow-next-f2');if(n2)n2.disabled=!called();
+  var n3=q('rp-flow-next-f3');if(n3)n3.disabled=!(called()&&patientCompleteNow());
+  renderSummary();
+}
+function showFlowPage(page,doScroll){
+  if(page==='summary'&&!configReady())page='config';
+  if(page==='f1'&&!pageReachable('f1'))page=configReady()?'summary':'config';
+  if(page==='f2'&&!pageReachable('f2'))page='f1';
+  if(page==='f3'&&!pageReachable('f3'))page=pageReachable('f2')?'f2':'f1';
+  if(page==='esito'&&!pageReachable('esito'))page='f3';
+  FLOW.page=page;if(page==='summary')FLOW.summaryVisited=true;if(page==='esito')FLOW.esitoVisited=true;
+  clearFlowClasses();root.classList.add('rp-flow-'+page);
+  if(page==='config'||page==='f1'||page==='summary')openOldPhase(1);
+  else if(page==='f2')openOldPhase(2);
+  else if(page==='f3')openOldPhase(3);
+  if(page==='summary'||page==='esito')qa('.wrap > section.fase').forEach(function(s){s.classList.remove('active');});
+  updateFlowButtons();saveFlowPage();
+  if(doScroll){var anchor=page==='summary'?summaryCard:(page==='esito'?finalCard:(page==='config'?flowNav:q('rp_fase'+(page==='f1'?1:page==='f2'?2:3))));if(anchor)setTimeout(function(){try{anchor.scrollIntoView({block:'start',behavior:'auto'});}catch(e){}},0);}
+}
+function createFlowUI(){
+  var workspace=q('pazienti-workspace'),wrap=workspace&&workspace.querySelector('.wrap'),fase1=q('rp_fase1'),fase2=q('rp_fase2'),fase3=q('rp_fase3');if(!workspace||!wrap||!fase1||!fase2||!fase3)return;
+  qa('nav.steps button').forEach(function(b){b.setAttribute('data-session-control','1');});
+  ['rp_toFase2','rp_toFase1From2','rp_toFase3','rp_toFase2From3'].forEach(function(id){var e=q(id);if(e)e.setAttribute('data-session-control','1');});
+  flowNav=document.createElement('div');flowNav.className='rp-flow-nav';flowNav.id='rp-flow-nav';flowNav.setAttribute('data-session-control','1');
+  [['config','Configurazione'],['summary','Riepilogo'],['f1','Fase I'],['f2','Fase II'],['f3','Fase III'],['esito','Esito']].forEach(function(x){var b=document.createElement('button');b.type='button';b.className='rp-flow-btn';b.id='rp-flow-'+x[0];b.textContent=x[1];b.setAttribute('data-session-control','1');b.addEventListener(EVT,function(){if(!b.disabled)showFlowPage(x[0],true);});flowNav.appendChild(b);});
+  workspace.insertBefore(flowNav,wrap);
+
+  summaryCard=document.createElement('section');summaryCard.className='rp-summary-card';summaryCard.id='rp-summary-card';summaryCard.setAttribute('data-session-control','1');
+  summaryCard.innerHTML='<h2>Riepilogo della situazione iniziale</h2><p class="rp-summary-lead">Quadro sintetico prima della Fase I: mostra i partecipanti, le soglie di chiamata e soltanto le valutazioni realmente ricavabili dai dati già noti.</p><div id="rp-summary-content"></div><div class="rp-summary-copy"><div class="rp-summary-bb" id="rp-summary-bb"></div><div class="rp-flow-actions"><button type="button" class="rp-flow-action ghost" id="rp-copy-summary" data-session-control="1">Copia riepilogo per il post</button><button type="button" class="rp-flow-action" id="rp-flow-summary-next" data-session-control="1">Vai alla Fase I</button></div></div>';
+  wrap.insertBefore(summaryCard,fase1);
+  q('rp-copy-summary').addEventListener(EVT,function(e){e.preventDefault();var d=summaryData();if(d)stableCopy(d.copy,function(){var b=q('rp-copy-summary'),old=b.textContent;b.textContent='Copiato';setTimeout(function(){b.textContent=old;},1200);});});
+  q('rp-flow-summary-next').addEventListener(EVT,function(){FLOW.summaryVisited=true;showFlowPage('f1',true);});
+
+  var toSum=document.createElement('div');toSum.className='rp-flow-actions rp-to-summary';toSum.innerHTML='<button type="button" class="rp-flow-action" id="rp-flow-to-summary" data-session-control="1">Vai al riepilogo iniziale</button>';fase1.appendChild(toSum);q('rp-flow-to-summary').addEventListener(EVT,function(){showFlowPage('summary',true);});
+  var cap=document.createElement('div');cap.className='rp-config-caption';cap.textContent='I Parametri dei partecipanti sono stati impostati in Configurazione. Qui esegui soltanto i tiri di Arrivo e inserisci i risultati.';fase1.insertBefore(cap,fase1.firstChild.nextSibling);
+  var next2=document.createElement('div');next2.className='rp-flow-actions rp-next-phase';next2.innerHTML='<button type="button" class="rp-flow-action" id="rp-flow-next-f2" data-session-control="1">Procedi alla Fase II</button>';fase1.appendChild(next2);q('rp-flow-next-f2').addEventListener(EVT,function(){if(!this.disabled)showFlowPage('f2',true);});
+  var next3=document.createElement('div');next3.className='rp-flow-actions rp-next-phase';next3.innerHTML='<button type="button" class="rp-flow-action" id="rp-flow-next-f3" data-session-control="1">Procedi alla Fase III</button>';fase2.appendChild(next3);q('rp-flow-next-f3').addEventListener(EVT,function(){if(!this.disabled)showFlowPage('f3',true);});
+  var nextE=document.createElement('div');nextE.className='rp-flow-actions rp-next-phase';nextE.innerHTML='<button type="button" class="rp-flow-action" id="rp-flow-next-esito" data-session-control="1">Concludi l’intervento → Esito</button>';fase3.appendChild(nextE);q('rp-flow-next-esito').addEventListener(EVT,function(){FLOW.esitoVisited=true;showFlowPage('esito',true);});
+
+  finalCard=document.createElement('section');finalCard.className='rp-final-card';finalCard.id='rp-final-card';finalCard.setAttribute('data-session-control','1');
+  finalCard.innerHTML='<h2>Esito della Ricerca Pazienti</h2><p class="rp-summary-lead">L’intervento è concluso quando sono state eseguite le operazioni di Diagnosi, Terapia e/o Chirurgia richieste dai Sintomi effettivamente manifestati.</p><div class="card" style="margin-top:18px"><h3>Chiusura dell’intervento</h3><p class="desc">Curare un Paziente tramite questa Ricerca permette di riscattare il Livello Difficile della missione “Il Medimago”.</p><table class="reward-table"><tr><td class="k">Requisiti</td><td>PG Medimago, oppure PG Ars anche non Medimago</td></tr><tr><td class="k">Ricompensa</td><td>2 PP per post (fino a un massimo di 5) · +2 Prestigio · +1 Virtuoso o Sinistro</td></tr></table></div><div class="rp-flow-actions"><button type="button" class="rp-flow-action ghost" id="rp-flow-back-f3" data-session-control="1">← Torna alla Fase III</button><button type="button" class="rp-flow-action" id="rp-flow-reset" data-session-control="1">Ricomincia una nuova Ricerca</button></div>';
+  wrap.appendChild(finalCard);q('rp-flow-back-f3').addEventListener(EVT,function(){showFlowPage('f3',true);});q('rp-flow-reset').addEventListener(EVT,function(){var b=q('rp_resetAll');if(b)b.click();FLOW.summaryVisited=false;FLOW.esitoVisited=false;showFlowPage('config',true);});
+  var oldPost=qa('#rp_fase3 .divider-label').filter(function(e){return /Post-operazione/i.test(e.textContent||'');})[0];if(oldPost){oldPost.style.display='none';var n=oldPost.nextElementSibling;if(n&&n.classList.contains('card'))n.style.display='none';}
+  showFlowPage('config',false);
+}
+
+function scheduleRefresh(){var t=++refreshToken;requestAnimationFrame(function(){if(t!==refreshToken)return;updateFlowButtons();});}
+root.addEventListener('input',scheduleRefresh,false);root.addEventListener('change',scheduleRefresh,false);root.addEventListener(EVT,scheduleRefresh,false);
+
+/* ---------- Popup eliminazione vicino alla viewport corrente ---------- */
+function anchorDeleteModal(clientY){
+  var m=q('delete-session-modal'),box=m&&m.querySelector('.session-modal-box');if(!m||!box)return;
+  m.classList.add('rp-local-modal');
+  requestAnimationFrame(function(){var vh=window.innerHeight||document.documentElement.clientHeight||800,bh=Math.min(box.getBoundingClientRect().height,vh-24),top=Math.max(12,Math.min((Number(clientY)||vh/2)-Math.min(90,bh*.25),vh-bh-12));m.style.setProperty('--rp-modal-top',top+'px');});
+}
+var del=q('btn-delete-session');if(del)del.addEventListener(EVT,function(e){anchorDeleteModal(e.clientY);},false);
+
+/* ---------- Ripresa intelligente della sessione ---------- */
+function isReadonly(){var b=q('readonly-banner');return !!(b&&b.style.display!=='none');}
+function firstConfigIncomplete(){
+  var cards=pgCards();if(cards.length<2)return q('rp_addPgBtn');
+  for(var i=0;i<cards.length;i++){var id=cards[i].getAttribute('data-id'),els=[q('rp_pgNome_'+id),q('rp_pgTecnica_'+id),q('rp_pgSapienza_'+id)];for(var j=0;j<els.length;j++){var e=els[j];if(!e)return cards[i];if(j===0&&!String(e.value||'').trim())return e;if(j===1&&!validInt(e,0,20))return e;if(j===2&&!validInt(e,0,25))return e;}}
+  return null;
+}
+function firstF1Incomplete(){var xs=qa('#rp_pgList .arrivo-result').filter(function(e){return !e.disabled&&e.value==='';});return xs[0]||null;}
+function firstF2Incomplete(){if(!validInt(q('rp_tipoInput'),1,5))return q('rp_tipoInput');if(!currentSubValid())return q('rp_subInput');if(!validInt(q('rp_gravitaInput'),1,100))return q('rp_gravitaInput');return null;}
+function firstF3Incomplete(){var xs=qa('#rp_fase3 .rowResult').filter(function(e){return !e.disabled&&e.value==='';});return xs[0]||q('rp_fase3');}
+function scrollTarget(t){if(!t)return;setTimeout(function(){try{t.scrollIntoView({block:'center',behavior:'auto'});}catch(e){}if((t.tagName==='INPUT'||t.tagName==='TEXTAREA')&&!t.disabled){try{t.focus({preventScroll:true});}catch(e){}}},0);}
+function resumeIntelligently(){
+  if(!q('pazienti-workspace')||q('pazienti-workspace').style.display==='none')return;
+  var ro=isReadonly(),page='',target=null,stored=storedFlowPage();
+  if(ro){
+    if(cureProgress()||stored==='esito')page=(stored==='esito'?'esito':'f3');
+    else if(patientCompleteNow())page='f3';
+    else if(called())page='f2';
+    else if(arrivalProgress())page='f1';
+    else page=configReady()?'summary':'config';
+    if(page==='esito')FLOW.esitoVisited=true;if(page==='f1')FLOW.summaryVisited=true;showFlowPage(page,false);target=page==='summary'?summaryCard:page==='esito'?finalCard:q(page==='config'?'rp-flow-nav':'rp_fase'+page.slice(1));scrollTarget(target);return;
+  }
+  target=firstConfigIncomplete();if(target){showFlowPage('config',false);scrollTarget(target);return;}
+  if(!arrivalProgress()&&!called()){showFlowPage('summary',false);scrollTarget(summaryCard);return;}
+  if(!called()){FLOW.summaryVisited=true;showFlowPage('f1',false);scrollTarget(firstF1Incomplete()||q('rp_fase1'));return;}
+  target=firstF2Incomplete();if(target){FLOW.summaryVisited=true;showFlowPage('f2',false);scrollTarget(target);return;}
+  if(!cureProgress()){FLOW.summaryVisited=true;showFlowPage('f3',false);scrollTarget(firstF3Incomplete());return;}
+  FLOW.summaryVisited=true;if(stored==='esito'){FLOW.esitoVisited=true;showFlowPage('esito',false);scrollTarget(finalCard);}else{showFlowPage('f3',false);scrollTarget(firstF3Incomplete());}
+}
+function watchSessionOpen(){
+  var w=q('pazienti-workspace');if(!w)return;var mo=new MutationObserver(function(ms){for(var i=0;i<ms.length;i++){if(ms[i].attributeName==='style'&&w.style.display!=='none'){setTimeout(resumeIntelligently,90);setTimeout(function(){updateFlowButtons();},160);break;}}});mo.observe(w,{attributes:true,attributeFilter:['style']});
+  if(w.style.display!=='none')setTimeout(resumeIntelligently,100);
+}
+
+function setup(){placeHeaderOutsideWorkspace();createFlowUI();watchSessionOpen();updateFlowButtons();}
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',setup);else setup();
+})();
+</script>
+
+ 
+</div></div>
