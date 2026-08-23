@@ -1,3 +1,8 @@
+<!-- Revisione v11: usi condivisi tra prove dello stesso PG; correzioni/parametri invalidano davvero gli esiti; usi 0=senza limite coerenti; limite +5 Conoscenze globale per prova; riepilogo Fatica effetti esplicito -->
+<!-- Revisione v10: Firebase preservato; campi numerici protetti; bonus multipli Oggetti/Conoscenze con distinzione Parametro/Soglia, usi e Fatica; riepilogo effetti applicati -->
+<!-- Revisione v9: migrazione v8 sicura; eligibility non auto-inferita; snapshot automatici; tentativi consolidati non eliminabili -->
+<!-- Revisione v8: Terapia/Chirurgia identificano il Sintomo specifico; Complicazioni legate allo snapshot; compatibilità replay v7 -->
+<!-- Revisione v6: correzione bonus Sapienza dell'Arrivo, requisiti partecipanti, rinuncia clinica completa, chiusura intervento, Chirurgia 16-25 e sessioni Firebase robuste -->
 <!-- Revisione v5: quote numerici semplificati — la Gravità 1d100 non elenca più 100 corrispondenze identiche, mentre restano complete le vere tabelle casuali e le soglie -->
 <!-- Revisione v3: standard completo Ricerche + testata preservata fuori dal workspace; Configurazione/Riepilogo/Fasi/Esito, BBCode completo, copia stabile, popup locale e ripresa intelligente -->
 <!-- Revisione Firebase: sessioni multiple, autosalvataggio, ripresa, sola lettura e cancellazione definitiva protetta -->
@@ -640,6 +645,27 @@
   #rp-pazienti .rp-summary-card,#rp-pazienti .rp-final-card{margin-left:14px;margin-right:14px;padding:18px 16px}
 }
 
+/* Revisione v10 — bonus strutturati e campi numerici */
+#rp-pazienti input[type=number]::placeholder{color:var(--parchment-dim);opacity:.75}
+#rp-pazienti .bonus-field{align-self:stretch}
+#rp-pazienti .bonus-list{display:flex;flex-direction:column;gap:9px;margin-top:7px}
+#rp-pazienti .bonus-item{display:grid;grid-template-columns:130px minmax(150px,1.2fr) minmax(180px,1.3fr) 80px 90px 95px 95px auto;gap:8px;align-items:end;padding:10px;border:1px solid rgba(226,183,170,.18);border-radius:8px;background:rgba(13,5,5,.45)}
+#rp-pazienti .bonus-mini label{display:block;margin:0 0 4px;font-family:var(--sans);font-size:10px;line-height:1.2;text-transform:uppercase;letter-spacing:.05em;color:var(--parchment-dim)}
+#rp-pazienti .bonus-mini input,#rp-pazienti .bonus-mini select{min-height:38px!important;padding:7px 8px!important;font-size:13px!important}
+#rp-pazienti .bonus-apply{display:flex;align-items:center;gap:5px;min-height:38px;color:var(--parchment-dim);font-size:12px}
+#rp-pazienti .bonus-apply input{width:16px!important;height:16px!important;min-height:0!important}
+#rp-pazienti .bonus-remove{min-height:38px!important;padding:6px 9px!important}
+#rp-pazienti .bonus-add{margin-top:9px;padding:7px 10px!important;min-height:38px!important;font-size:12px!important}
+#rp-pazienti .bonus-status{margin-top:8px;padding:8px 10px;border-left:3px solid var(--teal);background:rgba(201,124,104,.07);font-size:12px;line-height:1.55;color:var(--parchment-dim)}
+#rp-pazienti .bonus-status.bad{border-left-color:var(--red);color:#F0B3AA}
+#rp-pazienti .bonus-status:empty{display:none}
+#rp-pazienti .effects-box{margin-top:18px;padding:14px 16px;border:1px solid var(--line);border-left:4px solid var(--teal);border-radius:8px;background:var(--panel2)}
+#rp-pazienti .effects-box h3{margin:0 0 8px;font-family:var(--serif);font-size:1.05rem;color:var(--gold-soft)}
+#rp-pazienti .effects-list{margin:0;padding-left:20px;color:var(--parchment-dim);line-height:1.65}
+#rp-pazienti .effects-total{margin-top:8px;color:var(--gold-soft);font-weight:700}
+@media(max-width:980px){#rp-pazienti .bonus-item{grid-template-columns:1fr 1fr 90px 90px}}
+@media(max-width:650px){#rp-pazienti .bonus-item{grid-template-columns:1fr}.bonus-mini{min-width:0}}
+
 </style> 
  
 <div id="rp-pazienti">
@@ -694,9 +720,9 @@
 <div class="wrap"> 
 <section class="fase active" id="rp_fase1"> 
  <h2 class="fase-title">Fase 1 — Arriva un'emergenza?</h2> 
- <p class="fase-intro">Ogni PG in attesa lancia 1d30. La chiamata avviene se il risultato rientra in <b>Tecnica + Sapienza Medimagica/5</b>, con divisione arrotondata per difetto. Un Medimago in servizio aggiunge +2 possibilità soltanto in questa fase.</p> 
+ <p class="fase-intro">Ogni PG in attesa lancia 1d30. La chiamata avviene se il risultato rientra in <b>Tecnica + Bonus Sapienza Medimagica</b>: +1 con Sapienza 1–5, +2 con 6–10, +3 con 11–15, +4 con 16–20, +5 con 21–25. Un PG Medimago del San Mungo aggiunge +2 possibilità soltanto in questa fase.</p> 
  <div class="nota"><br> 
- <b>Partecipanti — </b>la Ricerca Pazienti si svolge con almeno due PG. Possono essere Medimaghi in servizio oppure PG Ars presenti al San Mungo come assistenti. Ogni PG può ritentare il tiro in ogni proprio post, senza limiti.</div> 
+ <b>Partecipanti — </b>la Ricerca Pazienti si svolge con almeno due PG. Possono essere PG Medimaghi e/o PG appartenenti ad Ars presenti al San Mungo come assistenti. Ogni PG può ritentare il tiro in ogni proprio post, senza limiti.<label class="checkline" style="margin-top:12px"><input id="rp_eligibility_confirm" type="checkbox">Confermo che tutti i partecipanti sono PG Medimaghi e/o appartenenti alla Categoria Magica di Ars.</label></div> 
  <div id="rp_pgList"></div> 
  <button type="button" class="add-btn" id="rp_addPgBtn">+ Aggiungi personaggio in attesa</button> 
  <div class="nota" style="margin-top:24px"><br> 
@@ -735,21 +761,21 @@
  <h2 class="fase-title">Fase 3 — Curare il Paziente</h2> 
  <p class="fase-intro">Diagnosi, Terapia e Chirurgia seguono le formule della Guida alla Medimagia. In questa Ricerca la dinamica dell'accaduto è già nota, quindi la Diagnosi riceve sempre +3 possibilità; le Componenti del Rimedio ONGame sono sempre disponibili al San Mungo.</p> 
  <div class="nota"><br> 
- <b>Bonus medimagici — </b>quando una Conoscenza Medimagica applicabile concede possibilità extra, inserisci il bonus nella singola riga. Il campo è limitato a un massimo complessivo di +5. Le Pozioni Oltre Ogni Previsione ed Eccezionali, quando previste, hanno invece il proprio selettore.</div> 
+ <b>Bonus da Oggetti e Conoscenze — </b>ogni prova può avere più effetti separati. Per ciascuno indica Fonte, tipo di effetto, valore, eventuale condizione, Fatica e usi. I bonus al Parametro Tecnica vengono applicati prima della formula; le possibilità extra vengono aggiunte direttamente alla soglia; per le sole Conoscenze Medimagiche resta il limite complessivo di +5 già previsto. Le Pozioni Oltre Ogni Previsione ed Eccezionali restano nel proprio selettore.</div> 
  <div class="nota"><br> 
  <b>Fonti — </b><a href="https://felixfelicisharrypottergdr.forumfree.it/?t=80630315#sintomilista" target="_blank">Lista dei Sintomi</a> · <a href="https://felixfelicisharrypottergdr.forumfree.it/?t=80630315#elencosintomi" target="_blank">Elenco Sintomi</a> · <a href="https://felixfelicisharrypottergdr.forumfree.it/?t=80630315#conomedimag" target="_blank">Incantesimi e Tecniche Medimagiche</a></div> 
  <div class="divider-label">Diagnosi dei Sintomi</div> 
- <p class="desc">1d40 per ogni Classificazione effettivamente manifestata (X-XXXXX). Individuando almeno il 60% dei Sintomi totali diventa nota anche la causa scatenante. Costo: -2 Fatica per Diagnosi. In questa Ricerca un fallimento può essere ritentato senza il tiro di recupero previsto dalla Guida.</p> 
+ <p class="desc">1d40 per ogni Classificazione effettivamente manifestata (X-XXXXX). Individuando almeno il 60% dei Sintomi totali diventa nota anche la causa scatenante. Costo base: -2 Fatica per Diagnosi; con Sapienza Medimagica 25 il costo base è 0. In questa Ricerca un fallimento può essere ritentato senza il tiro di recupero previsto dalla Guida.</p> 
  <div id="rp_diagList"></div><button type="button" class="add-btn" id="rp_addDiagBtn">+ Aggiungi personaggio diagnosta</button> 
  <div class="divider-label">Terapia — Sintomi X, XX, XXX</div> 
- <p class="desc">1d40 per ogni singolo Sintomo. Fino a 3 Sintomi per post; se la cura prosegue in post successivi puoi aggiungere altre righe. Costo: -0,5 Fatica per Sintomo, a prescindere dall'esito. Il fallimento causa la Complicazione prevista dal Sintomo.</p> 
+ <p class="desc">1d40 per ogni singolo Sintomo. Fino a 3 Sintomi per post; se la cura prosegue in post successivi puoi aggiungere altre righe. Costo base: -0,5 Fatica per Sintomo, a prescindere dall'esito; con Sapienza Medimagica 25 il costo base è 0. <b>Indica il nome del Sintomo specifico in ogni riga:</b> il fallimento causa la Complicazione prevista proprio da quel Sintomo.</p> 
  <div id="rp_terapiaList"></div><button type="button" class="add-btn" id="rp_addTerapiaBtn">+ Aggiungi personaggio terapista</button> 
  <div class="divider-label">Chirurgia — Sintomi XXXX, XXXXX</div> 
- <p class="desc">1d35 per ogni singolo Sintomo. Fino a 3 Sintomi per post; se l'intervento prosegue in post successivi puoi aggiungere altre righe. Costo: -1 Fatica per Sintomo. Senza Chirurgo né Sapienza Medimagica 1+ il fallimento è autoconclusivo.</p> 
+ <p class="desc">1d35 per ogni singolo Sintomo. Fino a 3 Sintomi per post; se l'intervento prosegue in post successivi puoi aggiungere altre righe. Costo base: -1 Fatica per Sintomo; con Sapienza Medimagica 25 il costo base è 0. <b>Indica il nome del Sintomo specifico in ogni riga:</b> il fallimento causa la Complicazione prevista proprio da quel Sintomo. Senza Chirurgo né Sapienza Medimagica 1+ il fallimento è autoconclusivo. Con Sapienza Medimagica 16–25 ma senza Chirurgo, la Guida non specifica una soglia: il tool non la inventa.</p> 
  <div id="rp_chirurgiaList"></div><button type="button" class="add-btn" id="rp_addChirurgiaBtn">+ Aggiungi personaggio chirurgo</button> 
  <div class="divider-label">Post-operazione</div> 
  <div class="card"><h3>Chiusura dell'intervento</h3><p class="desc">Una volta eseguite Diagnosi, Terapia e/o Chirurgia, l'intervento è concluso e si riscatta il Livello Difficile della missione "Il Medimago".</p><table class="reward-table"><tr><td class="k">Requisiti</td><td>PG Medimago, oppure PG Ars anche non Medimago</td></tr><tr><td class="k">Ricompensa</td><td>2 PP per post (fino a un massimo di 5) · +2 Prestigio · +1 Virtuoso o Sinistro</td></tr></table></div> 
- <div class="step-nav-bottom"><button type="button" class="nav-btn" id="rp_toFase2From3">&#8592; Torna alla Fase 2</button><button type="button" class="nav-btn" id="rp_resetAll">Ricomincia una nuova Ricerca</button></div> 
+ <div class="step-nav-bottom"><button type="button" class="nav-btn" id="rp_toFase2From3">&#8592; Torna alla Fase 2</button><button type="button" class="nav-btn" id="rp_resetAll">Azzera questa Ricerca</button></div> 
 </section> 
 </div> 
  
@@ -801,7 +827,8 @@ var TER_CLASS = [{label:'X',bonus:5},{label:'XX',bonus:4},{label:'XXX',bonus:3}]
 var CHIR_LEVELS = [ 
  {label:'Nessuna competenza (fallimento automatico)',base:null}, {label:'Sapienza Medimagica 1-5',base:4}, 
  {label:'Sapienza Medimagica 6-10',base:5}, {label:'Sapienza Medimagica 11-15',base:6}, {label:'Chirurgo Lv I',base:7}, 
- {label:'Chirurgo Lv II',base:8}, {label:'Chirurgo Lv III',base:9}, {label:'Chirurgo Lv IV',base:10}, {label:'Chirurgo Lv V',base:11} 
+ {label:'Chirurgo Lv II',base:8}, {label:'Chirurgo Lv III',base:9}, {label:'Chirurgo Lv IV',base:10}, {label:'Chirurgo Lv V',base:11},
+ {label:'Sapienza Medimagica 16-25 senza Chirurgo (soglia non specificata)',base:'ambiguous'} 
 ]; 
 var CHIR_CLASS = [{label:'XXXX',bonus:1},{label:'XXXXX',bonus:0}]; 
 var POZIONE_BONUS = [{label:'Nessuna Pozione',bonus:0},{label:'Pozione Oltre Ogni Previsione',bonus:1},{label:'Pozione Eccezionale',bonus:2}]; 
@@ -809,7 +836,26 @@ var POZIONE_BONUS = [{label:'Nessuna Pozione',bonus:0},{label:'Pozione Oltre Ogn
 function byId(id){ return document.getElementById(id); } 
 function isIntInRange(v,min,max){ return typeof v === 'number' && isFinite(v) && Math.floor(v) === v && v >= min && v <= max; } 
 function inputInt(id){ var el=byId(id); if(!el || el.value===''){return null;} var n=Number(el.value); return (isFinite(n) && Math.floor(n)===n) ? n : NaN; } 
-function setOutcome(el,text,kind){ if(!el){return;} el.textContent=text; el.className='outcome ' + kind; } 
+function setOutcome(el,text,kind){ if(!el){return;} el.textContent=text; el.className='outcome ' + kind; }
+
+/* Campi numerici: niente e/E, segni o decimali se il campo richiede interi.
+   I valori fuori range restano invalidi e non entrano mai nei calcoli. */
+function numericMeta(el){
+ var min=el&&el.getAttribute?el.getAttribute('min'):null,max=el&&el.getAttribute?el.getAttribute('max'):null,step=el&&el.getAttribute?el.getAttribute('step'):null;
+ return {decimal:!!(el&&el.getAttribute('data-allow-decimal')==='1')||(step&&step!=='1'&&step!=='any'),min:min,max:max};
+}
+function prepareNumeric(el){
+ if(!el||el.tagName!=='INPUT'||String(el.type).toLowerCase()!=='number')return;
+ var m=numericMeta(el);el.inputMode=m.decimal?'decimal':'numeric';
+ if(!el.getAttribute('placeholder'))el.setAttribute('placeholder',m.decimal?'Solo numeri':'Solo numeri interi');
+ var range=(m.min!==null&&m.max!==null)?' · valori '+m.min+'–'+m.max:'';el.title=(m.decimal?'Inserire solo numeri':'Inserire solo numeri interi')+range;
+}
+function prepareAllNumeric(scope){var xs=(scope||root).querySelectorAll('input[type="number"]');for(var i=0;i<xs.length;i++)prepareNumeric(xs[i]);}
+root.addEventListener('keydown',function(e){var el=e.target;if(!el||el.tagName!=='INPUT'||String(el.type).toLowerCase()!=='number')return;var m=numericMeta(el),k=e.key;if(k==='e'||k==='E'||k==='+'||k==='-'||(!m.decimal&&(k==='.'||k===',')))e.preventDefault();},true);
+root.addEventListener('paste',function(e){var el=e.target;if(!el||el.tagName!=='INPUT'||String(el.type).toLowerCase()!=='number')return;var txt=(e.clipboardData&&e.clipboardData.getData('text'))||'',m=numericMeta(el),ok=m.decimal?/^\d+(?:[.,]\d+)?$/.test(txt):/^\d+$/.test(txt);if(!ok)e.preventDefault();},true);
+try{new MutationObserver(function(ms){for(var i=0;i<ms.length;i++){for(var j=0;j<ms[i].addedNodes.length;j++){var n=ms[i].addedNodes[j];if(n.nodeType!==1)continue;if(n.matches&&n.matches('input[type="number"]'))prepareNumeric(n);if(n.querySelectorAll)prepareAllNumeric(n);}}}).observe(root,{childList:true,subtree:true});}catch(e){}
+prepareAllNumeric(root);
+
 function copyTextFrom(id,btn){ 
  var el=byId(id); if(!el){return;} var text=el.value; 
  function done(){btn.textContent='Copiato';btn.classList.add('copied');setTimeout(function(){btn.textContent='Copia';btn.classList.remove('copied');},1400);} 
@@ -848,10 +894,11 @@ byId('rp_toFase3').addEventListener(evtName,function(){goToFase(3);});
 byId('rp_toFase2From3').addEventListener(evtName,function(){goToFase(2);}); 
  
 /* ---------- Fase 1 ---------- */ 
-function sapienzaBonus(v){ return Math.floor(v/5); } 
+function sapienzaBonus(v){ v=Number(v); return v>0?Math.ceil(v/5):0; }
+try{window.__RP_SAPIENZA_BONUS__=sapienzaBonus;}catch(e){} 
 function buildDiceTagArrivo(nome,tecnica,sapienza,medimago){ 
  var sBonus=sapienzaBonus(sapienza), m=medimago?2:0, soglia=tecnica+sBonus+m; 
- var formula=tecnica+' Tecnica + '+sapienza+'/5 Sapienza Medimagica (='+sBonus+')'; 
+ var formula=tecnica+' Tecnica + bonus Sapienza Medimagica '+sBonus+' (Sapienza '+sapienza+')'; 
  if(medimago){formula+=' + 2 Medimago in servizio';} 
  return {soglia:soglia,sBonus:sBonus,tag:'[dice=1d30]Arrivo Paziente - '+(nome||'PG')+' (Riesce se 1-'+soglia+': '+formula+' = '+soglia+')[/dice]'}; 
 } 
@@ -884,7 +931,7 @@ function addPgCard(){
  +'<div class="pg-head"><input class="nome" id="rp_pgNome_'+id+'" type="text" value="Personaggio '+id+'"><button type="button" class="remove-btn">rimuovi</button></div>' 
  +'<div class="field-row"><div class="field"><label>Tecnica</label><input class="tecnica" id="rp_pgTecnica_'+id+'" type="number" value="0" min="0" max="20" step="1"></div>' 
  +'<div class="field"><label>Sapienza Medimagica</label><input class="sapienza" id="rp_pgSapienza_'+id+'" type="number" value="0" min="0" max="25" step="1"></div>' 
- +'<div class="field" style="display:flex;align-items:flex-end"><label class="checkline"><input class="medimago" id="rp_pgMedimago_'+id+'" type="checkbox">Medimago in servizio (+2)</label></div></div>' 
+ +'<div class="field" style="display:flex;align-items:flex-end"><label class="checkline"><input class="medimago" id="rp_pgMedimago_'+id+'" type="checkbox">PG Medimago del San Mungo (+2 automatico)</label></div></div>' 
  +'<div class="soglia-box">Bonus Sapienza <span id="rp_pgSapBonus_'+id+'">+0</span> · Soglia di chiamata <span class="val" id="rp_pgSoglia_'+id+'">1–0</span> su 1d30</div>' 
  +'<div class="dice-tag"><textarea readonly id="rp_diceArrivo_'+id+'"></textarea><button type="button" class="copy-btn" data-target="rp_diceArrivo_'+id+'">Copia</button></div>' 
  +'<div class="result-row"><label>Risultato 1d30</label><input class="arrivo-result" id="rp_pgArrivoResult_'+id+'" type="number" min="1" max="30" step="1"><span class="outcome pending arrivo-outcome" id="rp_pgArrivoOutcome_'+id+'">in attesa</span><button type="button" class="retry-btn arrivo-retry">Nuovo tentativo</button></div>'; 
@@ -929,7 +976,13 @@ function resetPatient(){
  byId('rp_subTableCard').style.display='none';resetSub();lastTipo=null; 
  byId('rp_gravitaInput').value='';setOutcome(byId('rp_gravitaOutcome'),'in attesa','pending');byId('rp_gravitaLabel').style.display='none';updateLocks(); 
 } 
-byId('rp_renounceBtn').addEventListener(evtName,function(){if(attemptsLeft<=0 || !patientComplete()){return;} attemptsLeft--;byId('rp_attemptsN').textContent=attemptsLeft;resetPatient();clearArrivalResults();updateLocks();goToFase(1);}); 
+function resetClinicalData(){
+ byId('rp_diagList').innerHTML='';byId('rp_terapiaList').innerHTML='';byId('rp_chirurgiaList').innerHTML='';
+ curaRowCounter=0;curaCardCounter=0;diagNameCounter=0;terapiaNameCounter=0;chirurgiaNameCounter=0;
+ addDiagCard();addTerapiaCard();addChirurgiaCard();
+ var cc=byId('rp_completion_confirm');if(cc){cc.checked=false;try{cc.dispatchEvent(new Event('change',{bubbles:true}));}catch(e){}}
+}
+byId('rp_renounceBtn').addEventListener(evtName,function(){if(attemptsLeft<=0 || !patientComplete()){return;} attemptsLeft--;byId('rp_attemptsN').textContent=attemptsLeft;resetPatient();resetClinicalData();clearArrivalResults();updateLocks();if(window.__RP_SHOW_FLOW_PAGE__)window.__RP_SHOW_FLOW_PAGE__('f1',true);else goToFase(1);}); 
  
 /* ---------- Fase 3 ---------- */ 
 function buildOptionsHtml(list){var h='';for(var i=0;i<list.length;i++){h+='<option value="'+i+'">'+list[i].label+'</option>';}return h;} 
@@ -939,40 +992,163 @@ function buildCuraCard(config){
  +'<div class="field-row"><div class="field"><label>'+config.levelLabel+'</label><select class="livello" id="rp_curaLivello_'+cid+'">'+buildOptionsHtml(config.levels)+'</select></div><div class="field"><label>Tecnica</label><input class="tecnica" id="rp_curaTecnica_'+cid+'" type="number" value="0" min="0" max="20" step="1"></div></div>' 
  +'<div class="rowsList"></div><button type="button" class="add-btn addRowBtn" style="padding:8px 16px;font-size:13px">+ Aggiungi '+config.rowNoun+'</button>'; 
  byId(config.listId).appendChild(card); 
+ var bonusSeq=0;
  function getBase(){var idx=parseInt(byId('rp_curaLivello_'+cid).value,10);return config.levels[idx].base;} 
+ function isCommitted(row){return row.getAttribute('data-result-committed')==='1';}
+ function syncCardRemoval(){var top=card.querySelector('.pg-head .remove-btn');if(top)top.disabled=!window.__RP_IS_RESTORING__&&!!card.querySelector('.curaRow[data-result-committed="1"]');}
+ function setRowInputsLocked(row,locked){
+  var xs=row.querySelectorAll('.classSel,.pozioneSel,.rowResult,.symptomName,.bonus-origin,.bonus-source,.bonus-kind,.bonus-value,.bonus-condition,.bonus-fatigue,.bonus-available,.bonus-used,.bonus-applied,.bonus-remove,.bonus-add');
+  for(var z=0;z<xs.length;z++)xs[z].disabled=!!locked;
+ }
+ function committedSnapshot(row){try{return JSON.parse(row.getAttribute('data-result-snapshot')||'null');}catch(e){return null;}}
+ function effectText(e){
+  var kind=e.kind==='tecnica'?'+'+e.value+' TECNICA (PARAMETRO)':'+'+e.value+' POSSIBILITÀ / SOGLIA';
+  var txt=((e.originLabel?e.originLabel+' · ':'')+(e.source||'EFFETTO')).toUpperCase()+' → '+kind;
+  if(e.condition)txt+=' · '+e.condition.toUpperCase();
+  if(e.fatigue>0)txt+=' · -'+e.fatigue+' FATICA';
+  if(e.available>0)txt+=' · '+e.used+'/'+e.available+' USI → '+Math.max(0,e.available-e.used)+' RIMASTI';
+  return txt;
+ }
+ function renderEffectsStatus(row,data){
+  var box=row.querySelector('.bonus-status');if(!box)return;
+  if(data.error){box.className='bonus-status bad';box.textContent=data.error;return;}
+  box.className='bonus-status';
+  if(!data.effects.length){box.textContent='';return;}
+  var lines=[];for(var i=0;i<data.effects.length;i++)lines.push(effectText(data.effects[i]));
+  var totals=[];if(data.paramTotal)totals.push('Tecnica '+data.baseTecnica+' → '+(data.baseTecnica+data.paramTotal));if(data.thresholdTotal)totals.push('+'+data.thresholdTotal+' alla soglia');if(data.fatigueTotal)totals.push('-'+data.fatigueTotal+' Fatica dagli effetti');
+  box.textContent=lines.join(' | ')+(totals.length?' · '+totals.join(' · '):'');
+ }
+ function bonusRows(row){return row.querySelectorAll('.bonus-item');}
+ function effectUsageKey(origin,source){return String(origin||'altro').toLowerCase()+'|'+String(source||'').trim().toLowerCase();}
+ function sharedUsageBefore(row,origin,source){
+  var key=effectUsageKey(origin,source),base=0,count=0,rows=card.querySelectorAll('.curaRow[data-result-committed="1"]');
+  for(var i=0;i<rows.length;i++){if(rows[i]===row)continue;var snap=committedSnapshot(rows[i]);if(!snap||!Array.isArray(snap.effects))continue;for(var j=0;j<snap.effects.length;j++){var e=snap.effects[j];if(!e||Number(e.available)<=0||effectUsageKey(e.origin,e.source)!==key)continue;var b=e.baselineUsed!=null?Number(e.baselineUsed):Math.max(0,Number(e.used||0)-(e.autoConsumed?1:0));if(Number.isFinite(b))base=Math.max(base,b);if(e.autoConsumed)count++;}}
+  return {baseline:base,count:count,used:base+count};
+ }
+ function collectBonusData(row,forCommit){
+  var rs=bonusRows(row),effects=[],param=0,threshold=0,knowledgeTotal=0,fatigue=0,error='';
+  var baseTecnica=inputInt('rp_curaTecnica_'+cid);if(!isIntInRange(baseTecnica,0,20))baseTecnica=0;
+  for(var i=0;i<rs.length;i++){
+   var r=rs[i],origin=r.querySelector('.bonus-origin'),src=r.querySelector('.bonus-source'),kind=r.querySelector('.bonus-kind'),val=r.querySelector('.bonus-value'),cond=r.querySelector('.bonus-condition'),fat=r.querySelector('.bonus-fatigue'),av=r.querySelector('.bonus-available'),used=r.querySelector('.bonus-used'),ap=r.querySelector('.bonus-applied');
+   var value=val&&val.value!==''?Number(val.value):0,available=av&&av.value!==''?Number(av.value):0,consumedRaw=used&&used.value!==''?Number(used.value):0,fv=fat&&fat.value!==''?Number(String(fat.value).replace(',','.')):0;
+   if(!ap||!ap.checked||!value)continue;
+   if(!src||!String(src.value||'').trim()){error='Indica la Fonte/Oggetto/Conoscenza di ogni bonus applicato.';break;}
+   if(!Number.isFinite(value)||Math.floor(value)!==value||value<0){error='Il valore del bonus deve essere un numero intero non negativo.';break;}
+   if(!Number.isFinite(available)||Math.floor(available)!==available||available<0||!Number.isFinite(consumedRaw)||Math.floor(consumedRaw)!==consumedRaw||consumedRaw<0){error='Gli usi disponibili/consumati devono essere numeri interi validi.';break;}
+   if(available===0&&consumedRaw>0){error='Con usi disponibili = 0 (nessun limite registrato), lascia gli usi consumati a 0.';break;}
+   if(!Number.isFinite(fv)||fv<0){error='La Fatica consumata dal bonus deve essere un numero valido e non negativo.';break;}
+   var k=kind?kind.value:'soglia',o=origin?origin.value:'altro',ol=origin&&origin.options&&origin.selectedIndex>=0?origin.options[origin.selectedIndex].text:'Altro',sourceName=String(src.value).trim(),shared=sharedUsageBefore(row,o,sourceName),baselineUsed=Math.max(consumedRaw,shared.baseline),consumed=available>0?baselineUsed+shared.count:0;
+   if(available>0&&consumed>=available){error='Il bonus «'+sourceName+'» non ha usi disponibili per questa prova ('+consumed+'/'+available+' già consumati).';break;}
+   if(k==='soglia'){threshold+=value;}else if(k==='tecnica')param+=value;if(o==='conoscenza')knowledgeTotal+=value;
+   effects.push({origin:o,originLabel:ol,source:sourceName,kind:k,value:value,condition:cond?String(cond.value||'').trim():'',fatigue:fv,available:available,used:consumed,baselineUsed:baselineUsed,autoConsumed:false});fatigue+=fv;
+  }
+  if(!error&&knowledgeTotal>5)error='I bonus numerici provenienti da Conoscenze Medimagiche non possono superare complessivamente +5 in questa prova.';
+  var data={effects:effects,paramTotal:param,thresholdTotal:threshold,fatigueTotal:fatigue,error:error,baseTecnica:baseTecnica};renderEffectsStatus(row,data);return data;
+ }
+ function autoConsumeEffects(row,data){
+  if(!data||data.error)return data;var rs=bonusRows(row),ei=0;
+  for(var i=0;i<rs.length;i++){
+   var r=rs[i],ap=r.querySelector('.bonus-applied'),val=r.querySelector('.bonus-value');if(!ap||!ap.checked||!val||!Number(val.value))continue;
+   var used=r.querySelector('.bonus-used'),av=r.querySelector('.bonus-available'),ef=data.effects[ei];if(!used||!av)continue;var u=ef?Number(ef.used||0):Number(used.value||0),a=Number(av.value||0);if(a>0&&u<a){u+=1;used.value=String(u);if(ef){ef.used=u;ef.autoConsumed=true;}}ei++;
+  }
+  renderEffectsStatus(row,data);return data;
+ }
+ function restoreConsumedOnCorrection(row,snap){
+  if(!snap||!Array.isArray(snap.effects))return;var rs=bonusRows(row),ei=0;
+  for(var i=0;i<rs.length;i++){
+   var ap=rs[i].querySelector('.bonus-applied'),val=rs[i].querySelector('.bonus-value');if(!ap||!ap.checked||!val||!Number(val.value))continue;
+   var e=snap.effects[ei++];if(e&&e.autoConsumed){var used=rs[i].querySelector('.bonus-used'),base=e.baselineUsed!=null?Number(e.baselineUsed):Math.max(0,Number(e.used||0)-1);if(used)used.value=String(Number.isFinite(base)?base:0);}
+  }
+ }
+ function renderCommitted(row){
+  var snap=committedSnapshot(row);if(!snap)return false;
+  var rid=row.getAttribute('data-row-id'),textarea=byId('rp_diceRow_'+rid),out=byId('rp_curaOutcome_'+rid),input=byId('rp_curaResult_'+rid),note=byId('rp_curaNote_'+rid);
+  textarea.value=snap.dice||'';input.value=snap.result==null?'':String(snap.result);var symptomEl=byId('rp_curaSintomo_'+rid);if(symptomEl&&snap.symptomName!=null)symptomEl.value=String(snap.symptomName);setOutcome(out,snap.outcomeText||'',snap.outcomeKind||'pending');
+  note.style.display=snap.noteText?'block':'none';note.textContent=snap.noteText||'';setRowInputsLocked(row,true);var rm=row.querySelector('.removeRowBtn');if(rm)rm.disabled=!window.__RP_IS_RESTORING__;syncCardRemoval();
+  var confirm=row.querySelector('.confirmResultBtn'),edit=row.querySelector('.editResultBtn'),retry=row.querySelector('.retryAttemptBtn');if(confirm)confirm.style.display='none';if(edit)edit.style.display='inline-block';if(retry)retry.style.display=snap.failed?'inline-block':'none';
+  renderEffectsStatus(row,{effects:Array.isArray(snap.effects)?snap.effects:[],paramTotal:snap.bonusParam||0,thresholdTotal:snap.bonusSoglia||0,fatigueTotal:snap.bonusFatigue||0,error:'',baseTecnica:snap.baseTecnica==null?0:snap.baseTecnica});
+  return true;
+ }
  function recomputeAll(){var rows=card.querySelectorAll('.curaRow');for(var i=0;i<rows.length;i++){refreshRow(rows[i]);}} 
  function refreshRow(row){ 
- var rid=row.getAttribute('data-row-id'), nome=byId('rp_curaNome_'+cid).value, base=getBase(), tecnica=inputInt('rp_curaTecnica_'+cid); 
- var classIdx=parseInt(byId('rp_curaClass_'+rid).value,10), classBonus=config.classList[classIdx].bonus, classLabel=config.classList[classIdx].label; 
- var cono=inputInt('rp_curaCono_'+rid), pBonus=0, pSel=byId('rp_curaPozione_'+rid); 
- if(pSel){pBonus=POZIONE_BONUS[parseInt(pSel.value,10)].bonus;} 
- var textarea=byId('rp_diceRow_'+rid), out=byId('rp_curaOutcome_'+rid), input=byId('rp_curaResult_'+rid), note=byId('rp_curaNote_'+rid); 
- note.style.display='none'; note.textContent=''; input.disabled=false; 
- if(!isIntInRange(tecnica,0,20)){textarea.value='Inserisci una Tecnica valida da 0 a 20.';setOutcome(out,'dati non validi','fail');return;} 
- if(!isIntInRange(cono,0,5)){textarea.value='Il Bonus Conoscenze Medimagiche deve essere compreso tra 0 e 5.';setOutcome(out,'dati non validi','fail');return;} 
- if(base===null){textarea.value='Nessun tiro: '+config.tagName+' '+classLabel+' - '+(nome||'PG')+' — fallimento autoconclusivo, competenza assente.';note.style.display='block';note.textContent='Senza Conoscenza Avanzata Chirurgo né Sapienza Medimagica 1+, la Chirurgia fallisce autoconclusivamente.';input.value='';input.disabled=true;setOutcome(out,'fallimento automatico','fail');return;} 
- var extra=config.fixedExtra||0, soglia=base+tecnica+classBonus+pBonus+cono+extra; 
- var parts=base+' '+config.levelWord+' + '+tecnica+' Tecnica + '+classBonus+' Classificazione '+classLabel; 
- if(pSel){parts+=' + '+pBonus+' Pozione';} parts+=' + '+cono+' Conoscenze Medimagiche'; if(extra){parts+=' + '+extra+' dinamica già nota';} 
- var auto=soglia>config.faces, label=config.tagName+' '+classLabel+' - '+(nome||'PG'); 
- if(auto){textarea.value='SUCCESSO AUTOMATICO — '+label+' (soglia '+soglia+'/'+config.faces+': '+parts+' = '+soglia+')';note.style.display='block';note.textContent='Soglia superiore a '+config.faces+': successo autoconclusivo, il tiro non è necessario.';input.value='';input.disabled=true;setOutcome(out,config.successWord+' · AUTOMATICO','success');return;} 
- textarea.value='[dice=1d'+config.faces+']'+label+' (Riesce se 1-'+soglia+': '+parts+' = '+soglia+')[/dice]'; 
- var v=inputInt('rp_curaResult_'+rid); if(v===null){setOutcome(out,'in attesa','pending');return;} if(!isIntInRange(v,1,config.faces)){setOutcome(out,'RISULTATO IMPOSSIBILE','fail');return;} 
- if(v<=soglia){setOutcome(out,config.successWord,'success');}else{setOutcome(out,config.failWord,'fail');} 
+  if(isCommitted(row)&&renderCommitted(row))return;
+  var rid=row.getAttribute('data-row-id'), nome=byId('rp_curaNome_'+cid).value, base=getBase(), tecnica=inputInt('rp_curaTecnica_'+cid); 
+  var classIdx=parseInt(byId('rp_curaClass_'+rid).value,10), classBonus=config.classList[classIdx].bonus, classLabel=config.classList[classIdx].label; 
+  var pBonus=0, pSel=byId('rp_curaPozione_'+rid);if(pSel){pBonus=POZIONE_BONUS[parseInt(pSel.value,10)].bonus;} 
+  var textarea=byId('rp_diceRow_'+rid), out=byId('rp_curaOutcome_'+rid), input=byId('rp_curaResult_'+rid), note=byId('rp_curaNote_'+rid), symptomEl=byId('rp_curaSintomo_'+rid), symptom=symptomEl?String(symptomEl.value||'').trim():''; 
+  var confirm=row.querySelector('.confirmResultBtn'),edit=row.querySelector('.editResultBtn'),retry=row.querySelector('.retryAttemptBtn');if(confirm){confirm.style.display='none';confirm.textContent='Conferma risultato';}if(edit)edit.style.display='none';if(retry)retry.style.display='none';
+  note.style.display='none'; note.textContent=''; input.disabled=false; 
+  if(!isIntInRange(tecnica,0,20)){textarea.value='Inserisci una Tecnica valida da 0 a 20.';setOutcome(out,'dati non validi','fail');return;} 
+  var bonusData=collectBonusData(row,false);if(bonusData.error){textarea.value=bonusData.error;setOutcome(out,'bonus non validi','fail');return;}
+  var tecnicaEff=tecnica+bonusData.paramTotal;
+  if(base===null){textarea.value='Nessun tiro: '+config.tagName+' '+classLabel+' - '+(nome||'PG')+((config.tagName!=='Diagnosi'&&symptom)?' · Sintomo: '+symptom:'')+' — fallimento autoconclusivo, competenza assente.';note.style.display='block';note.textContent='Senza Conoscenza Avanzata Chirurgo né Sapienza Medimagica 1+, la Chirurgia fallisce autoconclusivamente.'+(config.tagName!=='Diagnosi'&&!symptom?' Indica il Sintomo specifico e conferma l’esito automatico per registrare correttamente la Complicazione.':'');input.value='';input.disabled=true;setOutcome(out,'fallimento automatico','fail');if(confirm){confirm.style.display='inline-block';confirm.textContent='Conferma esito automatico';}return;} 
+  if(base==='ambiguous'){textarea.value='Soglia non specificata: Chirurgia '+classLabel+' - '+(nome||'PG')+' — Sapienza Medimagica 16-25 senza Chirurgo.';note.style.display='block';note.textContent='La Guida consente la Chirurgia con Sapienza Medimagica 1+, ma non indica la soglia per Sapienza 16–25 senza Chirurgo. Il tool non inventa il valore: usa Chirurgo oppure applica l’indicazione del Narratore.';input.value='';input.disabled=true;setOutcome(out,'soglia non specificata','pending');return;} 
+  var extra=config.fixedExtra||0, soglia=base+tecnicaEff+classBonus+pBonus+bonusData.thresholdTotal+extra; 
+  var parts=base+' '+config.levelWord+' + '+tecnica+' Tecnica';if(bonusData.paramTotal)parts+=' + '+bonusData.paramTotal+' bonus al Parametro = '+tecnicaEff+' Tecnica effettiva';parts+=' + '+classBonus+' Classificazione '+classLabel; 
+  if(pSel&&pBonus){parts+=' + '+pBonus+' Pozione';} if(bonusData.thresholdTotal){parts+=' + '+bonusData.thresholdTotal+' bonus alla soglia';} if(extra){parts+=' + '+extra+' dinamica già nota';} 
+  var auto=soglia>config.faces, label=config.tagName+' '+classLabel+' - '+(nome||'PG')+((config.tagName!=='Diagnosi'&&symptom)?' · Sintomo: '+symptom:''); 
+  if(auto){textarea.value='SUCCESSO AUTOMATICO — '+label+' (soglia '+soglia+'/'+config.faces+': '+parts+' = '+soglia+')';note.style.display='block';note.textContent='Soglia superiore a '+config.faces+': successo autoconclusivo, il tiro non è necessario.'+(config.tagName!=='Diagnosi'&&!symptom?' Indica il Sintomo specifico e conferma l’esito automatico per consolidare questa azione.':'');input.value='';input.disabled=true;setOutcome(out,config.successWord+' · AUTOMATICO','success');if(confirm){confirm.style.display='inline-block';confirm.textContent='Conferma esito automatico';}return;} 
+  textarea.value='[dice=1d'+config.faces+']'+label+' (Riesce se 1-'+soglia+': '+parts+' = '+soglia+')[/dice]'; 
+  var v=inputInt('rp_curaResult_'+rid); if(v===null){setOutcome(out,'in attesa','pending');return;} if(!isIntInRange(v,1,config.faces)){setOutcome(out,'RISULTATO IMPOSSIBILE','fail');return;} 
+  if(v<=soglia){setOutcome(out,config.successWord,'success');}else{setOutcome(out,config.failWord,'fail');} if(confirm)confirm.style.display='inline-block'; 
  } 
- function addRow(){ 
- curaRowCounter++; var rid=curaRowCounter, row=document.createElement('div'); row.className='curaRow'; row.setAttribute('data-row-id',rid); row.style.borderTop='1px dashed var(--line)'; row.style.paddingTop='14px'; row.style.marginTop='14px'; 
- var h='<div class="field-row"><div class="field"><label>Classificazione</label><select class="classSel" id="rp_curaClass_'+rid+'">'+buildOptionsHtml(config.classList)+'</select></div>'; 
- if(config.showPozione){h+='<div class="field"><label>Pozione usata</label><select class="pozioneSel" id="rp_curaPozione_'+rid+'">'+buildOptionsHtml(POZIONE_BONUS)+'</select></div>';} 
- h+='<div class="field"><label>Bonus Conoscenze Medimagiche (0-5)</label><input class="conoBonus" id="rp_curaCono_'+rid+'" type="number" min="0" max="5" step="1" value="0"></div><div class="field" style="display:flex;align-items:flex-end;justify-content:flex-end"><button type="button" class="remove-btn removeRowBtn">rimuovi '+config.rowNoun+'</button></div></div>' 
- +'<div class="nota autoNote" id="rp_curaNote_'+rid+'" style="display:none;padding:8px 14px;font-size:12.5px"></div><div class="dice-tag"><textarea readonly id="rp_diceRow_'+rid+'"></textarea><button type="button" class="copy-btn" data-target="rp_diceRow_'+rid+'">Copia</button></div><div class="result-row"><label>Risultato 1d'+config.faces+'</label><input class="rowResult" id="rp_curaResult_'+rid+'" type="number" min="1" max="'+config.faces+'" step="1"><span class="outcome pending" id="rp_curaOutcome_'+rid+'">in attesa</span></div>'; 
- row.innerHTML=h; card.querySelector('.rowsList').appendChild(row); 
- row.querySelector('.removeRowBtn').addEventListener(evtName,function(){row.parentNode.removeChild(row);}); 
- var watched=row.querySelectorAll('.classSel,.pozioneSel,.conoBonus,.rowResult');for(var i=0;i<watched.length;i++){watched[i].addEventListener('input',function(){refreshRow(row);});watched[i].addEventListener('change',function(){refreshRow(row);});} 
- refreshRow(row); 
+ function commitResult(row){
+  if(isCommitted(row))return;
+  var rid=row.getAttribute('data-row-id'),input=byId('rp_curaResult_'+rid),v=inputInt('rp_curaResult_'+rid);
+  var symptomEl=byId('rp_curaSintomo_'+rid),symptom=symptomEl?String(symptomEl.value||'').trim():'';
+  if(config.tagName!=='Diagnosi'&&!symptom&&!window.__RP_IS_RESTORING__){var warn=byId('rp_curaNote_'+rid);if(warn){warn.style.display='block';warn.textContent='Indica il nome del Sintomo specifico prima di confermare il risultato: l’eventuale Complicazione deve restare associata al Sintomo corretto.';}return;}
+  var bonusData=collectBonusData(row,true);if(bonusData.error)return;
+  refreshRow(row);var out=byId('rp_curaOutcome_'+rid),textarea=byId('rp_diceRow_'+rid),note=byId('rp_curaNote_'+rid);if(!out||out.classList.contains('pending'))return;
+  var automatic=!!(input&&input.disabled&&(out.classList.contains('success')||out.classList.contains('fail')));if(!automatic&&!isIntInRange(v,1,config.faces))return;
+  bonusData=autoConsumeEffects(row,bonusData);
+  var failed=out.classList.contains('fail');if(failed&&config.tagName!=='Diagnosi'&&symptom){note.style.display='block';note.textContent='Fallimento: il Paziente subisce la Complicazione prevista per il Sintomo «'+symptom+'».';}
+  var snap={result:automatic?null:v,automatic:automatic,dice:textarea.value,outcomeText:out.textContent,outcomeKind:failed?'fail':'success',noteText:note.style.display!=='none'?note.textContent:'',failed:failed,symptomName:symptom,effects:bonusData.effects,bonusParam:bonusData.paramTotal,bonusSoglia:bonusData.thresholdTotal,bonusFatigue:bonusData.fatigueTotal,baseTecnica:bonusData.baseTecnica};
+  row.removeAttribute('data-result-invalidated');row.setAttribute('data-result-snapshot',JSON.stringify(snap));row.setAttribute('data-result-committed','1');renderCommitted(row);if(typeof window.__RP_RENDER_FINAL_EFFECTS__==='function')window.__RP_RENDER_FINAL_EFFECTS__();
+ }
+ function markCompletionDirty(){var cc=byId('rp_completion_confirm');if(cc&&cc.checked){cc.checked=false;try{cc.dispatchEvent(new Event('change',{bubbles:true}));}catch(e){}}}
+ function invalidateCommittedRow(row,message){var oldSnap=committedSnapshot(row);restoreConsumedOnCorrection(row,oldSnap);row.removeAttribute('data-result-committed');row.removeAttribute('data-result-snapshot');row.setAttribute('data-result-invalidated','1');setRowInputsLocked(row,false);var rm=row.querySelector('.removeRowBtn');if(rm)rm.disabled=false;var rid=row.getAttribute('data-row-id'),input=byId('rp_curaResult_'+rid);if(input)input.value='';refreshRow(row);if(message){var note=byId('rp_curaNote_'+rid);if(note){note.style.display='block';note.textContent=message;}}}
+ function invalidateCardCommitted(message){var rows=card.querySelectorAll('.curaRow[data-result-committed="1"]');if(!rows.length)return false;for(var i=0;i<rows.length;i++)invalidateCommittedRow(rows[i],message);markCompletionDirty();syncCardRemoval();if(typeof window.__RP_RENDER_FINAL_EFFECTS__==='function')window.__RP_RENDER_FINAL_EFFECTS__();return true;}
+ function unlockCorrection(row){invalidateCommittedRow(row,'Risultato invalidato per correzione: completa di nuovo questa prova e conferma il nuovo risultato.');markCompletionDirty();syncCardRemoval();if(typeof window.__RP_RENDER_FINAL_EFFECTS__==='function')window.__RP_RENDER_FINAL_EFFECTS__();}
+
+ function bonusSeed(row){var out=[],rs=bonusRows(row),snap=committedSnapshot(row),ei=0;for(var i=0;i<rs.length;i++){var r=rs[i],obj={origin:r.querySelector('.bonus-origin').value,source:r.querySelector('.bonus-source').value,kind:r.querySelector('.bonus-kind').value,value:r.querySelector('.bonus-value').value,condition:r.querySelector('.bonus-condition').value,fatigue:r.querySelector('.bonus-fatigue').value,available:r.querySelector('.bonus-available').value,used:r.querySelector('.bonus-used').value,applied:r.querySelector('.bonus-applied').checked};if(obj.applied&&Number(obj.value)&&snap&&Array.isArray(snap.effects)&&snap.effects[ei]){var ef=snap.effects[ei++];obj.used=String(ef.baselineUsed!=null?ef.baselineUsed:Math.max(0,Number(ef.used||0)-(ef.autoConsumed?1:0)));}out.push(obj);}return out;}
+ function rowSeed(row){var rid=row.getAttribute('data-row-id'),p=byId('rp_curaPozione_'+rid),sym=byId('rp_curaSintomo_'+rid);var bs=bonusSeed(row);for(var i=0;i<bs.length;i++)bs[i].applied=false;return {classIndex:byId('rp_curaClass_'+rid).value,potionIndex:p?p.value:null,bonuses:bs,symptomName:sym?sym.value:''};}
+ function addBonusRow(row,seed,isLegacy){
+  bonusSeq++;var bid=bonusSeq,item=document.createElement('div');item.className='bonus-item';item.setAttribute('data-bonus-id',bid);
+  var valueId=isLegacy?'rp_curaCono_'+row.getAttribute('data-row-id'):'rp_bonusValue_'+row.getAttribute('data-row-id')+'_'+bid;
+  var origin=seed&&seed.origin?seed.origin:(isLegacy?'conoscenza':'oggetto'),src=seed&&seed.source!=null?seed.source:(isLegacy?'Conoscenze Medimagiche':''),kind=seed&&seed.kind?seed.kind:'soglia',value=seed&&seed.value!=null?seed.value:'0',condition=seed&&seed.condition!=null?seed.condition:'',fatigue=seed&&seed.fatigue!=null?seed.fatigue:'0',available=seed&&seed.available!=null?seed.available:'0',used=seed&&seed.used!=null?seed.used:'0',applied=seed&&seed.applied!=null?!!seed.applied:!!isLegacy;
+  item.innerHTML='<div class="bonus-mini"><label>Origine</label><select class="bonus-origin" id="rp_bonusOrigin_'+row.getAttribute('data-row-id')+'_'+bid+'"><option value="conoscenza">Conoscenza Medimagica</option><option value="oggetto">Oggetto</option><option value="altro">Altro supporto</option></select></div><div class="bonus-mini"><label>Nome / Fonte</label><input class="bonus-source" id="rp_bonusSource_'+row.getAttribute('data-row-id')+'_'+bid+'" type="text"></div>'+
+   '<div class="bonus-mini"><label>Tipo / su cosa agisce</label><select class="bonus-kind" id="rp_bonusKind_'+row.getAttribute('data-row-id')+'_'+bid+'"><option value="soglia">Possibilità extra · soglia</option><option value="tecnica">Bonus al Parametro · Tecnica</option></select></div>'+
+   '<div class="bonus-mini"><label>Valore</label><input class="bonus-value" id="'+valueId+'" type="number" min="0" step="1"></div>'+
+   '<div class="bonus-mini"><label>Fatica</label><input class="bonus-fatigue" id="rp_bonusFatigue_'+row.getAttribute('data-row-id')+'_'+bid+'" type="number" min="0" step="0.5" data-allow-decimal="1"></div>'+
+   '<div class="bonus-mini"><label>Usi disponibili (0 = senza limite)</label><input class="bonus-available" id="rp_bonusAvail_'+row.getAttribute('data-row-id')+'_'+bid+'" type="number" min="0" step="1"></div>'+
+   '<div class="bonus-mini"><label>Usi consumati prima della Ricerca</label><input class="bonus-used" id="rp_bonusUsed_'+row.getAttribute('data-row-id')+'_'+bid+'" type="number" min="0" step="1"></div>'+
+   '<div><label class="bonus-apply"><input class="bonus-applied" id="rp_bonusApply_'+row.getAttribute('data-row-id')+'_'+bid+'" type="checkbox">Applica</label><button type="button" class="remove-btn bonus-remove">elimina</button></div>'+
+   '<div class="bonus-mini" style="grid-column:1/-1"><label>Condizione / efficacia (facoltativa)</label><input class="bonus-condition" id="rp_bonusCond_'+row.getAttribute('data-row-id')+'_'+bid+'" type="text" placeholder="Es. 100% Studente"></div>';
+  row.querySelector('.bonus-list').appendChild(item);item.querySelector('.bonus-origin').value=origin;item.querySelector('.bonus-source').value=src;item.querySelector('.bonus-kind').value=kind;item.querySelector('.bonus-value').value=String(value);item.querySelector('.bonus-condition').value=condition;item.querySelector('.bonus-fatigue').value=String(fatigue);item.querySelector('.bonus-available').value=String(available);item.querySelector('.bonus-used').value=String(used);item.querySelector('.bonus-applied').checked=applied;
+  var controls=item.querySelectorAll('input,select');for(var i=0;i<controls.length;i++){controls[i].addEventListener('input',function(){if(!isCommitted(row))refreshRow(row);});controls[i].addEventListener('change',function(){if(!isCommitted(row))refreshRow(row);});}
+  item.querySelector('.bonus-remove').addEventListener(evtName,function(){if(isCommitted(row)&&!window.__RP_IS_RESTORING__)return;if(item.parentNode)item.parentNode.removeChild(item);refreshRow(row);});prepareAllNumeric(item);return item;
+ }
+ function addRow(seed){ 
+  curaRowCounter++; var rid=curaRowCounter, row=document.createElement('div'); row.className='curaRow'; row.setAttribute('data-row-id',rid); row.style.borderTop='1px dashed var(--line)'; row.style.paddingTop='14px'; row.style.marginTop='14px'; 
+  var h='<div class="field-row"><div class="field"><label>Classificazione</label><select class="classSel" id="rp_curaClass_'+rid+'">'+buildOptionsHtml(config.classList)+'</select></div>'; 
+  if(config.showPozione){h+='<div class="field"><label>Pozione usata</label><select class="pozioneSel" id="rp_curaPozione_'+rid+'">'+buildOptionsHtml(POZIONE_BONUS)+'</select></div>';} 
+  h+='<div class="field bonus-field"><label>Bonus da Oggetti / Conoscenze</label><div class="bonus-list"></div><button type="button" class="add-btn bonus-add">+ Aggiungi bonus</button><div class="bonus-status"></div></div><div class="field" style="display:flex;align-items:flex-end;justify-content:flex-end"><button type="button" class="remove-btn removeRowBtn">rimuovi '+config.rowNoun+'</button></div></div>' 
+  +'<div class="nota autoNote" id="rp_curaNote_'+rid+'" style="display:none;padding:8px 14px;font-size:12.5px"></div><div class="dice-tag"><textarea readonly id="rp_diceRow_'+rid+'"></textarea><button type="button" class="copy-btn" data-target="rp_diceRow_'+rid+'">Copia</button></div><div class="result-row"><label>Risultato 1d'+config.faces+'</label><input class="rowResult" id="rp_curaResult_'+rid+'" type="number" min="1" max="'+config.faces+'" step="1"><span class="outcome pending" id="rp_curaOutcome_'+rid+'">in attesa</span><button type="button" class="retry-btn confirmResultBtn" style="display:none">Conferma risultato</button><button type="button" class="retry-btn editResultBtn" style="display:none">Correggi risultato</button><button type="button" class="retry-btn retryAttemptBtn" style="display:none">Nuovo tentativo</button></div>'; 
+  row.innerHTML=h; card.querySelector('.rowsList').appendChild(row); 
+  if(config.tagName!=='Diagnosi'){var symptomBox=document.createElement('div');symptomBox.className='field symptom-specific-field';symptomBox.style.marginTop='12px';symptomBox.innerHTML='<label>Sintomo specifico</label><input class="symptomName" id="rp_curaSintomo_'+rid+'" type="text" placeholder="Es. Bruciore Cutaneo">';row.appendChild(symptomBox);}
+  if(seed){byId('rp_curaClass_'+rid).value=String(seed.classIndex==null?0:seed.classIndex);if(config.showPozione&&byId('rp_curaPozione_'+rid)&&seed.potionIndex!=null)byId('rp_curaPozione_'+rid).value=String(seed.potionIndex);var symptomSeed=byId('rp_curaSintomo_'+rid);if(symptomSeed&&seed.symptomName!=null)symptomSeed.value=String(seed.symptomName);}
+  var seeds=seed&&Array.isArray(seed.bonuses)&&seed.bonuses.length?seed.bonuses:null;if(seeds){for(var bs=0;bs<seeds.length;bs++)addBonusRow(row,seeds[bs],bs===0);}else addBonusRow(row,null,true);
+  row.querySelector('.bonus-add').addEventListener(evtName,function(){addBonusRow(row,null,false);refreshRow(row);});
+  row.querySelector('.removeRowBtn').addEventListener(evtName,function(){if(isCommitted(row)&&!window.__RP_IS_RESTORING__)return;row.parentNode.removeChild(row);syncCardRemoval();if(typeof window.__RP_RENDER_FINAL_EFFECTS__==='function')window.__RP_RENDER_FINAL_EFFECTS__();}); 
+  var settings=row.querySelectorAll('.classSel,.pozioneSel');for(var i=0;i<settings.length;i++){settings[i].addEventListener('input',function(){refreshRow(row);});settings[i].addEventListener('change',function(){refreshRow(row);});}
+  var result=row.querySelector('.rowResult');result.addEventListener('input',function(){if(!isCommitted(row))refreshRow(row);});result.addEventListener('change',function(){if(!isCommitted(row))refreshRow(row);});var symptomInput=row.querySelector('.symptomName');if(symptomInput){symptomInput.addEventListener('input',function(){if(!isCommitted(row))refreshRow(row);});symptomInput.addEventListener('change',function(){if(!isCommitted(row))refreshRow(row);});}
+  row.querySelector('.confirmResultBtn').addEventListener(evtName,function(){commitResult(row);});
+  row.querySelector('.editResultBtn').addEventListener(evtName,function(){unlockCorrection(row);});
+  row.querySelector('.retryAttemptBtn').addEventListener(evtName,function(){addRow(rowSeed(row));});
+  prepareAllNumeric(row);refreshRow(row);return row; 
  } 
- var head=card.querySelectorAll('.nome,.livello,.tecnica');for(var i=0;i<head.length;i++){head[i].addEventListener('input',recomputeAll);head[i].addEventListener('change',recomputeAll);} 
- card.querySelector('.remove-btn').addEventListener(evtName,function(){card.parentNode.removeChild(card);}); card.querySelector('.addRowBtn').addEventListener(evtName,addRow); addRow(); 
+ var names=card.querySelectorAll('.nome');for(var ni=0;ni<names.length;ni++){names[ni].addEventListener('input',recomputeAll);names[ni].addEventListener('change',recomputeAll);}var formulaHeads=card.querySelectorAll('.livello,.tecnica');for(var hi=0;hi<formulaHeads.length;hi++){formulaHeads[hi].addEventListener('input',function(){if(!invalidateCardCommitted('Risultati invalidati: è cambiato un dato del personaggio usato nella formula. Ripeti e riconferma le prove interessate.'))recomputeAll();});formulaHeads[hi].addEventListener('change',function(){if(!invalidateCardCommitted('Risultati invalidati: è cambiato un dato del personaggio usato nella formula. Ripeti e riconferma le prove interessate.'))recomputeAll();});} 
+ card.querySelector('.pg-head .remove-btn').addEventListener(evtName,function(){if(card.querySelector('.curaRow[data-result-committed="1"]')&&!window.__RP_IS_RESTORING__)return;card.parentNode.removeChild(card);if(typeof window.__RP_RENDER_FINAL_EFFECTS__==='function')window.__RP_RENDER_FINAL_EFFECTS__();}); card.querySelector('.addRowBtn').addEventListener(evtName,function(){addRow();}); addRow();syncCardRemoval();prepareAllNumeric(card); 
 } 
 function addDiagCard(){diagNameCounter++;buildCuraCard({listId:'rp_diagList',defaultName:'Personaggio '+diagNameCounter,levelLabel:'Livello Diagnosta',levels:DIAG_LEVELS,levelWord:'Guida alla Medimagia',classList:DIAG_CLASS,rowNoun:'Classificazione',faces:40,fixedExtra:3,showPozione:false,tagName:'Diagnosi',successWord:'sintomi individuati',failWord:'sintomo mancato — puoi ritentare'});} 
 function addTerapiaCard(){terapiaNameCounter++;buildCuraCard({listId:'rp_terapiaList',defaultName:'Personaggio '+terapiaNameCounter,levelLabel:'Livello Terapista',levels:TER_LEVELS,levelWord:'Guida alla Medimagia',classList:TER_CLASS,rowNoun:'Sintomo',faces:40,fixedExtra:0,showPozione:true,tagName:'Terapia',successWord:'sintomo trattato',failWord:'complicazione'});} 
@@ -983,9 +1159,14 @@ byId('rp_addDiagBtn').addEventListener(evtName,addDiagCard);byId('rp_addTerapiaB
 function resetAll(){ 
  byId('rp_pgList').innerHTML='';byId('rp_diagList').innerHTML='';byId('rp_terapiaList').innerHTML='';byId('rp_chirurgiaList').innerHTML=''; 
  pgCounter=0;curaRowCounter=0;curaCardCounter=0;diagNameCounter=0;terapiaNameCounter=0;chirurgiaNameCounter=0;attemptsLeft=3;byId('rp_attemptsN').textContent='3'; 
+ var ec=byId('rp_eligibility_confirm');if(ec)ec.checked=false;var cc=byId('rp_completion_confirm');if(cc)cc.checked=false;
  resetPatient();addPgCard();addPgCard();addDiagCard();addTerapiaCard();addChirurgiaCard();refreshRemoveButtons();updateLocks();goToFase(1); 
 } 
 byId('rp_resetAll').addEventListener(evtName,resetAll); 
+try{window.__RP_RESET_FOR_SESSION__=resetAll;window.__RP_FINALIZE_CLINICAL_LOCKS__=function(){
+ var rows=root.querySelectorAll('#rp_fase3 .curaRow');for(var i=0;i<rows.length;i++){var rm=rows[i].querySelector('.removeRowBtn');if(rm)rm.disabled=rows[i].getAttribute('data-result-committed')==='1';}
+ var cards=root.querySelectorAll('#rp_fase3 .pg-card');for(var j=0;j<cards.length;j++){var top=cards[j].querySelector('.pg-head .remove-btn');if(top)top.disabled=!!cards[j].querySelector('.curaRow[data-result-committed="1"]');}
+};}catch(e){}
 resetAll(); 
 })(); 
 </script>
@@ -1030,6 +1211,7 @@ var NARRATOR_UID='TFgqfVrFLjW5SwqRFXmEi8tDhtM2';
 var FB={app:null,auth:null,db:null,user:null};
 var CURRENT_SESSION=null,CURRENT_SESSION_DATA=null,SESSION_READONLY=false;
 var SESSION_ACTIONS=[],RESTORING_SESSION=false,SAVE_TIMER=null,SAVE_IN_FLIGHT=false,PENDING_SAVE=false;
+var SESSION_DELETING=false,LAST_SAVE_OK=true,CREATING_SESSION=false;
 
 function sq(id){return document.getElementById(id);}
 function workspace(){return sq('pazienti-workspace');}
@@ -1054,7 +1236,7 @@ function primaryPgName(){
 function patientLabel(){
   var sub=sq('rp_subLabel');
   if(sub&&sub.style.display!=='none'&&String(sub.textContent||'').trim()){
-    var s=cleanLabel(sub.textContent,'Causa','vedi Sintomi');if(s)return s;
+    var ss=cleanLabel(sub.textContent,'Causa','vedi Sintomi');if(ss)return ss;
   }
   var tipo=sq('rp_tipoLabel');
   if(tipo&&tipo.style.display!=='none'&&String(tipo.textContent||'').trim()){
@@ -1097,80 +1279,108 @@ function actionFromEvent(e){
   }
   if(['INPUT','SELECT','TEXTAREA'].indexOf(target.tagName)===-1||target.readOnly)return null;
   if(target.tagName==='SELECT'&&e.type!=='change')return null;
-  if(target.tagName!=='SELECT'&&e.type!=='input')return null;
+  if(target.tagName!=='SELECT'&&e.type!=='input'&&e.type!=='change')return null;
   return {type:e.type,loc:elementPath(target),value:target.value,checked:!!target.checked};
 }
 function sameLoc(a,b){return JSON.stringify(a||null)===JSON.stringify(b||null);}
 function recordAction(e){
-  if(RESTORING_SESSION||SESSION_READONLY||!CURRENT_SESSION||!sessionCanEdit(CURRENT_SESSION_DATA))return;
+  if(RESTORING_SESSION||SESSION_READONLY||SESSION_DELETING||!CURRENT_SESSION||!sessionCanEdit(CURRENT_SESSION_DATA))return;
   var a=actionFromEvent(e);if(!a||!a.loc)return;
   var last=SESSION_ACTIONS.length?SESSION_ACTIONS[SESSION_ACTIONS.length-1]:null;
-  if(last&&a.type===last.type&&(a.type==='input'||a.type==='change')&&sameLoc(a.loc,last.loc))SESSION_ACTIONS[SESSION_ACTIONS.length-1]=a;
+  if(last&&(a.type==='input'||a.type==='change')&&(last.type==='input'||last.type==='change')&&sameLoc(a.loc,last.loc))SESSION_ACTIONS[SESSION_ACTIONS.length-1]=a;
   else SESSION_ACTIONS.push(a);
   updateToolbar();scheduleSave();
 }
 function attachRecorder(){var w=workspace();if(!w||w.getAttribute('data-session-recorder')==='1')return;w.setAttribute('data-session-recorder','1');['input','change','click'].forEach(function(ev){w.addEventListener(ev,recordAction,true);});}
 function replayActions(actions){
-  RESTORING_SESSION=true;
+  RESTORING_SESSION=true;try{window.__RP_IS_RESTORING__=true;}catch(e){}
   try{
     (actions||[]).forEach(function(a){
       var t=resolveTarget(a);if(!t){console.warn('Ricerca Pazienti: azione di ripristino non trovata',a);return;}
       if(a.type==='click'){if(!t.disabled&&typeof t.click==='function')t.click();}
       else{if('value' in t)t.value=a.value==null?'':String(a.value);if('checked' in t)t.checked=!!a.checked;t.dispatchEvent(new Event(a.type,{bubbles:true}));}
     });
+  }finally{RESTORING_SESSION=false;try{window.__RP_IS_RESTORING__=false;}catch(e){}}
+}
+function applyInitialPgName(name){
+  RESTORING_SESSION=true;
+  try{var first=sq('rp_pgList')?sq('rp_pgList').querySelector('.pg-card .nome'):null;if(first&&name){first.value=name;first.dispatchEvent(new Event('input',{bubbles:true}));}}
+  finally{RESTORING_SESSION=false;}
+}
+function resetWorkspaceForSession(){
+  clearWorkspaceReadOnlyLocks();
+  RESTORING_SESSION=true;
+  try{if(typeof window.__RP_RESET_FOR_SESSION__==='function')window.__RP_RESET_FOR_SESSION__();if(typeof window.__RP_RESET_FLOW__==='function')window.__RP_RESET_FLOW__();}
+  finally{RESTORING_SESSION=false;}
+}
+function migrateLegacyConfirmations(data){
+  var ver=String(data&&data.toolVersion||'');if(ver==='v6'||ver==='v7'||ver==='v8'||ver==='v9'||ver==='v10'||ver==='v11')return;
+  /* Le versioni precedenti non avevano la conferma dei requisiti: la si migra per non bloccare
+     sessioni già avviate. La conferma di intervento completato, invece, NON è inferibile in modo
+     affidabile da vecchi tiri clinici e deve restare esplicita. */
+  RESTORING_SESSION=true;
+  try{
+    var elig=sq('rp_eligibility_confirm');if(elig&&!elig.checked){elig.checked=true;elig.dispatchEvent(new Event('change',{bubbles:true}));SESSION_ACTIONS.push({type:'change',loc:{id:'rp_eligibility_confirm'},value:elig.value||'on',checked:true});}
   }finally{RESTORING_SESSION=false;}
 }
-function setWorkspaceReadOnly(ro){
-  SESSION_READONLY=!!ro;var w=workspace();if(!w)return;
-  if(SESSION_READONLY){
-    Array.prototype.forEach.call(w.querySelectorAll('input,select,textarea'),function(n){if(n.getAttribute('data-session-control')==='1')return;n.disabled=true;});
-    Array.prototype.forEach.call(w.querySelectorAll('button'),function(n){
-      if(n.getAttribute('data-session-control')==='1')return;
-      if(isCopyButton(n)){n.disabled=false;return;}
-      if(n.closest&&n.closest('nav.steps'))return;
-      n.disabled=true;
-    });
-  }
-  updateToolbar();
+function clearWorkspaceReadOnlyLocks(){var w=workspace();if(!w)return;Array.prototype.forEach.call(w.querySelectorAll('[data-readonly-disabled="1"]'),function(n){n.disabled=false;n.removeAttribute('data-readonly-disabled');});}
+function applyWorkspaceReadOnlyLocks(){
+  var w=workspace();if(!w||!SESSION_READONLY)return;
+  Array.prototype.forEach.call(w.querySelectorAll('input,select,textarea,button'),function(n){
+    if(n.getAttribute('data-session-control')==='1')return;
+    if(n.tagName==='BUTTON'&&isCopyButton(n))return;
+    if(n.closest&&n.closest('nav.steps'))return;
+    if(n.disabled)return;
+    n.setAttribute('data-readonly-disabled','1');n.disabled=true;
+  });
 }
+function setWorkspaceReadOnly(ro){var next=!!ro;if(!next)clearWorkspaceReadOnlyLocks();SESSION_READONLY=next;if(SESSION_READONLY)applyWorkspaceReadOnlyLocks();updateToolbar();}
+try{window.__RP_REAPPLY_READONLY__=function(){if(SESSION_READONLY)applyWorkspaceReadOnlyLocks();};}catch(e){}
 function payload(){
   var name=primaryPgName(),paz=patientLabel();
-  return {
-    ownerUid:CURRENT_SESSION_DATA.ownerUid,
-    initialPgName:CURRENT_SESSION_DATA.initialPgName||name,
-    pgName:name,
-    tipoPaziente:paz,
-    updatedAt:firebase.firestore.FieldValue.serverTimestamp(),
-    toolVersion:'v2-standard',
-    actionLog:SESSION_ACTIONS
-  };
+  return {ownerUid:CURRENT_SESSION_DATA.ownerUid,initialPgName:CURRENT_SESSION_DATA.initialPgName||name,pgName:name,tipoPaziente:paz,updatedAt:firebase.firestore.FieldValue.serverTimestamp(),toolVersion:'v11',actionLog:SESSION_ACTIONS};
 }
-function scheduleSave(){if(!CURRENT_SESSION||SESSION_READONLY||!sessionCanEdit(CURRENT_SESSION_DATA))return;setStatus('save-status','Salvataggio automatico…','');if(SAVE_TIMER)clearTimeout(SAVE_TIMER);SAVE_TIMER=setTimeout(saveNow,850);}
+function scheduleSave(){
+  if(!CURRENT_SESSION||SESSION_READONLY||SESSION_DELETING||!sessionCanEdit(CURRENT_SESSION_DATA))return;
+  setStatus('save-status','Salvataggio automatico…','');if(SAVE_TIMER)clearTimeout(SAVE_TIMER);
+  SAVE_TIMER=setTimeout(function(){SAVE_TIMER=null;saveNow();},850);
+}
 function saveNow(){
-  if(!CURRENT_SESSION||SESSION_READONLY||!sessionCanEdit(CURRENT_SESSION_DATA))return Promise.resolve();
-  if(SAVE_IN_FLIGHT){PENDING_SAVE=true;return Promise.resolve();}
+  if(!CURRENT_SESSION||SESSION_READONLY||SESSION_DELETING||!sessionCanEdit(CURRENT_SESSION_DATA))return Promise.resolve(true);
+  if(SAVE_IN_FLIGHT){PENDING_SAVE=true;return Promise.resolve(null);}
   SAVE_IN_FLIGHT=true;PENDING_SAVE=false;var p=payload();
   return FB.db.collection(SESSION_COLLECTION).doc(CURRENT_SESSION).set(p,{merge:true}).then(function(){
-    Object.keys(p).forEach(function(k){if(k!=='updatedAt')CURRENT_SESSION_DATA[k]=p[k];});
-    setStatus('save-status','Ricerca salvata automaticamente ✓','ok');updateToolbar();
-  }).catch(function(err){console.error(err);setStatus('save-status','Errore di salvataggio: non chiudere la pagina.','bad');}).finally(function(){SAVE_IN_FLIGHT=false;if(PENDING_SAVE){PENDING_SAVE=false;scheduleSave();}});
+    LAST_SAVE_OK=true;Object.keys(p).forEach(function(k){if(k!=='updatedAt')CURRENT_SESSION_DATA[k]=p[k];});CURRENT_SESSION_DATA.updatedAt=firebase.firestore.Timestamp.now();
+    setStatus('save-status','Ricerca salvata automaticamente ✓','ok');updateToolbar();return true;
+  }).catch(function(err){LAST_SAVE_OK=false;console.error(err);setStatus('save-status','Errore di salvataggio: non chiudere la pagina.','bad');return false;}).finally(function(){SAVE_IN_FLIGHT=false;if(PENDING_SAVE){PENDING_SAVE=false;scheduleSave();}});
 }
-function seedInitialPgName(){
-  if(SESSION_ACTIONS.length||!CURRENT_SESSION_DATA)return;
-  var first=sq('rp_pgList')?sq('rp_pgList').querySelector('.pg-card .nome'):null;
-  var name=(CURRENT_SESSION_DATA.initialPgName||CURRENT_SESSION_DATA.pgName||'').trim();
-  if(first&&name){first.value=name;first.dispatchEvent(new Event('input',{bubbles:true}));}
-}
+function waitForSessionSaveDrain(){return new Promise(function(resolve){function check(){if(!SAVE_IN_FLIGHT&&!PENDING_SAVE&&!SAVE_TIMER){resolve();return;}setTimeout(check,40);}check();});}
 function openSessionDoc(id,data){
-  CURRENT_SESSION=id;CURRENT_SESSION_DATA=data;SESSION_ACTIONS=Array.isArray(data.actionLog)?data.actionLog.slice():[];SESSION_READONLY=!sessionCanEdit(data);
+  clearWorkspaceReadOnlyLocks();var wantReadOnly=!sessionCanEdit(data);
+  CURRENT_SESSION=id;CURRENT_SESSION_DATA=data;SESSION_ACTIONS=Array.isArray(data.actionLog)?data.actionLog.slice():[];SESSION_READONLY=false;SESSION_DELETING=false;LAST_SAVE_OK=true;
+  var ver=String(data&&data.toolVersion||'');
+  /* La v6 poteva auto-inserire la conferma finale durante la migrazione: per sicurezza viene richiesta
+     di nuovo. Si perdono solo la spunta, mai i dati clinici. */
+  if(ver==='v6')SESSION_ACTIONS=SESSION_ACTIONS.filter(function(a){return !(a&&a.loc&&a.loc.id==='rp_completion_confirm');});
+  /* La v8 conteneva un bug di migrazione che poteva auto-spuntare l'idoneità anche senza conferma
+     dell'utente. Le spunte v8 non sono quindi affidabili: la v9 le richiede di nuovo. */
+  if(ver==='v8')SESSION_ACTIONS=SESSION_ACTIONS.filter(function(a){return !(a&&a.loc&&a.loc.id==='rp_eligibility_confirm');});
+  resetWorkspaceForSession();
   if(sq('pazienti-session-home'))sq('pazienti-session-home').style.display='none';if(workspace())workspace().style.display='block';
-  replayActions(SESSION_ACTIONS);seedInitialPgName();setWorkspaceReadOnly(SESSION_READONLY);updateToolbar();
+  applyInitialPgName(data.initialPgName||data.pgName||'PG');replayActions(SESSION_ACTIONS);if(typeof window.__RP_FINALIZE_CLINICAL_LOCKS__==='function')window.__RP_FINALIZE_CLINICAL_LOCKS__();migrateLegacyConfirmations(data);
+  setWorkspaceReadOnly(wantReadOnly);updateToolbar();
   setStatus('save-status',SESSION_READONLY?'Modalità sola lettura.':'Ricerca caricata · autosalvataggio attivo',SESSION_READONLY?'':'ok');
-  setTimeout(function(){window.scrollTo({top:0,behavior:'smooth'});},20);
+  setTimeout(function(){if(typeof window.__RP_RESUME_SESSION__==='function')window.__RP_RESUME_SESSION__();if(SESSION_READONLY)applyWorkspaceReadOnlyLocks();},100);
+}
+function resetSessionRuntimeAfterLoadError(){
+  clearWorkspaceReadOnlyLocks();CURRENT_SESSION=null;CURRENT_SESSION_DATA=null;SESSION_ACTIONS=[];SESSION_READONLY=false;SESSION_DELETING=false;
+  if(SAVE_TIMER){clearTimeout(SAVE_TIMER);SAVE_TIMER=null;}PENDING_SAVE=false;SAVE_IN_FLIGHT=false;LAST_SAVE_OK=true;
+  try{if(window.history&&window.history.replaceState)window.history.replaceState(null,'',window.location.pathname+window.location.search);else window.location.hash='';}catch(e){try{window.location.hash='';}catch(e2){}}
+  if(workspace())workspace().style.display='none';if(sq('pazienti-session-home'))sq('pazienti-session-home').style.display='block';
 }
 function loadSession(id){
   setStatus('session-home-msg','Caricamento Ricerca…','');
-  return FB.db.collection(SESSION_COLLECTION).doc(id).get().then(function(doc){if(!doc.exists)throw new Error('La Ricerca non esiste più.');openSessionDoc(doc.id,doc.data());setStatus('session-home-msg','','');}).catch(function(err){console.error(err);setStatus('session-home-msg','Impossibile aprire la Ricerca: '+err.message,'bad');if(sq('pazienti-session-home'))sq('pazienti-session-home').style.display='block';});
+  return FB.db.collection(SESSION_COLLECTION).doc(id).get().then(function(doc){if(!doc.exists)throw new Error('La Ricerca non esiste più.');openSessionDoc(doc.id,doc.data());setStatus('session-home-msg','','');}).catch(function(err){console.error(err);resetSessionRuntimeAfterLoadError();setStatus('session-home-msg','Impossibile aprire la Ricerca: '+err.message,'bad');loadSessionList();});
 }
 function loadSessionList(){
   var host=sq('session-list');if(!host||!FB.db||!FB.user)return;host.innerHTML='<div class="session-status">Caricamento sessioni…</div>';
@@ -1189,35 +1399,41 @@ function loadSessionList(){
     });
   }).catch(function(err){console.error(err);host.innerHTML='<div class="session-status bad">Non riesco a leggere le Ricerche in corso: '+String(err.message||err)+'</div>';});
 }
+function setCreatingSession(busy){CREATING_SESSION=!!busy;var inp=sq('new-session-pg'),btn=sq('btn-new-session');if(inp)inp.disabled=CREATING_SESSION;if(btn){btn.disabled=CREATING_SESSION;btn.textContent=CREATING_SESSION?'Creazione…':'+ Nuova Ricerca';}}
 function createSession(){
+  if(CREATING_SESSION)return;
   var inp=sq('new-session-pg'),name=(inp&&inp.value?inp.value:'').trim();
   if(!name){setStatus('session-home-msg','Inserisci prima il nome del PG principale.','bad');if(inp)inp.focus();return;}
   if(!FB.user){setStatus('session-home-msg','Firebase non è ancora pronto. Riprova tra un momento.','bad');return;}
-  setStatus('session-home-msg','Creazione della Ricerca…','');
-  var data={ownerUid:FB.user.uid,initialPgName:name,pgName:name,tipoPaziente:'Paziente da determinare',createdAt:firebase.firestore.FieldValue.serverTimestamp(),updatedAt:firebase.firestore.FieldValue.serverTimestamp(),toolVersion:'v2-standard',actionLog:[]};
-  FB.db.collection(SESSION_COLLECTION).add(data).then(function(ref){navigateToSession(ref.id);}).catch(function(err){console.error(err);setStatus('session-home-msg','Impossibile creare la Ricerca: '+err.message,'bad');});
+  setCreatingSession(true);setStatus('session-home-msg','Creazione della Ricerca…','');
+  var data={ownerUid:FB.user.uid,initialPgName:name,pgName:name,tipoPaziente:'Paziente da determinare',createdAt:firebase.firestore.FieldValue.serverTimestamp(),updatedAt:firebase.firestore.FieldValue.serverTimestamp(),toolVersion:'v11',actionLog:[]};
+  FB.db.collection(SESSION_COLLECTION).add(data).then(function(ref){
+    setCreatingSession(false);if(inp)inp.value='';var localData={};Object.keys(data).forEach(function(k){localData[k]=data[k];});var now=firebase.firestore.Timestamp.now();localData.createdAt=now;localData.updatedAt=now;
+    try{
+      var h='#session='+encodeURIComponent(ref.id);try{if(window.history&&window.history.replaceState)window.history.replaceState(null,'',window.location.pathname+window.location.search+h);else window.location.hash='session='+encodeURIComponent(ref.id);}catch(e){try{window.location.hash='session='+encodeURIComponent(ref.id);}catch(e2){}}
+      openSessionDoc(ref.id,localData);setStatus('session-home-msg','','');
+    }catch(err){console.error(err);resetSessionRuntimeAfterLoadError();setStatus('session-home-msg','Ricerca creata correttamente, ma non riesco ad aprirla automaticamente. Aggiorna l’elenco e aprila da lì.','bad');loadSessionList();}
+  },function(err){setCreatingSession(false);console.error(err);setStatus('session-home-msg','Impossibile creare la Ricerca: '+err.message,'bad');});
 }
-function openDeleteModal(){if(!CURRENT_SESSION||!sessionCanEdit(CURRENT_SESSION_DATA))return;sq('delete-session-check').checked=false;sq('btn-confirm-delete').disabled=true;sq('delete-session-msg').textContent='';sq('delete-session-modal').classList.add('open');sq('delete-session-modal').setAttribute('aria-hidden','false');}
-function closeDeleteModal(){var m=sq('delete-session-modal');if(!m)return;m.classList.remove('open');m.setAttribute('aria-hidden','true');}
+function openDeleteModal(){if(SESSION_DELETING||!CURRENT_SESSION||!sessionCanEdit(CURRENT_SESSION_DATA))return;sq('delete-session-check').checked=false;sq('btn-confirm-delete').disabled=true;sq('delete-session-msg').textContent='';sq('delete-session-modal').classList.add('open');sq('delete-session-modal').setAttribute('aria-hidden','false');}
+function closeDeleteModal(){if(SESSION_DELETING)return;var m=sq('delete-session-modal');if(!m)return;m.classList.remove('open');m.setAttribute('aria-hidden','true');}
 function deleteCurrentSession(){
-  if(!CURRENT_SESSION||!sessionCanEdit(CURRENT_SESSION_DATA)||!sq('delete-session-check').checked)return;
-  var id=CURRENT_SESSION;sq('btn-confirm-delete').disabled=true;sq('delete-session-msg').textContent='Eliminazione definitiva in corso…';
-  FB.db.collection(SESSION_COLLECTION).doc(id).delete().then(function(){CURRENT_SESSION=null;CURRENT_SESSION_DATA=null;SESSION_ACTIONS=[];closeDeleteModal();try{sessionStorage.setItem('rp_deleted_notice','1');}catch(e){}navigateToDashboard();}).catch(function(err){console.error(err);sq('delete-session-msg').textContent='Eliminazione non riuscita: '+err.message;sq('btn-confirm-delete').disabled=false;});
+  if(SESSION_DELETING||!CURRENT_SESSION||!sessionCanEdit(CURRENT_SESSION_DATA)||!sq('delete-session-check').checked)return;
+  var id=CURRENT_SESSION;SESSION_DELETING=true;if(SAVE_TIMER){clearTimeout(SAVE_TIMER);SAVE_TIMER=null;}PENDING_SAVE=false;
+  sq('btn-confirm-delete').disabled=true;if(sq('btn-cancel-delete'))sq('btn-cancel-delete').disabled=true;sq('delete-session-msg').textContent='Eliminazione definitiva in corso…';
+  waitForSessionSaveDrain().then(function(){return FB.db.collection(SESSION_COLLECTION).doc(id).delete();}).then(function(){CURRENT_SESSION=null;CURRENT_SESSION_DATA=null;SESSION_ACTIONS=[];SESSION_DELETING=false;if(sq('btn-cancel-delete'))sq('btn-cancel-delete').disabled=false;closeDeleteModal();try{sessionStorage.setItem('rp_deleted_notice','1');}catch(e){}navigateToDashboard();}).catch(function(err){SESSION_DELETING=false;console.error(err);if(sq('btn-cancel-delete'))sq('btn-cancel-delete').disabled=false;sq('delete-session-msg').textContent='Eliminazione non riuscita: '+err.message;sq('btn-confirm-delete').disabled=false;scheduleSave();});
 }
-function backToDashboard(){var done=Promise.resolve();if(CURRENT_SESSION&&sessionCanEdit(CURRENT_SESSION_DATA))done=saveNow();done.finally(function(){navigateToDashboard();});}
+function backToDashboard(){
+  if(SESSION_DELETING)return Promise.resolve(false);
+  if(CURRENT_SESSION&&sessionCanEdit(CURRENT_SESSION_DATA)){
+    if(SAVE_TIMER){clearTimeout(SAVE_TIMER);SAVE_TIMER=null;}saveNow();
+    return waitForSessionSaveDrain().then(function(){if(LAST_SAVE_OK){navigateToDashboard();return true;}setStatus('save-status','Ultimo salvataggio non riuscito: sei rimasto nella Ricerca. Riprova quando la connessione è disponibile.','bad');return false;});
+  }
+  navigateToDashboard();return Promise.resolve(true);
+}
 function setupControls(){
-  attachRecorder();
-  sq('btn-new-session').addEventListener(EVT,createSession);
-  sq('new-session-pg').addEventListener('keydown',function(e){if(e.key==='Enter'){e.preventDefault();createSession();}});
-  sq('btn-refresh-sessions').addEventListener(EVT,loadSessionList);
-  sq('btn-back-sessions').addEventListener(EVT,backToDashboard);
-  sq('btn-delete-session').addEventListener(EVT,openDeleteModal);
-  sq('btn-cancel-delete').addEventListener(EVT,closeDeleteModal);
-  sq('delete-session-check').addEventListener('change',function(){sq('btn-confirm-delete').disabled=!sq('delete-session-check').checked;});
-  sq('btn-confirm-delete').addEventListener(EVT,deleteCurrentSession);
-  sq('delete-session-modal').addEventListener(EVT,function(e){if(e.target===sq('delete-session-modal'))closeDeleteModal();});
-  document.addEventListener('visibilitychange',function(){if(document.visibilityState==='hidden'&&CURRENT_SESSION&&!SESSION_READONLY)saveNow();});
-  window.addEventListener('pagehide',function(){if(CURRENT_SESSION&&!SESSION_READONLY)saveNow();});
+  attachRecorder();sq('btn-new-session').addEventListener(EVT,createSession);sq('new-session-pg').addEventListener('keydown',function(e){if(e.key==='Enter'){e.preventDefault();createSession();}});sq('btn-refresh-sessions').addEventListener(EVT,loadSessionList);sq('btn-back-sessions').addEventListener(EVT,backToDashboard);sq('btn-delete-session').addEventListener(EVT,openDeleteModal);sq('btn-cancel-delete').addEventListener(EVT,closeDeleteModal);sq('delete-session-check').addEventListener('change',function(){sq('btn-confirm-delete').disabled=!sq('delete-session-check').checked;});sq('btn-confirm-delete').addEventListener(EVT,deleteCurrentSession);sq('delete-session-modal').addEventListener(EVT,function(e){if(e.target===sq('delete-session-modal'))closeDeleteModal();});
+  document.addEventListener('visibilitychange',function(){if(document.visibilityState==='hidden'&&CURRENT_SESSION&&!SESSION_READONLY&&!SESSION_DELETING)saveNow();});window.addEventListener('pagehide',function(){if(CURRENT_SESSION&&!SESSION_READONLY&&!SESSION_DELETING)saveNow();});
 }
 function setupFirebase(){
   setupControls();if(workspace())workspace().style.display='none';if(sq('pazienti-session-home'))sq('pazienti-session-home').style.display='block';var st=sq('firebase-auth-status');
@@ -1334,6 +1550,7 @@ root.addEventListener(EVT,function(e){
 function pgCards(){return qa('#rp_pgList .pg-card');}
 function configReady(){
   var cards=pgCards();if(cards.length<2)return false;
+  var eligibility=q('rp_eligibility_confirm');if(!eligibility||!eligibility.checked)return false;
   for(var i=0;i<cards.length;i++){
     var id=cards[i].getAttribute('data-id'),name=q('rp_pgNome_'+id),tec=q('rp_pgTecnica_'+id),sap=q('rp_pgSapienza_'+id);
     if(!name||!String(name.value||'').trim()||!validInt(tec,0,20)||!validInt(sap,0,25))return false;
@@ -1345,14 +1562,16 @@ function patientCompleteNow(){return validInt(q('rp_tipoInput'),1,5)&&currentSub
 function currentSubValid(){var t=currentTipo(),tables=subTables(),e=q('rp_subInput');if(!t||!tables||!tables[t])return false;return validInt(e,1,tables[t].faces);}
 function arrivalProgress(){return qa('#rp_pgList .arrivo-result').some(function(e){return e.value!=='';});}
 function cureProgress(){return qa('#rp_fase3 .rowResult').some(function(e){return e.value!=='';});}
+function allEnteredClinicalResultsConfirmed(){var rows=qa('#rp_fase3 .curaRow');for(var i=0;i<rows.length;i++){if(rows[i].getAttribute('data-result-invalidated')==='1')return false;var inp=rows[i].querySelector('.rowResult'),sym=rows[i].querySelector('.symptomName'),hasIntent=!!((inp&&inp.value!=='')||(sym&&String(sym.value||'').trim()!==''));if(hasIntent&&rows[i].getAttribute('data-result-committed')!=='1')return false;}return true;}
+function completionConfirmed(){var e=q('rp_completion_confirm');return !!(e&&e.checked&&allEnteredClinicalResultsConfirmed());}
 function pct(x){return Math.round(x*1000)/10;}
 function summaryData(){
   if(!configReady())return null;
   var cards=pgCards(),items=[],copy=[];var miss=1;
   for(var i=0;i<cards.length;i++){
     var id=cards[i].getAttribute('data-id'),name=String(q('rp_pgNome_'+id).value||'PG').trim(),tec=Number(q('rp_pgTecnica_'+id).value),sap=Number(q('rp_pgSapienza_'+id).value),med=!!q('rp_pgMedimago_'+id).checked;
-    var sb=Math.floor(sap/5),th=tec+sb+(med?2:0),eff=Math.max(0,Math.min(30,th)),p=eff/30;miss*=1-p;
-    var role=med?'Medimago in servizio (+2)':'PG Ars / non in servizio';
+    var sb=(window.__RP_SAPIENZA_BONUS__?window.__RP_SAPIENZA_BONUS__(sap):(sap>0?Math.ceil(sap/5):0)),th=tec+sb+(med?2:0),eff=Math.max(0,Math.min(30,th)),p=eff/30;miss*=1-p;
+    var role=med?'PG Medimago del San Mungo (+2)':'PG Ars non Medimago';
     items.push('<li><b>'+esc(name)+'</b>: Tecnica '+tec+' · Sapienza Medimagica '+sap+' (bonus +'+sb+') · '+esc(role)+' → soglia di chiamata <b>'+eff+'/30</b></li>');
     copy.push('• <b>'+name+'</b>: Tecnica '+tec+' · Sapienza Medimagica '+sap+' (bonus +'+sb+') · '+role+' → soglia di chiamata <b>'+eff+'/30</b>');
   }
@@ -1379,7 +1598,7 @@ function pageReachable(page){
   if(page==='f1')return configReady()&&(FLOW.summaryVisited||arrivalProgress()||called());
   if(page==='f2')return called();
   if(page==='f3')return called()&&patientCompleteNow();
-  if(page==='esito')return called()&&patientCompleteNow()&&(FLOW.esitoVisited||cureProgress());
+  if(page==='esito')return called()&&patientCompleteNow()&&completionConfirmed();
   return false;
 }
 function updateFlowButtons(){
@@ -1390,7 +1609,9 @@ function updateFlowButtons(){
   var c=q('rp-flow-to-summary');if(c)c.disabled=!configReady();
   var n2=q('rp-flow-next-f2');if(n2)n2.disabled=!called();
   var n3=q('rp-flow-next-f3');if(n3)n3.disabled=!(called()&&patientCompleteNow());
+  var ne=q('rp-flow-next-esito');if(ne)ne.disabled=!pageReachable('esito');
   renderSummary();
+  if(window.__RP_REAPPLY_READONLY__)window.__RP_REAPPLY_READONLY__();
 }
 function showFlowPage(page,doScroll){
   if(page==='summary'&&!configReady())page='config';
@@ -1425,16 +1646,23 @@ function createFlowUI(){
   var cap=document.createElement('div');cap.className='rp-config-caption';cap.textContent='I Parametri dei partecipanti sono stati impostati in Configurazione. Qui esegui soltanto i tiri di Arrivo e inserisci i risultati.';fase1.insertBefore(cap,fase1.firstChild.nextSibling);
   var next2=document.createElement('div');next2.className='rp-flow-actions rp-next-phase';next2.innerHTML='<button type="button" class="rp-flow-action" id="rp-flow-next-f2" data-session-control="1">Procedi alla Fase II</button>';fase1.appendChild(next2);q('rp-flow-next-f2').addEventListener(EVT,function(){if(!this.disabled)showFlowPage('f2',true);});
   var next3=document.createElement('div');next3.className='rp-flow-actions rp-next-phase';next3.innerHTML='<button type="button" class="rp-flow-action" id="rp-flow-next-f3" data-session-control="1">Procedi alla Fase III</button>';fase2.appendChild(next3);q('rp-flow-next-f3').addEventListener(EVT,function(){if(!this.disabled)showFlowPage('f3',true);});
-  var nextE=document.createElement('div');nextE.className='rp-flow-actions rp-next-phase';nextE.innerHTML='<button type="button" class="rp-flow-action" id="rp-flow-next-esito" data-session-control="1">Concludi l’intervento → Esito</button>';fase3.appendChild(nextE);q('rp-flow-next-esito').addEventListener(EVT,function(){FLOW.esitoVisited=true;showFlowPage('esito',true);});
+  var nextE=document.createElement('div');nextE.className='rp-flow-actions rp-next-phase';nextE.style.display='block';nextE.innerHTML='<div class="nota" style="margin:0 0 12px;text-align:left"><label class="checkline"><input id="rp_completion_confirm" type="checkbox">Confermo che sono state eseguite la Diagnosi e la Terapia e/o Chirurgia richieste dai Sintomi del Paziente. I risultati numerici inseriti devono essere prima confermati con «Conferma risultato».</label></div><div style="display:flex;justify-content:flex-end"><button type="button" class="rp-flow-action" id="rp-flow-next-esito" data-session-control="1">Concludi l’intervento → Esito</button></div>';fase3.appendChild(nextE);q('rp-flow-next-esito').addEventListener(EVT,function(){if(!this.disabled){FLOW.esitoVisited=true;if(typeof window.__RP_RENDER_FINAL_EFFECTS__==='function')window.__RP_RENDER_FINAL_EFFECTS__();showFlowPage('esito',true);}});
 
   finalCard=document.createElement('section');finalCard.className='rp-final-card';finalCard.id='rp-final-card';finalCard.setAttribute('data-session-control','1');
-  finalCard.innerHTML='<h2>Esito della Ricerca Pazienti</h2><p class="rp-summary-lead">L’intervento è concluso quando sono state eseguite le operazioni di Diagnosi, Terapia e/o Chirurgia richieste dai Sintomi effettivamente manifestati.</p><div class="card" style="margin-top:18px"><h3>Chiusura dell’intervento</h3><p class="desc">Curare un Paziente tramite questa Ricerca permette di riscattare il Livello Difficile della missione “Il Medimago”.</p><table class="reward-table"><tr><td class="k">Requisiti</td><td>PG Medimago, oppure PG Ars anche non Medimago</td></tr><tr><td class="k">Ricompensa</td><td>2 PP per post (fino a un massimo di 5) · +2 Prestigio · +1 Virtuoso o Sinistro</td></tr></table></div><div class="rp-flow-actions"><button type="button" class="rp-flow-action ghost" id="rp-flow-back-f3" data-session-control="1">← Torna alla Fase III</button><button type="button" class="rp-flow-action" id="rp-flow-reset" data-session-control="1">Ricomincia una nuova Ricerca</button></div>';
-  wrap.appendChild(finalCard);q('rp-flow-back-f3').addEventListener(EVT,function(){showFlowPage('f3',true);});q('rp-flow-reset').addEventListener(EVT,function(){var b=q('rp_resetAll');if(b)b.click();FLOW.summaryVisited=false;FLOW.esitoVisited=false;showFlowPage('config',true);});
+  finalCard.innerHTML='<h2>Esito della Ricerca Pazienti</h2><p class="rp-summary-lead">L’intervento è concluso quando sono state eseguite le operazioni di Diagnosi, Terapia e/o Chirurgia richieste dai Sintomi effettivamente manifestati.</p><div class="card" style="margin-top:18px"><h3>Chiusura dell’intervento</h3><p class="desc">Curare un Paziente tramite questa Ricerca permette di riscattare il Livello Difficile della missione “Il Medimago”.</p><table class="reward-table"><tr><td class="k">Requisiti</td><td>PG Medimago, oppure PG Ars anche non Medimago</td></tr><tr><td class="k">Ricompensa</td><td>2 PP per post (fino a un massimo di 5) · +2 Prestigio · +1 Virtuoso o Sinistro</td></tr></table></div><div class="effects-box" id="rp-final-effects" style="display:none"><h3>Oggetti e Conoscenze effettivamente utilizzati</h3><ul class="effects-list" id="rp-final-effects-list"></ul><div class="effects-total" id="rp-final-effects-total"></div></div><div class="rp-flow-actions"><button type="button" class="rp-flow-action ghost" id="rp-flow-back-f3" data-session-control="1">← Torna alla Fase III</button><button type="button" class="rp-flow-action" id="rp-flow-back-list" data-session-control="1">Torna alle Ricerche</button></div>';
+  wrap.appendChild(finalCard);q('rp-flow-back-f3').addEventListener(EVT,function(){showFlowPage('f3',true);});q('rp-flow-back-list').addEventListener(EVT,function(){var b=q('btn-back-sessions');if(b)b.click();});
+  function renderFinalEffects(){
+    var box=q('rp-final-effects'),list=q('rp-final-effects-list'),tot=q('rp-final-effects-total');if(!box||!list||!tot)return;var rows=qa('#rp_fase3 .curaRow[data-result-committed="1"]'),items=[],fatigue=0;
+    for(var i=0;i<rows.length;i++){var snap=null;try{snap=JSON.parse(rows[i].getAttribute('data-result-snapshot')||'null');}catch(e){}if(!snap||!Array.isArray(snap.effects))continue;for(var j=0;j<snap.effects.length;j++){var ef=snap.effects[j];if(!ef||!ef.value)continue;var txt=((ef.originLabel?ef.originLabel+' · ':'')+(ef.source||'Effetto')).toUpperCase()+' → '+(ef.kind==='tecnica'?('+'+ef.value+' TECNICA · PARAMETRO'):('+'+ef.value+' POSSIBILITÀ · SOGLIA'));if(ef.condition)txt+=' · '+String(ef.condition).toUpperCase();if(Number(ef.fatigue)>0){txt+=' · -'+ef.fatigue+' FATICA';fatigue+=Number(ef.fatigue);}if(Number(ef.available)>0)txt+=' · '+ef.used+'/'+ef.available+' USI → '+Math.max(0,Number(ef.available)-Number(ef.used))+' RIMASTI';items.push(txt);}}
+    list.innerHTML='';for(var k=0;k<items.length;k++){var li=document.createElement('li');li.textContent=items[k];list.appendChild(li);}box.style.display=items.length?'block':'none';tot.textContent=items.length&&fatigue>0?'Fatica complessiva consumata dagli effetti: -'+fatigue+' · esclusi i costi base di Diagnosi/Terapia/Chirurgia previsti dal regolamento':'';
+  }
+  try{window.__RP_RENDER_FINAL_EFFECTS__=renderFinalEffects;}catch(e){}
+
   var oldPost=qa('#rp_fase3 .divider-label').filter(function(e){return /Post-operazione/i.test(e.textContent||'');})[0];if(oldPost){oldPost.style.display='none';var n=oldPost.nextElementSibling;if(n&&n.classList.contains('card'))n.style.display='none';}
   showFlowPage('config',false);
 }
 
-function scheduleRefresh(){var t=++refreshToken;requestAnimationFrame(function(){if(t!==refreshToken)return;updateFlowButtons();});}
+function scheduleRefresh(){var t=++refreshToken;requestAnimationFrame(function(){if(t!==refreshToken)return;updateFlowButtons();if(typeof window.__RP_RENDER_FINAL_EFFECTS__==='function')window.__RP_RENDER_FINAL_EFFECTS__();});}
 root.addEventListener('input',scheduleRefresh,false);root.addEventListener('change',scheduleRefresh,false);root.addEventListener(EVT,scheduleRefresh,false);
 
 /* ---------- Popup eliminazione vicino alla viewport corrente ---------- */
@@ -1449,6 +1677,7 @@ var del=q('btn-delete-session');if(del)del.addEventListener(EVT,function(e){anch
 function isReadonly(){var b=q('readonly-banner');return !!(b&&b.style.display!=='none');}
 function firstConfigIncomplete(){
   var cards=pgCards();if(cards.length<2)return q('rp_addPgBtn');
+  var eligibility=q('rp_eligibility_confirm');if(!eligibility||!eligibility.checked)return eligibility||q('rp_fase1');
   for(var i=0;i<cards.length;i++){var id=cards[i].getAttribute('data-id'),els=[q('rp_pgNome_'+id),q('rp_pgTecnica_'+id),q('rp_pgSapienza_'+id)];for(var j=0;j<els.length;j++){var e=els[j];if(!e)return cards[i];if(j===0&&!String(e.value||'').trim())return e;if(j===1&&!validInt(e,0,20))return e;if(j===2&&!validInt(e,0,25))return e;}}
   return null;
 }
@@ -1479,6 +1708,8 @@ function watchSessionOpen(){
   if(w.style.display!=='none')setTimeout(resumeIntelligently,100);
 }
 
+function resetFlowState(){FLOW.page='config';FLOW.summaryVisited=false;FLOW.esitoVisited=false;var c=q('rp_completion_confirm');if(c)c.checked=false;showFlowPage('config',false);}
+try{window.__RP_RESET_FLOW__=resetFlowState;window.__RP_SHOW_FLOW_PAGE__=showFlowPage;window.__RP_RESUME_SESSION__=resumeIntelligently;}catch(e){}
 function setup(){placeHeaderOutsideWorkspace();createFlowUI();watchSessionOpen();updateFlowButtons();}
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',setup);else setup();
 })();
