@@ -1,5 +1,15 @@
 <!-- Revisione v3: standard completo Ricerche + testata preservata fuori dal workspace; Configurazione/Riepilogo/Fasi/Esito, BBCode completo, copia stabile, popup locale e ripresa intelligente -->
 <!-- Revisione Firebase: sessioni multiple, autosalvataggio, ripresa, sola lettura e cancellazione definitiva protetta -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+<style>
+@font-face {
+  font-family:'magic';
+  src:url('https://dl.dropboxusercontent.com/scl/fi/nbzmrri4qyvc3tzx96911/HarryBeastDisplay-Regular.woff2?rlkey=he290voe32k33gowug23c1osc&st=nj9fgly1') format('woff2');
+  font-weight:normal;
+  font-style:normal;
+  font-display:swap;
+}
+</style>
 <div class="foglio" style="background:#351512"><style>#rp-pazienti {--bg: #160909; 
  --bg2: #0D0505; 
  --panel: #24100E; 
@@ -54,7 +64,8 @@
  color:var(--gold-soft); 
  background:var(--panel2); 
  box-shadow: 0 0 0 4px rgba(158, 31, 40, .12), 0 0 28px rgba(158, 31, 40, .12)} 
-#rp-pazienti .eyebrow {font-family:var(--sans); 
+#rp-pazienti .seal i {display:block; color:inherit; font-size:26px; line-height:1} 
+#rp-pazienti .eyebrow {font-family:'magic',var(--serif); 
  letter-spacing:.16em; 
  text-transform:uppercase; 
  font-size:.72em; 
@@ -634,7 +645,7 @@
 
 <header class="top"> 
  <div class="seal"><i class="fa-solid fa-hospital"></i></div> 
- <div class="eyebrow" style="font-size:30px; font-family:magic">• Ricerca Pazienti •</div> 
+ <div class="eyebrow" style="font-size:30px">• Ricerca Pazienti •</div> 
 <p class="subtitle">Per PG Medimagi e Ars</p> 
 </header> 
 
