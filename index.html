@@ -1,12 +1,4 @@
-<!-- Revisione v11: usi condivisi tra prove dello stesso PG; correzioni/parametri invalidano davvero gli esiti; usi 0=senza limite coerenti; limite +5 Conoscenze globale per prova; riepilogo Fatica effetti esplicito -->
-<!-- Revisione v10: Firebase preservato; campi numerici protetti; bonus multipli Oggetti/Conoscenze con distinzione Parametro/Soglia, usi e Fatica; riepilogo effetti applicati -->
-<!-- Revisione v9: migrazione v8 sicura; eligibility non auto-inferita; snapshot automatici; tentativi consolidati non eliminabili -->
-<!-- Revisione v8: Terapia/Chirurgia identificano il Sintomo specifico; Complicazioni legate allo snapshot; compatibilità replay v7 -->
-<!-- Revisione v6: correzione bonus Sapienza dell'Arrivo, requisiti partecipanti, rinuncia clinica completa, chiusura intervento, Chirurgia 16-25 e sessioni Firebase robuste -->
-<!-- Revisione v5: quote numerici semplificati — la Gravità 1d100 non elenca più 100 corrispondenze identiche, mentre restano complete le vere tabelle casuali e le soglie -->
-<!-- Revisione v3: standard completo Ricerche + testata preservata fuori dal workspace; Configurazione/Riepilogo/Fasi/Esito, BBCode completo, copia stabile, popup locale e ripresa intelligente -->
-<!-- Revisione Firebase: sessioni multiple, autosalvataggio, ripresa, sola lettura e cancellazione definitiva protetta -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.3.1/css/all.min.css">
 <style>
 @font-face {
   font-family:'magic';
@@ -1717,3 +1709,32 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
 
  
 </div></div>
+
+<script type="text/javascript">
+(function(){
+var ultimoValore=0,timer=null,root=document.body||document.documentElement;
+function misuraContenuto(){
+  var b=document.body,d=document.documentElement;
+  return Math.ceil(Math.max(
+    b?(b.scrollHeight||0):0,b?(b.offsetHeight||0):0,
+    d?(d.scrollHeight||0):0,d?(d.offsetHeight||0):0
+  ));
+}
+function inviaAltezzaRicercaPazienti(){
+  var altezza=misuraContenuto();
+  if(altezza<=0||Math.abs(altezza-ultimoValore)<2)return;
+  ultimoValore=altezza;
+  try{window.parent.postMessage({tipo:'altezzaRicercaPazienti',altezza:altezza},'*');}catch(e){}
+}
+function pianificaInvio(){if(timer)window.clearTimeout(timer);timer=window.setTimeout(inviaAltezzaRicercaPazienti,80);}
+if(window.self!==window.top){document.documentElement.style.overflow='hidden';if(document.body)document.body.style.overflow='hidden';}
+window.addEventListener('load',function(){inviaAltezzaRicercaPazienti();window.setTimeout(inviaAltezzaRicercaPazienti,250);window.setTimeout(inviaAltezzaRicercaPazienti,800);});
+window.addEventListener('resize',pianificaInvio);
+if(typeof ResizeObserver!=='undefined'&&root){new ResizeObserver(pianificaInvio).observe(root);}
+if(typeof MutationObserver!=='undefined'&&root){new MutationObserver(pianificaInvio).observe(root,{childList:true,subtree:true,attributes:true,characterData:true});}
+document.addEventListener('input',pianificaInvio);
+document.addEventListener('change',pianificaInvio);
+document.addEventListener('cli'+'ck',pianificaInvio);
+inviaAltezzaRicercaPazienti();
+})();
+</script>
