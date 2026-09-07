@@ -19,6 +19,8 @@
  --parchment-dim: #BE978D; 
  --teal: #C97C68; 
  --red: #D34A45; 
+ --red-dark: #7A171E; 
+ --red-soft: #F0B3AA; 
  --red-bg: #431313; 
  --green: #AEBB8F; 
  --green-bg: #242B1E; 
@@ -763,7 +765,7 @@
  <p class="desc">1d40 per ogni singolo Sintomo. Fino a 3 Sintomi per post; se la cura prosegue in post successivi puoi aggiungere altre righe. Costo base: -0,5 Fatica per Sintomo, a prescindere dall'esito; con Sapienza Medimagica 25 il costo base è 0. <b>Indica il nome del Sintomo specifico in ogni riga:</b> il fallimento causa la Complicazione prevista proprio da quel Sintomo.</p> 
  <div id="rp_terapiaList"></div><button type="button" class="add-btn" id="rp_addTerapiaBtn">+ Aggiungi personaggio terapista</button> 
  <div class="divider-label">Chirurgia — Sintomi XXXX, XXXXX</div> 
- <p class="desc">1d35 per ogni singolo Sintomo. Fino a 3 Sintomi per post; se l'intervento prosegue in post successivi puoi aggiungere altre righe. Costo base: -1 Fatica per Sintomo; con Sapienza Medimagica 25 il costo base è 0. <b>Indica il nome del Sintomo specifico in ogni riga:</b> il fallimento causa la Complicazione prevista proprio da quel Sintomo. Senza Chirurgo né Sapienza Medimagica 1+ il fallimento è autoconclusivo. Con Sapienza Medimagica 16–25 ma senza Chirurgo, la Guida non specifica una soglia: il tool non la inventa.</p> 
+ <p class="desc">1d35 per ogni singolo Sintomo. Fino a 3 Sintomi per post; se l'intervento prosegue in post successivi puoi aggiungere altre righe. Costo base: -1 Fatica per Sintomo; con Sapienza Medimagica 25 il costo base è 0. <b>Indica il nome del Sintomo specifico in ogni riga:</b> il fallimento causa la Complicazione prevista proprio da quel Sintomo. Senza Chirurgo né Sapienza Medimagica 1+ il fallimento è autoconclusivo. Con Sapienza 16–20 la base è 7; con Sapienza 21–24 la base è 8. Se il PG possiede anche Chirurgo, il tool usa automaticamente la base più alta fra Sapienza e livello di Chirurgo. La Guida non specifica invece una soglia per Sapienza 25 senza Chirurgo.</p> 
  <div id="rp_chirurgiaList"></div><button type="button" class="add-btn" id="rp_addChirurgiaBtn">+ Aggiungi personaggio chirurgo</button> 
  <div class="divider-label">Post-operazione</div> 
  <div class="card"><h3>Chiusura dell'intervento</h3><p class="desc">Una volta eseguite Diagnosi, Terapia e/o Chirurgia, l'intervento è concluso e si riscatta il Livello Difficile della missione "Il Medimago".</p><table class="reward-table"><tr><td class="k">Requisiti</td><td>PG Medimago, oppure PG Ars anche non Medimago</td></tr><tr><td class="k">Ricompensa</td><td>2 PP per post (fino a un massimo di 5) · +2 Prestigio · +1 Virtuoso o Sinistro</td></tr></table></div> 
@@ -787,7 +789,7 @@ var lastTipo = null;
  
 var TAB_MALATTIE = ["Absorbite","Acne Purulenta","Algabranchite","Ammuffamento da Bundinum","Artigliatite","Borbottite","Bundimia","Cataratta Spettrale","Chizpiculosi","Colpo della Fenice","Diricella","Erboruto","Indigestione da Pozioni","Infestazione Intestinale di Glowbug","Intossicazione da Polvere di Fata","Ira","Falangelate","Farfalle Vomitose","Febbre Malarica","Kappalitosi","Lavandite","Leviostosi","Malattia di Wilbur Dream","Malattia Fantasma","Medusite","Nundacea","Pelle Autofertilizzante","Pustole di Fuoco","Radigordillo","Scrofungulus","Sindrome Canterina","Sindrome dell'Augurey","Sindrome di Gulp","Sindrome di Proteuster","Sindrome di Scrooge","Solletico Messicano","Sparizione","Spine Estroverse","Spruzzolosi","Stridulite","Trucco del Jobberknoll","Vaiolo di Drago","Vetustella","Voglia Vampirella"]; 
  
-var TAB_LESIONI = ["Esorcismo","Sbalzamento da Linea dell'Eta","Spezzamento","Atterraggio sbagliato da Ascendio","Disintegramento da Repello Inimicum","Aerem","Aqua Eructo","Defodio","Dominusterra (Colpito dai detriti)","Elettro","Elettro Maxima","Glacius Maxima","Incendio","Incendio Maxima","Meteo Canis (Fulmine)","Meteo Canis (Nebbia)","Meteo Canis (Neve)","Meteo Canis (Pioggia)","Meteo Canis (Vento)","Ventus Maxima","Ad Caelum","Ardor","Bombarda (Detriti)","Bombarda Maxima (Detriti)","Deprimo","Depulso","Diffindo","Energia Magica Offensiva","Everte Statim","Expulso","Exulcero","Mobilicorpus (Caduta)","Waddiwasi","Ardemonium","Confringo","Damnum","Dolohoferio","Flagrante","Flipendo","Gemino","Incatenamento da Patto di Sangue","Sectumsempra","Zilerius","Spaccamento","Gas Strozzante","Pozione Atomica","Pozione Esplosiva"]; 
+var TAB_LESIONI = ["Esorcismo","Sbalzamento da Linea dell'Eta","Spezzamento","Atterraggio sbagliato da Ascendio","Disintegramento da Repello Inimicum","Aerem","Aqua Eructo","Defodio","Dominusterra (Colpito dai detriti)","Elettro","Elettro Maxima","Glacius Maxima","Incendio","Incendio Maxima","Meteo Canis (Fulmine)","Meteo Canis (Nebbia)","Meteo Canis (Neve)","Meteo Canis (Pioggia)","Meteo Canis (Vento)","Ventus Maxima","Ad Caelum","Ardor","Bombarda (Detriti)","Bombarda Maxima (Detriti)","Deprimo","Depulso","Diffindo","Energia Magica Offensiva","Everte Statim","Expulso","Exulcero","Mobilicorpus (Caduta)","Waddiwasi","Ardemonium","Confringo","Damnum","Dolohoferio","Flagrante","Flip endo","Gemino","Incatenamento da Patto di Sangue","Sectumsempra","Zilerius","Spaccamento","Gas Strozzante","Pozione Atomica","Pozione Esplosiva"]; 
  
 var TAB_MANUFATTI = ["Bacchetta nell'occhio, nel naso o nell'orecchio","Caduta da una Creatura in corsa o in volo","Caduta da una Scopa in volo","Colpo di un Bolide","Esplosione di un calderone","Malessere da Passaporta","Rifiuto da Passaporta","Ritorno di fiamma della Bacchetta","Schianto in volo su una Scopa","Ustione da Metropolvere"]; 
  
@@ -817,10 +819,12 @@ var TER_LEVELS = [
 ]; 
 var TER_CLASS = [{label:'X',bonus:5},{label:'XX',bonus:4},{label:'XXX',bonus:3}]; 
 var CHIR_LEVELS = [ 
- {label:'Nessuna competenza (fallimento automatico)',base:null}, {label:'Sapienza Medimagica 1-5',base:4}, 
- {label:'Sapienza Medimagica 6-10',base:5}, {label:'Sapienza Medimagica 11-15',base:6}, {label:'Chirurgo Lv I',base:7}, 
+ {label:'Nessun Chirurgo',base:null}, {label:'Sapienza Medimagica 1-5',base:4,legacy:true}, 
+ {label:'Sapienza Medimagica 6-10',base:5,legacy:true}, {label:'Sapienza Medimagica 11-15',base:6,legacy:true}, {label:'Chirurgo Lv I',base:7}, 
  {label:'Chirurgo Lv II',base:8}, {label:'Chirurgo Lv III',base:9}, {label:'Chirurgo Lv IV',base:10}, {label:'Chirurgo Lv V',base:11},
- {label:'Sapienza Medimagica 16-25 senza Chirurgo (soglia non specificata)',base:'ambiguous'} 
+ {label:'Sapienza Medimagica 25 senza Chirurgo (soglia non specificata)',base:'ambiguous',legacy:true},
+ {label:'Sapienza Medimagica 16-20 (senza Chirurgo)',base:7,legacy:true},
+ {label:'Sapienza Medimagica 21-24 (senza Chirurgo)',base:8,legacy:true}
 ]; 
 var CHIR_CLASS = [{label:'XXXX',bonus:1},{label:'XXXXX',bonus:0}]; 
 var POZIONE_BONUS = [{label:'Nessuna Pozione',bonus:0},{label:'Pozione Oltre Ogni Previsione',bonus:1},{label:'Pozione Eccezionale',bonus:2}]; 
@@ -869,6 +873,7 @@ function updateLocks(){
  byId('rp_toFase2').disabled=!called; 
  byId('rp_toFase3').disabled=!(called && complete); 
  byId('rp_renounceBtn').disabled=!(complete && attemptsLeft>0); 
+ syncArrivalLock();
 } 
 function goToFase(n){ 
  n=parseInt(n,10); if(n===2 && !calledAvailable()){return;} if(n===3 && !(calledAvailable() && patientComplete())){return;} 
@@ -894,16 +899,20 @@ function buildDiceTagArrivo(nome,tecnica,sapienza,medimago){
  if(medimago){formula+=' + 2 Medimago in servizio';} 
  return {soglia:soglia,sBonus:sBonus,tag:'[dice=1d30]Arrivo Paziente - '+(nome||'PG')+' (Riesce se 1-'+soglia+': '+formula+' = '+soglia+')[/dice]'}; 
 } 
-function refreshRemoveButtons(){ 
- var cards=root.querySelectorAll('#rp_pgList .pg-card'), disabled=cards.length<=2; 
- for(var i=0;i<cards.length;i++){var b=cards[i].querySelector('.remove-btn');if(b){b.disabled=disabled;}} 
+function refreshRemoveButtons(){ syncArrivalLock(); }
+function syncArrivalLock(){
+ var locked=calledAvailable(),cards=root.querySelectorAll('#rp_pgList .pg-card'),fields=root.querySelectorAll('#rp_pgList .nome,#rp_pgList .tecnica,#rp_pgList .sapienza,#rp_pgList .medimago,#rp_pgList .arrivo-result,#rp_pgList .arrivo-retry');
+ for(var i=0;i<fields.length;i++){fields[i].disabled=locked;if(fields[i].classList&&fields[i].classList.contains('arrivo-retry'))fields[i].title=locked?'Un Paziente è già arrivato: per cercarne un altro usa la Rinuncia prevista in Fase 2.':'';}
+ for(var j=0;j<cards.length;j++){var b=cards[j].querySelector('.remove-btn');if(b)b.disabled=locked||cards.length<=2;}
+ var add=byId('rp_addPgBtn');if(add)add.disabled=locked;
+ var elig=byId('rp_eligibility_confirm');if(elig)elig.disabled=locked;
 } 
 function refreshPgCard(card){ 
  var id=card.getAttribute('data-id'), nome=byId('rp_pgNome_'+id).value; 
  var tecnica=inputInt('rp_pgTecnica_'+id), sapienza=inputInt('rp_pgSapienza_'+id), medimago=byId('rp_pgMedimago_'+id).checked; 
  var sogliaEl=byId('rp_pgSoglia_'+id), sbEl=byId('rp_pgSapBonus_'+id), dice=byId('rp_diceArrivo_'+id), out=byId('rp_pgArrivoOutcome_'+id); 
  if(!isIntInRange(tecnica,0,20) || !isIntInRange(sapienza,0,25)){ 
- sogliaEl.textContent='—'; sbEl.textContent='—'; dice.value='Inserisci Tecnica 0-20 e Sapienza Medimagica 0-25.'; setOutcome(out,'dati non validi','fail'); updateLocks(); return; 
+ sogliaEl.textContent='—'; sbEl.textContent='—'; dice.value='Inserisci Tecnica 0-20 e Sapienza Medimagica 0-25.'; setOutcome(out,'dati non validi','fail'); syncArrivalLock(); updateLocks(); return; 
  } 
  var r=buildDiceTagArrivo(nome,tecnica,sapienza,medimago); sogliaEl.textContent='1–'+r.soglia; sbEl.textContent='+'+r.sBonus; dice.value=r.tag; 
  var val=inputInt('rp_pgArrivoResult_'+id); 
@@ -911,6 +920,7 @@ function refreshPgCard(card){
  else if(!isIntInRange(val,1,30)){setOutcome(out,'RISULTATO IMPOSSIBILE','fail');} 
  else if(val<=r.soglia){setOutcome(out,'CHIAMATO','success');} 
  else {setOutcome(out,'nessuna chiamata','fail');} 
+ syncArrivalLock();
  updateLocks(); 
 } 
 function clearArrivalResults(){ 
@@ -928,15 +938,26 @@ function addPgCard(){
  +'<div class="dice-tag"><textarea readonly id="rp_diceArrivo_'+id+'"></textarea><button type="button" class="copy-btn" data-target="rp_diceArrivo_'+id+'">Copia</button></div>' 
  +'<div class="result-row"><label>Risultato 1d30</label><input class="arrivo-result" id="rp_pgArrivoResult_'+id+'" type="number" min="1" max="30" step="1"><span class="outcome pending arrivo-outcome" id="rp_pgArrivoOutcome_'+id+'">in attesa</span><button type="button" class="retry-btn arrivo-retry">Nuovo tentativo</button></div>'; 
  byId('rp_pgList').appendChild(card); 
- card.querySelector('.remove-btn').addEventListener(evtName,function(){if(root.querySelectorAll('#rp_pgList .pg-card').length<=2){return;} card.parentNode.removeChild(card);refreshRemoveButtons();updateLocks();}); 
+ card.querySelector('.remove-btn').addEventListener(evtName,function(){if(calledAvailable()||root.querySelectorAll('#rp_pgList .pg-card').length<=2){return;} card.parentNode.removeChild(card);refreshRemoveButtons();updateLocks();}); 
  var watched=card.querySelectorAll('.nome,.tecnica,.sapienza,.medimago,.arrivo-result'); 
  for(var i=0;i<watched.length;i++){watched[i].addEventListener('input',function(){refreshPgCard(card);});watched[i].addEventListener('change',function(){refreshPgCard(card);});} 
- card.querySelector('.arrivo-retry').addEventListener(evtName,function(){byId('rp_pgArrivoResult_'+id).value='';refreshPgCard(card);}); 
+ card.querySelector('.arrivo-retry').addEventListener(evtName,function(){if(calledAvailable())return;byId('rp_pgArrivoResult_'+id).value='';refreshPgCard(card);}); 
  refreshPgCard(card); refreshRemoveButtons(); 
 } 
-byId('rp_addPgBtn').addEventListener(evtName,addPgCard); 
+byId('rp_addPgBtn').addEventListener(evtName,function(){if(!calledAvailable())addPgCard();}); 
  
 /* ---------- Fase 2 ---------- */ 
+function clinicalHasData(){
+ var committed=root.querySelector('#rp_fase3 .curaRow[data-result-committed="1"]');if(committed)return true;
+ var results=root.querySelectorAll('#rp_fase3 .rowResult');for(var i=0;i<results.length;i++){if(results[i].value!=='')return true;}
+ var symptoms=root.querySelectorAll('#rp_fase3 .symptomName');for(var j=0;j<symptoms.length;j++){if(String(symptoms[j].value||'').trim()!=='')return true;}
+ return false;
+}
+function invalidateClinicalForPatientChange(){
+ if(!clinicalHasData())return;
+ resetClinicalData();
+ try{window.__RP_PATIENT_CHANGED_AFTER_CARE__=true;}catch(e){}
+}
 function updateOutcomeGeneric(inputId,outcomeId,min,max){ 
  var out=byId(outcomeId), v=inputInt(inputId); if(v===null){setOutcome(out,'in attesa','pending');return null;} 
  if(!isIntInRange(v,min,max)){setOutcome(out,'RISULTATO IMPOSSIBILE','fail');return null;} 
@@ -960,9 +981,12 @@ function aggiornaGravita(){
  var v=updateOutcomeGeneric('rp_gravitaInput','rp_gravitaOutcome',1,100), label=byId('rp_gravitaLabel'); 
  if(v===null){label.style.display='none';updateLocks();return;} label.style.display='block'; label.innerHTML='<span class="lbl">Danno rilevato</span>'+v+'% — consulta la tabella Sintomi corrispondente nell’Enciclopedia Medimagica'; updateLocks(); 
 } 
-byId('rp_tipoInput').addEventListener('input',aggiornaTipoDanno); byId('rp_tipoInput').addEventListener('change',aggiornaTipoDanno); 
-byId('rp_subInput').addEventListener('input',aggiornaCausaSpecifica); byId('rp_subInput').addEventListener('change',aggiornaCausaSpecifica); 
-byId('rp_gravitaInput').addEventListener('input',aggiornaGravita); byId('rp_gravitaInput').addEventListener('change',aggiornaGravita); 
+function onPatientTypeEdit(){invalidateClinicalForPatientChange();aggiornaTipoDanno();}
+function onPatientSubEdit(){invalidateClinicalForPatientChange();aggiornaCausaSpecifica();}
+function onPatientGravityEdit(){invalidateClinicalForPatientChange();aggiornaGravita();}
+byId('rp_tipoInput').addEventListener('input',onPatientTypeEdit); byId('rp_tipoInput').addEventListener('change',onPatientTypeEdit); 
+byId('rp_subInput').addEventListener('input',onPatientSubEdit); byId('rp_subInput').addEventListener('change',onPatientSubEdit); 
+byId('rp_gravitaInput').addEventListener('input',onPatientGravityEdit); byId('rp_gravitaInput').addEventListener('change',onPatientGravityEdit); 
 function resetPatient(){ 
  byId('rp_tipoInput').value='';setOutcome(byId('rp_tipoOutcome'),'in attesa','pending');byId('rp_tipoLabel').style.display='none'; 
  byId('rp_subTableCard').style.display='none';resetSub();lastTipo=null; 
@@ -977,15 +1001,29 @@ function resetClinicalData(){
 byId('rp_renounceBtn').addEventListener(evtName,function(){if(attemptsLeft<=0 || !patientComplete()){return;} attemptsLeft--;byId('rp_attemptsN').textContent=attemptsLeft;resetPatient();resetClinicalData();clearArrivalResults();updateLocks();if(window.__RP_SHOW_FLOW_PAGE__)window.__RP_SHOW_FLOW_PAGE__('f1',true);else goToFase(1);}); 
  
 /* ---------- Fase 3 ---------- */ 
-function buildOptionsHtml(list){var h='';for(var i=0;i<list.length;i++){h+='<option value="'+i+'">'+list[i].label+'</option>';}return h;} 
+function buildOptionsHtml(list){var h='';for(var i=0;i<list.length;i++){h+='<option value="'+i+'"'+(list[i].legacy?' hidden':'')+'>'+list[i].label+'</option>';}return h;} 
 function buildCuraCard(config){ 
  curaCardCounter++; var cid=curaCardCounter, card=document.createElement('div'); card.className='pg-card'; card.setAttribute('data-cura-id',cid); 
+ var surgerySapienza=config.tagName==='Chirurgia'?'<div class="field"><label>Sapienza Medimagica</label><input class="sapienza-chir" id="rp_curaSapienzaChir_'+cid+'" type="number" value="0" min="0" max="25" step="1" placeholder="0–25"></div>':'';
  card.innerHTML='<div class="pg-head"><input class="nome" id="rp_curaNome_'+cid+'" type="text" value="'+config.defaultName+'"><button type="button" class="remove-btn">rimuovi</button></div>' 
- +'<div class="field-row"><div class="field"><label>'+config.levelLabel+'</label><select class="livello" id="rp_curaLivello_'+cid+'">'+buildOptionsHtml(config.levels)+'</select></div><div class="field"><label>Tecnica</label><input class="tecnica" id="rp_curaTecnica_'+cid+'" type="number" value="0" min="0" max="20" step="1"></div></div>' 
+ +'<div class="field-row"><div class="field"><label>'+config.levelLabel+'</label><select class="livello" id="rp_curaLivello_'+cid+'">'+buildOptionsHtml(config.levels)+'</select></div><div class="field"><label>Tecnica</label><input class="tecnica" id="rp_curaTecnica_'+cid+'" type="number" value="0" min="0" max="20" step="1"></div>'+surgerySapienza+'</div>' 
  +'<div class="rowsList"></div><button type="button" class="add-btn addRowBtn" style="padding:8px 16px;font-size:13px">+ Aggiungi '+config.rowNoun+'</button>'; 
  byId(config.listId).appendChild(card); 
  var bonusSeq=0;
- function getBase(){var idx=parseInt(byId('rp_curaLivello_'+cid).value,10);return config.levels[idx].base;} 
+ function sapienzaChirurgiaBase(v){
+  if(v===0)return null;if(v>=1&&v<=5)return 4;if(v<=10)return 5;if(v<=15)return 6;if(v<=20)return 7;if(v<=24)return 8;if(v===25)return 'ambiguous';return 'invalid';
+ }
+ function getBase(){
+  var idx=parseInt(byId('rp_curaLivello_'+cid).value,10),selected=config.levels[idx].base;
+  if(config.tagName!=='Chirurgia')return selected;
+  var sapEl=byId('rp_curaSapienzaChir_'+cid);if(!sapEl||sapEl.value==='')return selected;
+  var sap=inputInt('rp_curaSapienzaChir_'+cid);if(!isIntInRange(sap,0,25))return 'invalid-sapienza';
+  var sapBase=sapienzaChirurgiaBase(sap);
+  if(sapBase==='ambiguous'){return typeof selected==='number'?selected:'ambiguous';}
+  if(typeof sapBase==='number'&&typeof selected==='number')return Math.max(sapBase,selected);
+  if(typeof sapBase==='number')return sapBase;
+  return selected;
+ } 
  function isCommitted(row){return row.getAttribute('data-result-committed')==='1';}
  function syncCardRemoval(){var top=card.querySelector('.pg-head .remove-btn');if(top)top.disabled=!window.__RP_IS_RESTORING__&&!!card.querySelector('.curaRow[data-result-committed="1"]');}
  function setRowInputsLocked(row,locked){
@@ -993,6 +1031,12 @@ function buildCuraCard(config){
   for(var z=0;z<xs.length;z++)xs[z].disabled=!!locked;
  }
  function committedSnapshot(row){try{return JSON.parse(row.getAttribute('data-result-snapshot')||'null');}catch(e){return null;}}
+ function hasPreviousFailedComplication(row,symptom){
+  var key=String(symptom||'').trim().toLowerCase();if(!key)return false;
+  var rows=root.querySelectorAll('#rp_terapiaList .curaRow[data-result-committed="1"],#rp_chirurgiaList .curaRow[data-result-committed="1"]');
+  for(var i=0;i<rows.length;i++){if(rows[i]===row)continue;var snap=committedSnapshot(rows[i]);if(snap&&snap.failed&&String(snap.symptomName||'').trim().toLowerCase()===key)return true;}
+  return false;
+ }
  function effectText(e){
   var kind=e.kind==='tecnica'?'+'+e.value+' TECNICA (PARAMETRO)':'+'+e.value+' POSSIBILITÀ / SOGLIA';
   var txt=((e.originLabel?e.originLabel+' · ':'')+(e.source||'EFFETTO')).toUpperCase()+' → '+kind;
@@ -1011,10 +1055,12 @@ function buildCuraCard(config){
   box.textContent=lines.join(' | ')+(totals.length?' · '+totals.join(' · '):'');
  }
  function bonusRows(row){return row.querySelectorAll('.bonus-item');}
- function effectUsageKey(origin,source){return String(origin||'altro').toLowerCase()+'|'+String(source||'').trim().toLowerCase();}
+ function normalizePgKey(v){return String(v||'').trim().toLowerCase().replace(/\s+/g,' ');}
+ function carePgKey(row){var c=row&&row.closest?row.closest('.pg-card[data-cura-id]'):null,n=c&&c.querySelector?c.querySelector('.pg-head .nome'):null;return normalizePgKey(n?n.value:'');}
+ function effectUsageKey(origin,source,pgKey){return String(origin||'altro').toLowerCase()+'|'+String(source||'').trim().toLowerCase()+'|'+normalizePgKey(pgKey);}
  function sharedUsageBefore(row,origin,source){
-  var key=effectUsageKey(origin,source),base=0,count=0,rows=card.querySelectorAll('.curaRow[data-result-committed="1"]');
-  for(var i=0;i<rows.length;i++){if(rows[i]===row)continue;var snap=committedSnapshot(rows[i]);if(!snap||!Array.isArray(snap.effects))continue;for(var j=0;j<snap.effects.length;j++){var e=snap.effects[j];if(!e||Number(e.available)<=0||effectUsageKey(e.origin,e.source)!==key)continue;var b=e.baselineUsed!=null?Number(e.baselineUsed):Math.max(0,Number(e.used||0)-(e.autoConsumed?1:0));if(Number.isFinite(b))base=Math.max(base,b);if(e.autoConsumed)count++;}}
+  var currentPg=carePgKey(row),key=effectUsageKey(origin,source,currentPg),base=0,count=0,rows=root.querySelectorAll('#rp_fase3 .curaRow[data-result-committed="1"]');
+  for(var i=0;i<rows.length;i++){if(rows[i]===row)continue;var snap=committedSnapshot(rows[i]);if(!snap||!Array.isArray(snap.effects))continue;var previousPg=snap.pgKey||carePgKey(rows[i]);for(var j=0;j<snap.effects.length;j++){var e=snap.effects[j];if(!e||Number(e.available)<=0||effectUsageKey(e.origin,e.source,previousPg)!==key)continue;var b=e.baselineUsed!=null?Number(e.baselineUsed):Math.max(0,Number(e.used||0)-(e.autoConsumed?1:0));if(Number.isFinite(b))base=Math.max(base,b);if(e.autoConsumed)count++;}}
   return {baseline:base,count:count,used:base+count};
  }
  function collectBonusData(row,forCommit){
@@ -1071,15 +1117,16 @@ function buildCuraCard(config){
   var confirm=row.querySelector('.confirmResultBtn'),edit=row.querySelector('.editResultBtn'),retry=row.querySelector('.retryAttemptBtn');if(confirm){confirm.style.display='none';confirm.textContent='Conferma risultato';}if(edit)edit.style.display='none';if(retry)retry.style.display='none';
   note.style.display='none'; note.textContent=''; input.disabled=false; 
   if(!isIntInRange(tecnica,0,20)){textarea.value='Inserisci una Tecnica valida da 0 a 20.';setOutcome(out,'dati non validi','fail');return;} 
+  if(base==='invalid-sapienza'){textarea.value='Inserisci una Sapienza Medimagica valida da 0 a 25.';setOutcome(out,'dati non validi','fail');return;}
   var bonusData=collectBonusData(row,false);if(bonusData.error){textarea.value=bonusData.error;setOutcome(out,'bonus non validi','fail');return;}
   var tecnicaEff=tecnica+bonusData.paramTotal;
   if(base===null){textarea.value='Nessun tiro: '+config.tagName+' '+classLabel+' - '+(nome||'PG')+((config.tagName!=='Diagnosi'&&symptom)?' · Sintomo: '+symptom:'')+' — fallimento autoconclusivo, competenza assente.';note.style.display='block';note.textContent='Senza Conoscenza Avanzata Chirurgo né Sapienza Medimagica 1+, la Chirurgia fallisce autoconclusivamente.'+(config.tagName!=='Diagnosi'&&!symptom?' Indica il Sintomo specifico e conferma l’esito automatico per registrare correttamente la Complicazione.':'');input.value='';input.disabled=true;setOutcome(out,'fallimento automatico','fail');if(confirm){confirm.style.display='inline-block';confirm.textContent='Conferma esito automatico';}return;} 
-  if(base==='ambiguous'){textarea.value='Soglia non specificata: Chirurgia '+classLabel+' - '+(nome||'PG')+' — Sapienza Medimagica 16-25 senza Chirurgo.';note.style.display='block';note.textContent='La Guida consente la Chirurgia con Sapienza Medimagica 1+, ma non indica la soglia per Sapienza 16–25 senza Chirurgo. Il tool non inventa il valore: usa Chirurgo oppure applica l’indicazione del Narratore.';input.value='';input.disabled=true;setOutcome(out,'soglia non specificata','pending');return;} 
+  if(base==='ambiguous'){textarea.value='Soglia non specificata: Chirurgia '+classLabel+' - '+(nome||'PG')+' — Sapienza Medimagica 25 senza Chirurgo.';note.style.display='block';note.textContent='La Guida indica le soglie fino a Sapienza Medimagica 24, ma non specifica una soglia per Sapienza 25 senza Chirurgo. Il tool non inventa il valore: seleziona un livello di Chirurgo posseduto oppure applica l’indicazione del Narratore.';input.value='';input.disabled=true;setOutcome(out,'soglia non specificata','pending');return;} 
   var extra=config.fixedExtra||0, soglia=base+tecnicaEff+classBonus+pBonus+bonusData.thresholdTotal+extra; 
-  var parts=base+' '+config.levelWord+' + '+tecnica+' Tecnica';if(bonusData.paramTotal)parts+=' + '+bonusData.paramTotal+' bonus al Parametro = '+tecnicaEff+' Tecnica effettiva';parts+=' + '+classBonus+' Classificazione '+classLabel; 
+  var parts=base+' '+config.levelWord+(config.tagName==='Chirurgia'?' (base migliore tra Chirurgo/Sapienza)':'')+' + '+tecnica+' Tecnica';if(bonusData.paramTotal)parts+=' + '+bonusData.paramTotal+' bonus al Parametro = '+tecnicaEff+' Tecnica effettiva';parts+=' + '+classBonus+' Classificazione '+classLabel; 
   if(pSel&&pBonus){parts+=' + '+pBonus+' Pozione';} if(bonusData.thresholdTotal){parts+=' + '+bonusData.thresholdTotal+' bonus alla soglia';} if(extra){parts+=' + '+extra+' dinamica già nota';} 
-  var auto=soglia>config.faces, label=config.tagName+' '+classLabel+' - '+(nome||'PG')+((config.tagName!=='Diagnosi'&&symptom)?' · Sintomo: '+symptom:''); 
-  if(auto){textarea.value='SUCCESSO AUTOMATICO — '+label+' (soglia '+soglia+'/'+config.faces+': '+parts+' = '+soglia+')';note.style.display='block';note.textContent='Soglia superiore a '+config.faces+': successo autoconclusivo, il tiro non è necessario.'+(config.tagName!=='Diagnosi'&&!symptom?' Indica il Sintomo specifico e conferma l’esito automatico per consolidare questa azione.':'');input.value='';input.disabled=true;setOutcome(out,config.successWord+' · AUTOMATICO','success');if(confirm){confirm.style.display='inline-block';confirm.textContent='Conferma esito automatico';}return;} 
+  var auto=soglia>=config.faces, label=config.tagName+' '+classLabel+' - '+(nome||'PG')+((config.tagName!=='Diagnosi'&&symptom)?' · Sintomo: '+symptom:''); 
+  if(auto){textarea.value='SUCCESSO AUTOMATICO — '+label+' (soglia '+soglia+'/'+config.faces+': '+parts+' = '+soglia+')';note.style.display='block';note.textContent='Soglia pari o superiore a '+config.faces+': successo autoconclusivo, il tiro non è necessario.'+(config.tagName!=='Diagnosi'&&!symptom?' Indica il Sintomo specifico e conferma l’esito automatico per consolidare questa azione.':'');input.value='';input.disabled=true;setOutcome(out,config.successWord+' · AUTOMATICO','success');if(confirm){confirm.style.display='inline-block';confirm.textContent='Conferma esito automatico';}return;} 
   textarea.value='[dice=1d'+config.faces+']'+label+' (Riesce se 1-'+soglia+': '+parts+' = '+soglia+')[/dice]'; 
   var v=inputInt('rp_curaResult_'+rid); if(v===null){setOutcome(out,'in attesa','pending');return;} if(!isIntInRange(v,1,config.faces)){setOutcome(out,'RISULTATO IMPOSSIBILE','fail');return;} 
   if(v<=soglia){setOutcome(out,config.successWord,'success');}else{setOutcome(out,config.failWord,'fail');} if(confirm)confirm.style.display='inline-block'; 
@@ -1093,11 +1140,12 @@ function buildCuraCard(config){
   refreshRow(row);var out=byId('rp_curaOutcome_'+rid),textarea=byId('rp_diceRow_'+rid),note=byId('rp_curaNote_'+rid);if(!out||out.classList.contains('pending'))return;
   var automatic=!!(input&&input.disabled&&(out.classList.contains('success')||out.classList.contains('fail')));if(!automatic&&!isIntInRange(v,1,config.faces))return;
   bonusData=autoConsumeEffects(row,bonusData);
-  var failed=out.classList.contains('fail');if(failed&&config.tagName!=='Diagnosi'&&symptom){note.style.display='block';note.textContent='Fallimento: il Paziente subisce la Complicazione prevista per il Sintomo «'+symptom+'».';}
-  var snap={result:automatic?null:v,automatic:automatic,dice:textarea.value,outcomeText:out.textContent,outcomeKind:failed?'fail':'success',noteText:note.style.display!=='none'?note.textContent:'',failed:failed,symptomName:symptom,effects:bonusData.effects,bonusParam:bonusData.paramTotal,bonusSoglia:bonusData.thresholdTotal,bonusFatigue:bonusData.fatigueTotal,baseTecnica:bonusData.baseTecnica};
+  var failed=out.classList.contains('fail');if(failed&&config.tagName!=='Diagnosi'&&symptom){note.style.display='block';if(hasPreviousFailedComplication(row,symptom)){note.textContent='Nuovo fallimento sul Sintomo «'+symptom+'»: la stessa Complicazione non si applica di nuovo finché quella precedente è ancora attiva. Se nel frattempo è terminata, applica normalmente la Complicazione prevista.';}else{note.textContent='Fallimento: il Paziente subisce la Complicazione prevista per il Sintomo «'+symptom+'».';}}
+  var snap={result:automatic?null:v,automatic:automatic,dice:textarea.value,outcomeText:out.textContent,outcomeKind:failed?'fail':'success',noteText:note.style.display!=='none'?note.textContent:'',failed:failed,symptomName:symptom,pgKey:carePgKey(row),effects:bonusData.effects,bonusParam:bonusData.paramTotal,bonusSoglia:bonusData.thresholdTotal,bonusFatigue:bonusData.fatigueTotal,baseTecnica:bonusData.baseTecnica};
   row.removeAttribute('data-result-invalidated');row.setAttribute('data-result-snapshot',JSON.stringify(snap));row.setAttribute('data-result-committed','1');renderCommitted(row);if(typeof window.__RP_RENDER_FINAL_EFFECTS__==='function')window.__RP_RENDER_FINAL_EFFECTS__();
  }
  function markCompletionDirty(){var cc=byId('rp_completion_confirm');if(cc&&cc.checked){cc.checked=false;try{cc.dispatchEvent(new Event('change',{bubbles:true}));}catch(e){}}}
+ try{window.__RP_MARK_COMPLETION_DIRTY__=markCompletionDirty;}catch(e){}
  function invalidateCommittedRow(row,message){var oldSnap=committedSnapshot(row);restoreConsumedOnCorrection(row,oldSnap);row.removeAttribute('data-result-committed');row.removeAttribute('data-result-snapshot');row.setAttribute('data-result-invalidated','1');setRowInputsLocked(row,false);var rm=row.querySelector('.removeRowBtn');if(rm)rm.disabled=false;var rid=row.getAttribute('data-row-id'),input=byId('rp_curaResult_'+rid);if(input)input.value='';refreshRow(row);if(message){var note=byId('rp_curaNote_'+rid);if(note){note.style.display='block';note.textContent=message;}}}
  function invalidateCardCommitted(message){var rows=card.querySelectorAll('.curaRow[data-result-committed="1"]');if(!rows.length)return false;for(var i=0;i<rows.length;i++)invalidateCommittedRow(rows[i],message);markCompletionDirty();syncCardRemoval();if(typeof window.__RP_RENDER_FINAL_EFFECTS__==='function')window.__RP_RENDER_FINAL_EFFECTS__();return true;}
  function unlockCorrection(row){invalidateCommittedRow(row,'Risultato invalidato per correzione: completa di nuovo questa prova e conferma il nuovo risultato.');markCompletionDirty();syncCardRemoval();if(typeof window.__RP_RENDER_FINAL_EFFECTS__==='function')window.__RP_RENDER_FINAL_EFFECTS__();}
@@ -1139,7 +1187,7 @@ function buildCuraCard(config){
   row.querySelector('.retryAttemptBtn').addEventListener(evtName,function(){addRow(rowSeed(row));});
   prepareAllNumeric(row);refreshRow(row);return row; 
  } 
- var names=card.querySelectorAll('.nome');for(var ni=0;ni<names.length;ni++){names[ni].addEventListener('input',recomputeAll);names[ni].addEventListener('change',recomputeAll);}var formulaHeads=card.querySelectorAll('.livello,.tecnica');for(var hi=0;hi<formulaHeads.length;hi++){formulaHeads[hi].addEventListener('input',function(){if(!invalidateCardCommitted('Risultati invalidati: è cambiato un dato del personaggio usato nella formula. Ripeti e riconferma le prove interessate.'))recomputeAll();});formulaHeads[hi].addEventListener('change',function(){if(!invalidateCardCommitted('Risultati invalidati: è cambiato un dato del personaggio usato nella formula. Ripeti e riconferma le prove interessate.'))recomputeAll();});} 
+ var names=card.querySelectorAll('.nome');for(var ni=0;ni<names.length;ni++){names[ni].addEventListener('input',function(){if(!invalidateCardCommitted('Risultati invalidati: è cambiato il nome del PG associato alle prove. Ripeti e riconferma le prove interessate.'))recomputeAll();});names[ni].addEventListener('change',function(){if(!invalidateCardCommitted('Risultati invalidati: è cambiato il nome del PG associato alle prove. Ripeti e riconferma le prove interessate.'))recomputeAll();});}var formulaHeads=card.querySelectorAll('.livello,.tecnica,.sapienza-chir');for(var hi=0;hi<formulaHeads.length;hi++){formulaHeads[hi].addEventListener('input',function(){if(!invalidateCardCommitted('Risultati invalidati: è cambiato un dato del personaggio usato nella formula. Ripeti e riconferma le prove interessate.'))recomputeAll();});formulaHeads[hi].addEventListener('change',function(){if(!invalidateCardCommitted('Risultati invalidati: è cambiato un dato del personaggio usato nella formula. Ripeti e riconferma le prove interessate.'))recomputeAll();});} 
  card.querySelector('.pg-head .remove-btn').addEventListener(evtName,function(){if(card.querySelector('.curaRow[data-result-committed="1"]')&&!window.__RP_IS_RESTORING__)return;card.parentNode.removeChild(card);if(typeof window.__RP_RENDER_FINAL_EFFECTS__==='function')window.__RP_RENDER_FINAL_EFFECTS__();}); card.querySelector('.addRowBtn').addEventListener(evtName,function(){addRow();}); addRow();syncCardRemoval();prepareAllNumeric(card); 
 } 
 function addDiagCard(){diagNameCounter++;buildCuraCard({listId:'rp_diagList',defaultName:'Personaggio '+diagNameCounter,levelLabel:'Livello Diagnosta',levels:DIAG_LEVELS,levelWord:'Guida alla Medimagia',classList:DIAG_CLASS,rowNoun:'Classificazione',faces:40,fixedExtra:3,showPozione:false,tagName:'Diagnosi',successWord:'sintomi individuati',failWord:'sintomo mancato — puoi ritentare'});} 
@@ -1306,7 +1354,7 @@ function resetWorkspaceForSession(){
   finally{RESTORING_SESSION=false;}
 }
 function migrateLegacyConfirmations(data){
-  var ver=String(data&&data.toolVersion||'');if(ver==='v6'||ver==='v7'||ver==='v8'||ver==='v9'||ver==='v10'||ver==='v11')return;
+  var ver=String(data&&data.toolVersion||'');if(ver==='v6'||ver==='v7'||ver==='v8'||ver==='v9'||ver==='v10'||ver==='v11'||ver==='v12'||ver==='v13')return;
   /* Le versioni precedenti non avevano la conferma dei requisiti: la si migra per non bloccare
      sessioni già avviate. La conferma di intervento completato, invece, NON è inferibile in modo
      affidabile da vecchi tiri clinici e deve restare esplicita. */
@@ -1330,7 +1378,7 @@ function setWorkspaceReadOnly(ro){var next=!!ro;if(!next)clearWorkspaceReadOnlyL
 try{window.__RP_REAPPLY_READONLY__=function(){if(SESSION_READONLY)applyWorkspaceReadOnlyLocks();};}catch(e){}
 function payload(){
   var name=primaryPgName(),paz=patientLabel();
-  return {ownerUid:CURRENT_SESSION_DATA.ownerUid,initialPgName:CURRENT_SESSION_DATA.initialPgName||name,pgName:name,tipoPaziente:paz,updatedAt:firebase.firestore.FieldValue.serverTimestamp(),toolVersion:'v11',actionLog:SESSION_ACTIONS};
+  return {ownerUid:CURRENT_SESSION_DATA.ownerUid,initialPgName:CURRENT_SESSION_DATA.initialPgName||name,pgName:name,tipoPaziente:paz,updatedAt:firebase.firestore.FieldValue.serverTimestamp(),toolVersion:'v13',actionLog:SESSION_ACTIONS};
 }
 function scheduleSave(){
   if(!CURRENT_SESSION||SESSION_READONLY||SESSION_DELETING||!sessionCanEdit(CURRENT_SESSION_DATA))return;
@@ -1398,7 +1446,7 @@ function createSession(){
   if(!name){setStatus('session-home-msg','Inserisci prima il nome del PG principale.','bad');if(inp)inp.focus();return;}
   if(!FB.user){setStatus('session-home-msg','Firebase non è ancora pronto. Riprova tra un momento.','bad');return;}
   setCreatingSession(true);setStatus('session-home-msg','Creazione della Ricerca…','');
-  var data={ownerUid:FB.user.uid,initialPgName:name,pgName:name,tipoPaziente:'Paziente da determinare',createdAt:firebase.firestore.FieldValue.serverTimestamp(),updatedAt:firebase.firestore.FieldValue.serverTimestamp(),toolVersion:'v11',actionLog:[]};
+  var data={ownerUid:FB.user.uid,initialPgName:name,pgName:name,tipoPaziente:'Paziente da determinare',createdAt:firebase.firestore.FieldValue.serverTimestamp(),updatedAt:firebase.firestore.FieldValue.serverTimestamp(),toolVersion:'v13',actionLog:[]};
   FB.db.collection(SESSION_COLLECTION).add(data).then(function(ref){
     setCreatingSession(false);if(inp)inp.value='';var localData={};Object.keys(data).forEach(function(k){localData[k]=data[k];});var now=firebase.firestore.Timestamp.now();localData.createdAt=now;localData.updatedAt=now;
     try{
@@ -1520,7 +1568,7 @@ function patientForumCopy(targetId,raw){
   }
   if(/^SUCCESSO AUTOMATICO/i.test(raw)){
     var ca=raw.match(/^SUCCESSO AUTOMATICO — (Diagnosi|Terapia|Chirurgia) ([X]+) - (.*?)(?: \(|$)/i);
-    if(ca){var qn=ca[3]+' supera automaticamente la prova di '+ca[1]+' per la Classificazione '+ca[2]+'?';return forumBlock(qn,'Successo automatico: la soglia supera il massimo del dado.',raw);}
+    if(ca){var qn=ca[3]+' supera automaticamente la prova di '+ca[1]+' per la Classificazione '+ca[2]+'?';return forumBlock(qn,'Successo automatico: la soglia raggiunge o supera il massimo del dado.',raw);}
   }
   if(/^Nessun tiro:/i.test(raw))return forumBlock('Qual è l’esito previsto senza tiro?','Fallimento automatico: manca la competenza minima richiesta.',raw);
   return raw;
@@ -1553,8 +1601,10 @@ function called(){return qa('#rp_pgList .outcome.success').length>0;}
 function patientCompleteNow(){return validInt(q('rp_tipoInput'),1,5)&&currentSubValid()&&validInt(q('rp_gravitaInput'),1,100);}
 function currentSubValid(){var t=currentTipo(),tables=subTables(),e=q('rp_subInput');if(!t||!tables||!tables[t])return false;return validInt(e,1,tables[t].faces);}
 function arrivalProgress(){return qa('#rp_pgList .arrivo-result').some(function(e){return e.value!=='';});}
-function cureProgress(){return qa('#rp_fase3 .rowResult').some(function(e){return e.value!=='';});}
-function allEnteredClinicalResultsConfirmed(){var rows=qa('#rp_fase3 .curaRow');for(var i=0;i<rows.length;i++){if(rows[i].getAttribute('data-result-invalidated')==='1')return false;var inp=rows[i].querySelector('.rowResult'),sym=rows[i].querySelector('.symptomName'),hasIntent=!!((inp&&inp.value!=='')||(sym&&String(sym.value||'').trim()!==''));if(hasIntent&&rows[i].getAttribute('data-result-committed')!=='1')return false;}return true;}
+function cureProgress(){return qa('#rp_fase3 .curaRow[data-result-committed="1"]').length>0||qa('#rp_fase3 .rowResult').some(function(e){return e.value!=='';})||qa('#rp_fase3 .symptomName').some(function(e){return String(e.value||'').trim()!=='';});}
+function flowRowSnapshot(row){try{return JSON.parse(row.getAttribute('data-result-snapshot')||'null');}catch(e){return null;}}
+function diagnosisResolved(){var rows=qa('#rp_diagList .curaRow[data-result-committed="1"]');if(!rows.length)return false;var seen={},ok={};for(var i=0;i<rows.length;i++){var cls=rows[i].querySelector('.classSel'),key=cls?String(cls.value):'';seen[key]=true;var snap=flowRowSnapshot(rows[i]);if(snap&&!snap.failed)ok[key]=true;}var keys=Object.keys(seen);for(var j=0;j<keys.length;j++)if(!ok[keys[j]])return false;return keys.length>0;}
+function allEnteredClinicalResultsConfirmed(){var rows=qa('#rp_fase3 .curaRow');for(var i=0;i<rows.length;i++){if(rows[i].getAttribute('data-result-invalidated')==='1')return false;var inp=rows[i].querySelector('.rowResult'),sym=rows[i].querySelector('.symptomName'),hasIntent=!!((inp&&inp.value!=='')||(sym&&String(sym.value||'').trim()!==''));if(hasIntent&&rows[i].getAttribute('data-result-committed')!=='1')return false;}var hasDiag=diagnosisResolved(),hasTreatment=qa('#rp_terapiaList .curaRow[data-result-committed="1"],#rp_chirurgiaList .curaRow[data-result-committed="1"]').length>0;return hasDiag&&hasTreatment;}
 function completionConfirmed(){var e=q('rp_completion_confirm');return !!(e&&e.checked&&allEnteredClinicalResultsConfirmed());}
 function pct(x){return Math.round(x*1000)/10;}
 function summaryData(){
@@ -1569,9 +1619,9 @@ function summaryData(){
   }
   var any=1-miss,prob=pct(any);
   var html='<div class="rp-summary-section" style="margin-top:0;padding-top:0;border-top:0"><h3>Partecipanti e soglie iniziali</h3><ul class="rp-summary-list">'+items.join('')+'</ul></div>'+
-    '<div class="rp-summary-section"><h3>Impatto previsto sulle Fasi</h3><ul class="rp-summary-list"><li><b>Fase I — Arrivo:</b> probabilità esatta che almeno un PG venga chiamato con la configurazione attuale: <b>'+prob+'%</b>.</li><li><b>Fase II — Paziente:</b> determinazione casuale di Tipo di Danno, causa specifica e Gravità; non è sensato stimarla prima dei tiri.</li><li><b>Fase III — Cura:</b> dipenderà dai Parametri di Diagnosi, Terapia/Chirurgia e dalle Classificazioni dei Sintomi effettivamente manifestati.</li></ul></div>'+
+    '<div class="rp-summary-section"><h3>Impatto previsto sulle Fasi</h3><ul class="rp-summary-list"><li><b>Fase I — Arrivo:</b> probabilità che almeno un PG venga chiamato in una singola tornata in cui ciascun partecipante effettua un tiro: <b>'+prob+'%</b>.</li><li><b>Fase II — Paziente:</b> determinazione casuale di Tipo di Danno, causa specifica e Gravità; non è sensato stimarla prima dei tiri.</li><li><b>Fase III — Cura:</b> dipenderà dai Parametri di Diagnosi, Terapia/Chirurgia e dalle Classificazioni dei Sintomi effettivamente manifestati.</li></ul></div>'+
     '<div class="rp-summary-note">La <b>Difficoltà complessiva stimata della Ricerca</b> non viene classificata prima della Fase I: Tipo di Danno, Gravità e configurazione della cura sono ancora ignoti. In questo modo il tool non inventa una difficoltà basata su dati futuri.</div>';
-  var bb='[spoiler=Situazione iniziale della Ricerca Pazienti]\n<b>Partecipanti e soglie iniziali</b>\n'+copy.join('\n')+'\n\n<b>Impatto previsto sulle Fasi</b>\n• Fase I — Arrivo: probabilità esatta che almeno un PG venga chiamato: <b>'+prob+'%</b>.\n• Fase II — Paziente: determinazione casuale di Tipo di Danno, causa specifica e Gravità.\n• Fase III — Cura: dipenderà dai Parametri di Diagnosi, Terapia/Chirurgia e dalle Classificazioni dei Sintomi.\n\nLa difficoltà complessiva non viene classificata prima della Fase I perché mancano ancora Tipo di Danno, Gravità e configurazione della cura.\n[/spoiler]';
+  var bb='[spoiler=Situazione iniziale della Ricerca Pazienti]\n<b>Partecipanti e soglie iniziali</b>\n'+copy.join('\n')+'\n\n<b>Impatto previsto sulle Fasi</b>\n• Fase I — Arrivo: probabilità che almeno un PG venga chiamato in una singola tornata (un tiro per partecipante): <b>'+prob+'%</b>.\n• Fase II — Paziente: determinazione casuale di Tipo di Danno, causa specifica e Gravità.\n• Fase III — Cura: dipenderà dai Parametri di Diagnosi, Terapia/Chirurgia e dalle Classificazioni dei Sintomi.\n\nLa difficoltà complessiva non viene classificata prima della Fase I perché mancano ancora Tipo di Danno, Gravità e configurazione della cura.\n[/spoiler]';
   return {html:html,copy:bb};
 }
 function renderSummary(){
@@ -1638,7 +1688,7 @@ function createFlowUI(){
   var cap=document.createElement('div');cap.className='rp-config-caption';cap.textContent='I Parametri dei partecipanti sono stati impostati in Configurazione. Qui esegui soltanto i tiri di Arrivo e inserisci i risultati.';fase1.insertBefore(cap,fase1.firstChild.nextSibling);
   var next2=document.createElement('div');next2.className='rp-flow-actions rp-next-phase';next2.innerHTML='<button type="button" class="rp-flow-action" id="rp-flow-next-f2" data-session-control="1">Procedi alla Fase II</button>';fase1.appendChild(next2);q('rp-flow-next-f2').addEventListener(EVT,function(){if(!this.disabled)showFlowPage('f2',true);});
   var next3=document.createElement('div');next3.className='rp-flow-actions rp-next-phase';next3.innerHTML='<button type="button" class="rp-flow-action" id="rp-flow-next-f3" data-session-control="1">Procedi alla Fase III</button>';fase2.appendChild(next3);q('rp-flow-next-f3').addEventListener(EVT,function(){if(!this.disabled)showFlowPage('f3',true);});
-  var nextE=document.createElement('div');nextE.className='rp-flow-actions rp-next-phase';nextE.style.display='block';nextE.innerHTML='<div class="nota" style="margin:0 0 12px;text-align:left"><label class="checkline"><input id="rp_completion_confirm" type="checkbox">Confermo che sono state eseguite la Diagnosi e la Terapia e/o Chirurgia richieste dai Sintomi del Paziente. I risultati numerici inseriti devono essere prima confermati con «Conferma risultato».</label></div><div style="display:flex;justify-content:flex-end"><button type="button" class="rp-flow-action" id="rp-flow-next-esito" data-session-control="1">Concludi l’intervento → Esito</button></div>';fase3.appendChild(nextE);q('rp-flow-next-esito').addEventListener(EVT,function(){if(!this.disabled){FLOW.esitoVisited=true;if(typeof window.__RP_RENDER_FINAL_EFFECTS__==='function')window.__RP_RENDER_FINAL_EFFECTS__();showFlowPage('esito',true);}});
+  var nextE=document.createElement('div');nextE.className='rp-flow-actions rp-next-phase';nextE.style.display='block';nextE.innerHTML='<div class="nota" style="margin:0 0 12px;text-align:left"><label class="checkline"><input id="rp_completion_confirm" type="checkbox">Confermo che sono state eseguite la Diagnosi e la Terapia e/o Chirurgia richieste dai Sintomi del Paziente. Il tool richiede che ogni Classificazione di Diagnosi tentata sia stata individuata con almeno un esito riuscito e che sia presente almeno una prova di Terapia/Chirurgia confermata; tutti i risultati numerici inseriti devono essere prima confermati con «Conferma risultato».</label></div><div style="display:flex;justify-content:flex-end"><button type="button" class="rp-flow-action" id="rp-flow-next-esito" data-session-control="1">Concludi l’intervento → Esito</button></div>';fase3.appendChild(nextE);q('rp-flow-next-esito').addEventListener(EVT,function(){if(!this.disabled){FLOW.esitoVisited=true;if(typeof window.__RP_RENDER_FINAL_EFFECTS__==='function')window.__RP_RENDER_FINAL_EFFECTS__();showFlowPage('esito',true);}});
 
   finalCard=document.createElement('section');finalCard.className='rp-final-card';finalCard.id='rp-final-card';finalCard.setAttribute('data-session-control','1');
   finalCard.innerHTML='<h2>Esito della Ricerca Pazienti</h2><p class="rp-summary-lead">L’intervento è concluso quando sono state eseguite le operazioni di Diagnosi, Terapia e/o Chirurgia richieste dai Sintomi effettivamente manifestati.</p><div class="card" style="margin-top:18px"><h3>Chiusura dell’intervento</h3><p class="desc">Curare un Paziente tramite questa Ricerca permette di riscattare il Livello Difficile della missione “Il Medimago”.</p><table class="reward-table"><tr><td class="k">Requisiti</td><td>PG Medimago, oppure PG Ars anche non Medimago</td></tr><tr><td class="k">Ricompensa</td><td>2 PP per post (fino a un massimo di 5) · +2 Prestigio · +1 Virtuoso o Sinistro</td></tr></table></div><div class="effects-box" id="rp-final-effects" style="display:none"><h3>Oggetti e Conoscenze effettivamente utilizzati</h3><ul class="effects-list" id="rp-final-effects-list"></ul><div class="effects-total" id="rp-final-effects-total"></div></div><div class="rp-flow-actions"><button type="button" class="rp-flow-action ghost" id="rp-flow-back-f3" data-session-control="1">← Torna alla Fase III</button><button type="button" class="rp-flow-action" id="rp-flow-back-list" data-session-control="1">Torna alle Ricerche</button></div>';
@@ -1655,6 +1705,8 @@ function createFlowUI(){
 }
 
 function scheduleRefresh(){var t=++refreshToken;requestAnimationFrame(function(){if(t!==refreshToken)return;updateFlowButtons();if(typeof window.__RP_RENDER_FINAL_EFFECTS__==='function')window.__RP_RENDER_FINAL_EFFECTS__();});}
+function dirtyCompletionIfClinical(e){var t=e&&e.target;if(!t||t.id==='rp_completion_confirm'||!t.closest||!t.closest('#rp_fase3'))return;if(e.type==='click'){var b=t.closest('button');if(!b||!(b.classList.contains('add-btn')||b.classList.contains('remove-btn')||b.classList.contains('retry-btn')))return;}if(typeof window.__RP_MARK_COMPLETION_DIRTY__==='function')window.__RP_MARK_COMPLETION_DIRTY__();}
+root.addEventListener('input',dirtyCompletionIfClinical,false);root.addEventListener('change',dirtyCompletionIfClinical,false);root.addEventListener(EVT,dirtyCompletionIfClinical,false);
 root.addEventListener('input',scheduleRefresh,false);root.addEventListener('change',scheduleRefresh,false);root.addEventListener(EVT,scheduleRefresh,false);
 
 /* ---------- Popup eliminazione vicino alla viewport corrente ---------- */
