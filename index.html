@@ -1336,6 +1336,42 @@ var FIREBASE_CONFIG={
 };
 var SESSION_COLLECTION='ricerca_pazienti';
 var NARRATOR_UID='TFgqfVrFLjW5SwqRFXmEi8tDhtM2';
+
+/* Cache leggera dell'elenco sessioni: riduce le document reads senza memorizzare i dati di gioco.
+   La cache viene usata soltanto quando rappresenta un elenco COMPLETO ottenuto da Firebase. */
+var SESSION_LIST_CACHE_KEY=SESSION_COLLECTION+'_list_cache_v2';
+function sessionListMeta(d){
+  d=d||{};var out={ownerUid:d.ownerUid||'',initialPgName:d.initialPgName||'',pgName:d.pgName||'',tipoPaziente:d.tipoPaziente||'',tipoMissione:d.tipoMissione||'',missionId:d.missionId||'',tipoPassaggio:d.tipoPassaggio||'',passaggioId:d.passaggioId||'',tipoAccordo:d.tipoAccordo||'',accordoId:d.accordoId||'',tipoCaso:d.tipoCaso||'',tipoCasoNum:d.tipoCasoNum==null?null:d.tipoCasoNum,tipoCrimine:d.tipoCrimine||'',crimeKey:d.crimeKey||''};
+  var ts=d.updatedAt,sec=null;
+  try{if(ts&&typeof ts.toMillis==='function')sec=Math.floor(ts.toMillis()/1000);else if(ts&&isFinite(Number(ts.seconds)))sec=Number(ts.seconds);}catch(e){}
+  if(sec!==null)out.updatedAt={seconds:sec};
+  return out;
+}
+function readSessionListCache(){
+  try{
+    var raw=sessionStorage.getItem(SESSION_LIST_CACHE_KEY);if(raw===null)return null;
+    var box=JSON.parse(raw);
+    if(!box||box.version!==2||box.complete!==true||!Array.isArray(box.rows))return null;
+    return box;
+  }catch(e){return null;}
+}
+function writeSessionListCache(rows){
+  try{sessionStorage.setItem(SESSION_LIST_CACHE_KEY,JSON.stringify({version:2,complete:true,savedAt:Date.now(),rows:rows||[]}));}catch(e){}
+}
+function cacheSessionListSnapshot(snap){var rows=[];snap.forEach(function(doc){rows.push({id:doc.id,data:sessionListMeta(doc.data())});});writeSessionListCache(rows);}
+function updateSessionListCacheEntry(id,data){
+  if(!id)return;var box=readSessionListCache();if(!box)return;
+  var rows=box.rows.slice(),found=false;
+  for(var i=0;i<rows.length;i++){if(rows[i]&&rows[i].id===id){rows[i]={id:id,data:sessionListMeta(data)};found=true;break;}}
+  if(!found)rows.push({id:id,data:sessionListMeta(data)});writeSessionListCache(rows);
+}
+function removeSessionListCacheEntry(id){var box=readSessionListCache();if(!box)return;writeSessionListCache(box.rows.filter(function(r){return r&&r.id!==id;}));}
+function cachedSessionListSnapshot(rows){return {forEach:function(cb){(rows||[]).forEach(function(r){cb({id:r.id,data:function(){return r.data||{};}});});}};}
+function sessionListSnapshot(forceServer){
+  if(!forceServer){var box=readSessionListCache();if(box)return Promise.resolve(cachedSessionListSnapshot(box.rows));}
+  return FB.db.collection(SESSION_COLLECTION).get().then(function(snap){cacheSessionListSnapshot(snap);return snap;});
+}
+
 var FB={app:null,auth:null,db:null,user:null};
 var CURRENT_SESSION=null,CURRENT_SESSION_DATA=null,SESSION_READONLY=false;
 var SESSION_ACTIONS=[],RESTORING_SESSION=false,SAVE_TIMER=null,SAVE_IN_FLIGHT=false,PENDING_SAVE=false;
@@ -1345,7 +1381,7 @@ function sq(id){return document.getElementById(id);}
 function workspace(){return sq('pazienti-workspace');}
 function sessionCanEdit(data){return !!(FB.user&&data&&(data.ownerUid===FB.user.uid||FB.user.uid===NARRATOR_UID));}
 function setStatus(id,text,kind){var n=sq(id);if(!n)return;n.textContent=text||'';n.className='session-status'+(kind?' '+kind:'');}
-function formatTs(ts){try{var d=ts&&typeof ts.toDate==='function'?ts.toDate():null;return d?d.toLocaleString('it-IT',{dateStyle:'short',timeStyle:'short'}):'';}catch(e){return '';}}
+function formatTs(ts){try{var d=ts&&typeof ts.toDate==='function'?ts.toDate():(ts&&isFinite(Number(ts.seconds))?new Date(Number(ts.seconds)*1000):null);return d?d.toLocaleString('it-IT',{dateStyle:'short',timeStyle:'short'}):'';}catch(e){return '';}}
 function sessionIdFromHash(){var h=String(window.location.hash||'').replace(/^#/,'');if(h.indexOf('session=')!==0)return '';try{return decodeURIComponent(h.slice(8));}catch(e){return h.slice(8);}}
 function navigateToSession(id){window.location.hash='session='+encodeURIComponent(id);window.location.reload();}
 function navigateToDashboard(){if(window.location.hash){try{history.replaceState(null,'',window.location.pathname+window.location.search);}catch(e){window.location.hash='';}}window.location.reload();}
@@ -1466,7 +1502,7 @@ function setWorkspaceReadOnly(ro){var next=!!ro;if(!next)clearWorkspaceReadOnlyL
 try{window.__RP_REAPPLY_READONLY__=function(){if(SESSION_READONLY)applyWorkspaceReadOnlyLocks();};}catch(e){}
 function payload(){
   var name=primaryPgName(),paz=patientLabel();
-  return {ownerUid:CURRENT_SESSION_DATA.ownerUid,initialPgName:CURRENT_SESSION_DATA.initialPgName||name,pgName:name,tipoPaziente:paz,updatedAt:firebase.firestore.FieldValue.serverTimestamp(),toolVersion:'v17',actionLog:SESSION_ACTIONS};
+  return {ownerUid:CURRENT_SESSION_DATA.ownerUid,initialPgName:CURRENT_SESSION_DATA.initialPgName||name,pgName:name,tipoPaziente:paz,updatedAt:firebase.firestore.FieldValue.serverTimestamp(),toolVersion:'v19',actionLog:SESSION_ACTIONS};
 }
 function scheduleSave(){
   if(!CURRENT_SESSION||SESSION_READONLY||SESSION_DELETING||!sessionCanEdit(CURRENT_SESSION_DATA))return;
@@ -1478,7 +1514,7 @@ function saveNow(){
   if(SAVE_IN_FLIGHT){PENDING_SAVE=true;return Promise.resolve(null);}
   SAVE_IN_FLIGHT=true;PENDING_SAVE=false;var p=payload();
   return FB.db.collection(SESSION_COLLECTION).doc(CURRENT_SESSION).set(p,{merge:true}).then(function(){
-    LAST_SAVE_OK=true;Object.keys(p).forEach(function(k){if(k!=='updatedAt')CURRENT_SESSION_DATA[k]=p[k];});CURRENT_SESSION_DATA.updatedAt=firebase.firestore.Timestamp.now();
+    LAST_SAVE_OK=true;Object.keys(p).forEach(function(k){if(k!=='updatedAt')CURRENT_SESSION_DATA[k]=p[k];});CURRENT_SESSION_DATA.updatedAt=firebase.firestore.Timestamp.now();updateSessionListCacheEntry(CURRENT_SESSION,CURRENT_SESSION_DATA);
     setStatus('save-status','Ricerca salvata automaticamente ✓','ok');updateToolbar();return true;
   }).catch(function(err){LAST_SAVE_OK=false;console.error(err);setStatus('save-status','Errore di salvataggio: non chiudere la pagina.','bad');return false;}).finally(function(){SAVE_IN_FLIGHT=false;if(PENDING_SAVE){PENDING_SAVE=false;scheduleSave();}});
 }
@@ -1508,11 +1544,11 @@ function resetSessionRuntimeAfterLoadError(){
 }
 function loadSession(id){
   setStatus('session-home-msg','Caricamento Ricerca…','');
-  return FB.db.collection(SESSION_COLLECTION).doc(id).get().then(function(doc){if(!doc.exists)throw new Error('La Ricerca non esiste più.');openSessionDoc(doc.id,doc.data());setStatus('session-home-msg','','');}).catch(function(err){console.error(err);resetSessionRuntimeAfterLoadError();setStatus('session-home-msg','Impossibile aprire la Ricerca: '+err.message,'bad');loadSessionList();});
+  return FB.db.collection(SESSION_COLLECTION).doc(id).get().then(function(doc){if(!doc.exists)throw new Error('La Ricerca non esiste più.');openSessionDoc(doc.id,doc.data());setStatus('session-home-msg','','');}).catch(function(err){console.error(err);resetSessionRuntimeAfterLoadError();setStatus('session-home-msg','Impossibile aprire la Ricerca: '+err.message,'bad');loadSessionList(true);});
 }
-function loadSessionList(){
+function loadSessionList(forceServer){
   var host=sq('session-list');if(!host||!FB.db||!FB.user)return;host.innerHTML='<div class="session-status">Caricamento sessioni…</div>';
-  FB.db.collection(SESSION_COLLECTION).get().then(function(snap){
+  sessionListSnapshot(!!forceServer).then(function(snap){
     var rows=[];snap.forEach(function(doc){rows.push({id:doc.id,data:doc.data()});});
     rows.sort(function(a,b){var at=a.data.updatedAt&&a.data.updatedAt.seconds?a.data.updatedAt.seconds:0,bt=b.data.updatedAt&&b.data.updatedAt.seconds?b.data.updatedAt.seconds:0;return bt-at;});host.innerHTML='';
     if(!rows.length){host.innerHTML='<div class="session-status">Non ci sono Ricerche Pazienti in corso. Puoi crearne una qui sopra.</div>';return;}
@@ -1534,9 +1570,9 @@ function createSession(){
   if(!name){setStatus('session-home-msg','Inserisci prima il nome del PG principale.','bad');if(inp)inp.focus();return;}
   if(!FB.user){setStatus('session-home-msg','Firebase non è ancora pronto. Riprova tra un momento.','bad');return;}
   setCreatingSession(true);setStatus('session-home-msg','Creazione della Ricerca…','');
-  var data={ownerUid:FB.user.uid,initialPgName:name,pgName:name,tipoPaziente:'Paziente da determinare',createdAt:firebase.firestore.FieldValue.serverTimestamp(),updatedAt:firebase.firestore.FieldValue.serverTimestamp(),toolVersion:'v17',actionLog:[]};
+  var data={ownerUid:FB.user.uid,initialPgName:name,pgName:name,tipoPaziente:'Paziente da determinare',createdAt:firebase.firestore.FieldValue.serverTimestamp(),updatedAt:firebase.firestore.FieldValue.serverTimestamp(),toolVersion:'v19',actionLog:[]};
   FB.db.collection(SESSION_COLLECTION).add(data).then(function(ref){
-    setCreatingSession(false);if(inp)inp.value='';var localData={};Object.keys(data).forEach(function(k){localData[k]=data[k];});var now=firebase.firestore.Timestamp.now();localData.createdAt=now;localData.updatedAt=now;
+    setCreatingSession(false);if(inp)inp.value='';var localData={};Object.keys(data).forEach(function(k){localData[k]=data[k];});var now=firebase.firestore.Timestamp.now();localData.createdAt=now;localData.updatedAt=now;updateSessionListCacheEntry(ref.id,localData);
     try{
       var h='#session='+encodeURIComponent(ref.id);try{if(window.history&&window.history.replaceState)window.history.replaceState(null,'',window.location.pathname+window.location.search+h);else window.location.hash='session='+encodeURIComponent(ref.id);}catch(e){try{window.location.hash='session='+encodeURIComponent(ref.id);}catch(e2){}}
       openSessionDoc(ref.id,localData);setStatus('session-home-msg','','');
@@ -1549,7 +1585,7 @@ function deleteCurrentSession(){
   if(SESSION_DELETING||!CURRENT_SESSION||!sessionCanEdit(CURRENT_SESSION_DATA)||!sq('delete-session-check').checked)return;
   var id=CURRENT_SESSION;SESSION_DELETING=true;if(SAVE_TIMER){clearTimeout(SAVE_TIMER);SAVE_TIMER=null;}PENDING_SAVE=false;
   sq('btn-confirm-delete').disabled=true;if(sq('btn-cancel-delete'))sq('btn-cancel-delete').disabled=true;sq('delete-session-msg').textContent='Eliminazione definitiva in corso…';
-  waitForSessionSaveDrain().then(function(){return FB.db.collection(SESSION_COLLECTION).doc(id).delete();}).then(function(){CURRENT_SESSION=null;CURRENT_SESSION_DATA=null;SESSION_ACTIONS=[];SESSION_DELETING=false;if(sq('btn-cancel-delete'))sq('btn-cancel-delete').disabled=false;closeDeleteModal();try{sessionStorage.setItem('rp_deleted_notice','1');}catch(e){}navigateToDashboard();}).catch(function(err){SESSION_DELETING=false;console.error(err);if(sq('btn-cancel-delete'))sq('btn-cancel-delete').disabled=false;sq('delete-session-msg').textContent='Eliminazione non riuscita: '+err.message;sq('btn-confirm-delete').disabled=false;scheduleSave();});
+  waitForSessionSaveDrain().then(function(){return FB.db.collection(SESSION_COLLECTION).doc(id).delete();}).then(function(){removeSessionListCacheEntry(id);CURRENT_SESSION=null;CURRENT_SESSION_DATA=null;SESSION_ACTIONS=[];SESSION_DELETING=false;if(sq('btn-cancel-delete'))sq('btn-cancel-delete').disabled=false;closeDeleteModal();try{sessionStorage.setItem('rp_deleted_notice','1');}catch(e){}navigateToDashboard();}).catch(function(err){SESSION_DELETING=false;console.error(err);if(sq('btn-cancel-delete'))sq('btn-cancel-delete').disabled=false;sq('delete-session-msg').textContent='Eliminazione non riuscita: '+err.message;sq('btn-confirm-delete').disabled=false;scheduleSave();});
 }
 function backToDashboard(){
   if(SESSION_DELETING)return Promise.resolve(false);
@@ -1560,7 +1596,7 @@ function backToDashboard(){
   navigateToDashboard();return Promise.resolve(true);
 }
 function setupControls(){
-  attachRecorder();sq('btn-new-session').addEventListener(EVT,createSession);sq('new-session-pg').addEventListener('keydown',function(e){if(e.key==='Enter'){e.preventDefault();createSession();}});sq('btn-refresh-sessions').addEventListener(EVT,loadSessionList);sq('btn-back-sessions').addEventListener(EVT,backToDashboard);sq('btn-delete-session').addEventListener(EVT,openDeleteModal);sq('btn-cancel-delete').addEventListener(EVT,closeDeleteModal);sq('delete-session-check').addEventListener('change',function(){sq('btn-confirm-delete').disabled=!sq('delete-session-check').checked;});sq('btn-confirm-delete').addEventListener(EVT,deleteCurrentSession);sq('delete-session-modal').addEventListener(EVT,function(e){if(e.target===sq('delete-session-modal'))closeDeleteModal();});
+  attachRecorder();sq('btn-new-session').addEventListener(EVT,createSession);sq('new-session-pg').addEventListener('keydown',function(e){if(e.key==='Enter'){e.preventDefault();createSession();}});sq('btn-refresh-sessions').addEventListener(EVT,function(){loadSessionList(true);});sq('btn-back-sessions').addEventListener(EVT,backToDashboard);sq('btn-delete-session').addEventListener(EVT,openDeleteModal);sq('btn-cancel-delete').addEventListener(EVT,closeDeleteModal);sq('delete-session-check').addEventListener('change',function(){sq('btn-confirm-delete').disabled=!sq('delete-session-check').checked;});sq('btn-confirm-delete').addEventListener(EVT,deleteCurrentSession);sq('delete-session-modal').addEventListener(EVT,function(e){if(e.target===sq('delete-session-modal'))closeDeleteModal();});
   document.addEventListener('visibilitychange',function(){if(document.visibilityState==='hidden'&&CURRENT_SESSION&&!SESSION_READONLY&&!SESSION_DELETING)saveNow();});window.addEventListener('pagehide',function(){if(CURRENT_SESSION&&!SESSION_READONLY&&!SESSION_DELETING)saveNow();});
 }
 function setupFirebase(){
