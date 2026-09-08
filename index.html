@@ -1442,7 +1442,7 @@ function resetWorkspaceForSession(){
   finally{RESTORING_SESSION=false;}
 }
 function migrateLegacyConfirmations(data){
-  var ver=String(data&&data.toolVersion||'');if(ver==='v6'||ver==='v7'||ver==='v8'||ver==='v9'||ver==='v10'||ver==='v11'||ver==='v12'||ver==='v13'||ver==='v14'||ver==='v15'||ver==='v16')return;
+  var ver=String(data&&data.toolVersion||'');if(ver==='v6'||ver==='v7'||ver==='v8'||ver==='v9'||ver==='v10'||ver==='v11'||ver==='v12'||ver==='v13'||ver==='v14'||ver==='v15'||ver==='v16'||ver==='v17')return;
   /* Le versioni precedenti non avevano la conferma dei requisiti: la si migra per non bloccare
      sessioni già avviate. La conferma di intervento completato, invece, NON è inferibile in modo
      affidabile da vecchi tiri clinici e deve restare esplicita. */
@@ -1466,7 +1466,7 @@ function setWorkspaceReadOnly(ro){var next=!!ro;if(!next)clearWorkspaceReadOnlyL
 try{window.__RP_REAPPLY_READONLY__=function(){if(SESSION_READONLY)applyWorkspaceReadOnlyLocks();};}catch(e){}
 function payload(){
   var name=primaryPgName(),paz=patientLabel();
-  return {ownerUid:CURRENT_SESSION_DATA.ownerUid,initialPgName:CURRENT_SESSION_DATA.initialPgName||name,pgName:name,tipoPaziente:paz,updatedAt:firebase.firestore.FieldValue.serverTimestamp(),toolVersion:'v16',actionLog:SESSION_ACTIONS};
+  return {ownerUid:CURRENT_SESSION_DATA.ownerUid,initialPgName:CURRENT_SESSION_DATA.initialPgName||name,pgName:name,tipoPaziente:paz,updatedAt:firebase.firestore.FieldValue.serverTimestamp(),toolVersion:'v17',actionLog:SESSION_ACTIONS};
 }
 function scheduleSave(){
   if(!CURRENT_SESSION||SESSION_READONLY||SESSION_DELETING||!sessionCanEdit(CURRENT_SESSION_DATA))return;
@@ -1534,7 +1534,7 @@ function createSession(){
   if(!name){setStatus('session-home-msg','Inserisci prima il nome del PG principale.','bad');if(inp)inp.focus();return;}
   if(!FB.user){setStatus('session-home-msg','Firebase non è ancora pronto. Riprova tra un momento.','bad');return;}
   setCreatingSession(true);setStatus('session-home-msg','Creazione della Ricerca…','');
-  var data={ownerUid:FB.user.uid,initialPgName:name,pgName:name,tipoPaziente:'Paziente da determinare',createdAt:firebase.firestore.FieldValue.serverTimestamp(),updatedAt:firebase.firestore.FieldValue.serverTimestamp(),toolVersion:'v16',actionLog:[]};
+  var data={ownerUid:FB.user.uid,initialPgName:name,pgName:name,tipoPaziente:'Paziente da determinare',createdAt:firebase.firestore.FieldValue.serverTimestamp(),updatedAt:firebase.firestore.FieldValue.serverTimestamp(),toolVersion:'v17',actionLog:[]};
   FB.db.collection(SESSION_COLLECTION).add(data).then(function(ref){
     setCreatingSession(false);if(inp)inp.value='';var localData={};Object.keys(data).forEach(function(k){localData[k]=data[k];});var now=firebase.firestore.Timestamp.now();localData.createdAt=now;localData.updatedAt=now;
     try{
@@ -1705,11 +1705,8 @@ function summaryData(){
     items.push('<li><b>'+esc(name)+'</b>: Tecnica '+tec+' · Sapienza Medimagica '+sap+' (bonus +'+sb+') · '+esc(role)+' → soglia di chiamata <b>'+eff+'/30</b></li>');
     copy.push('• <b>'+name+'</b>: Tecnica '+tec+' · Sapienza Medimagica '+sap+' (bonus +'+sb+') · '+role+' → soglia di chiamata <b>'+eff+'/30</b>');
   }
-  var any=1-miss,prob=pct(any);
-  var html='<div class="rp-summary-section" style="margin-top:0;padding-top:0;border-top:0"><h3>Partecipanti e soglie iniziali</h3><ul class="rp-summary-list">'+items.join('')+'</ul></div>'+
-    '<div class="rp-summary-section"><h3>Impatto previsto sulle Fasi</h3><ul class="rp-summary-list"><li><b>Fase I — Arrivo:</b> probabilità che almeno un PG venga chiamato in una singola tornata in cui ciascun partecipante effettua un tiro: <b>'+prob+'%</b>.</li><li><b>Fase II — Paziente:</b> determinazione casuale di Tipo di Danno, causa specifica e Gravità; non è sensato stimarla prima dei tiri.</li><li><b>Fase III — Cura:</b> dipenderà dai Parametri di Diagnosi, Terapia/Chirurgia e dalle Classificazioni dei Sintomi effettivamente manifestati.</li></ul></div>'+
-    '<div class="rp-summary-note">La <b>Difficoltà complessiva stimata della Ricerca</b> non viene classificata prima della Fase I: Tipo di Danno, Gravità e configurazione della cura sono ancora ignoti. In questo modo il tool non inventa una difficoltà basata su dati futuri.</div>';
-  var bb='[spoiler=Situazione iniziale della Ricerca Pazienti]\n<b>Partecipanti e soglie iniziali</b>\n'+copy.join('\n')+'\n\n<b>Impatto previsto sulle Fasi</b>\n• Fase I — Arrivo: probabilità che almeno un PG venga chiamato in una singola tornata (un tiro per partecipante): <b>'+prob+'%</b>.\n• Fase II — Paziente: determinazione casuale di Tipo di Danno, causa specifica e Gravità.\n• Fase III — Cura: dipenderà dai Parametri di Diagnosi, Terapia/Chirurgia e dalle Classificazioni dei Sintomi.\n\nLa difficoltà complessiva non viene classificata prima della Fase I perché mancano ancora Tipo di Danno, Gravità e configurazione della cura.\n[/spoiler]';
+  var html='<div class="rp-summary-section" style="margin-top:0;padding-top:0;border-top:0"><h3>Partecipanti e soglie iniziali</h3><ul class="rp-summary-list">'+items.join('')+'</ul></div>';
+  var bb='[spoiler=Situazione iniziale della Ricerca Pazienti]\n<b>Partecipanti e soglie iniziali</b>\n'+copy.join('\n')+'\n[/spoiler]';
   return {html:html,copy:bb};
 }
 function renderSummary(){
@@ -1767,7 +1764,7 @@ function createFlowUI(){
   workspace.insertBefore(flowNav,wrap);
 
   summaryCard=document.createElement('section');summaryCard.className='rp-summary-card';summaryCard.id='rp-summary-card';summaryCard.setAttribute('data-session-control','1');
-  summaryCard.innerHTML='<h2>Riepilogo della situazione iniziale</h2><p class="rp-summary-lead">Quadro sintetico prima della Fase I: mostra i partecipanti, le soglie di chiamata e soltanto le valutazioni realmente ricavabili dai dati già noti.</p><div id="rp-summary-content"></div><div class="rp-summary-copy"><div class="rp-summary-bb" id="rp-summary-bb"></div><div class="rp-flow-actions"><button type="button" class="rp-flow-action ghost" id="rp-copy-summary" data-session-control="1">Copia riepilogo per il post</button><button type="button" class="rp-flow-action" id="rp-flow-summary-next" data-session-control="1">Vai alla Fase I</button></div></div>';
+  summaryCard.innerHTML='<h2>Riepilogo della situazione iniziale</h2><p class="rp-summary-lead">Promemoria essenziale prima della Fase I: partecipanti e soglie di chiamata.</p><div id="rp-summary-content"></div><div class="rp-summary-copy"><div class="rp-summary-bb" id="rp-summary-bb"></div><div class="rp-flow-actions"><button type="button" class="rp-flow-action ghost" id="rp-copy-summary" data-session-control="1">Copia riepilogo per il post</button><button type="button" class="rp-flow-action" id="rp-flow-summary-next" data-session-control="1">Vai alla Fase I</button></div></div>';
   wrap.insertBefore(summaryCard,fase1);
   q('rp-copy-summary').addEventListener(EVT,function(e){e.preventDefault();var d=summaryData();if(d)stableCopy(d.copy,function(){var b=q('rp-copy-summary'),old=b.textContent;b.textContent='Copiato';setTimeout(function(){b.textContent=old;},1200);});});
   q('rp-flow-summary-next').addEventListener(EVT,function(){FLOW.summaryVisited=true;showFlowPage('f1',true);});
