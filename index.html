@@ -1,3 +1,4 @@
+<!-- Cross-device sessions: ownership no longer tied to anonymous browser UID; requires matching Firestore rules update. -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.3.1/css/all.min.css">
 <style>
 @font-face {
@@ -675,7 +676,7 @@
     <div class="session-card-head"><h2>Ricerche Pazienti in corso</h2></div>
     <div class="session-card-body">
       <p>Crea una sessione per la tua Ricerca Pazienti oppure riaprine una già iniziata. I dati vengono salvati automaticamente mentre compili la Ricerca.</p>
-      <div class="session-warning"><b>Le sessioni in corso sono personali.</b> Puoi visualizzare quelle degli altri giocatori, ma non modificarle o concluderle. Solo chi ha creato la sessione e il Narratore possono intervenire sui suoi dati.</div>
+      <div class="session-warning"><b>Le sessioni sono condivise tra dispositivi.</b> Puoi riprendere questa Ricerca da un altro browser o dispositivo senza perdere il diritto di modificarla. Evita soltanto di modificare la stessa sessione contemporaneamente da due dispositivi.</div>
       <div id="firebase-auth-status" class="session-status">Connessione a Firebase…</div>
       <div class="session-new-row">
         <input id="new-session-pg" type="text" maxlength="80" placeholder="Nome del PG principale (es. Madama Chips)">
@@ -1379,7 +1380,9 @@ var SESSION_DELETING=false,LAST_SAVE_OK=true,CREATING_SESSION=false;
 
 function sq(id){return document.getElementById(id);}
 function workspace(){return sq('pazienti-workspace');}
-function sessionCanEdit(data){return !!(FB.user&&data&&(data.ownerUid===FB.user.uid||FB.user.uid===NARRATOR_UID));}
+function sessionCanEdit(data){
+  return !!(FB.user && data);
+}
 function setStatus(id,text,kind){var n=sq(id);if(!n)return;n.textContent=text||'';n.className='session-status'+(kind?' '+kind:'');}
 function formatTs(ts){try{var d=ts&&typeof ts.toDate==='function'?ts.toDate():(ts&&isFinite(Number(ts.seconds))?new Date(Number(ts.seconds)*1000):null);return d?d.toLocaleString('it-IT',{dateStyle:'short',timeStyle:'short'}):'';}catch(e){return '';}}
 function sessionIdFromHash(){var h=String(window.location.hash||'').replace(/^#/,'');if(h.indexOf('session=')!==0)return '';try{return decodeURIComponent(h.slice(8));}catch(e){return h.slice(8);}}
@@ -1413,7 +1416,7 @@ function updateToolbar(){
   if(!CURRENT_SESSION_DATA)return;
   if(sq('current-session-title'))sq('current-session-title').textContent=activeLabel();
   var mine=FB.user&&CURRENT_SESSION_DATA.ownerUid===FB.user.uid,narr=FB.user&&FB.user.uid===NARRATOR_UID,parts=[];
-  parts.push(mine?'Sessione creata da questo browser':(narr?'Gestione Narratore':'Sessione di un altro giocatore'));
+  parts.push(narr?'Gestione Narratore':(mine?'Sessione creata da questo browser · condivisa tra dispositivi':'Sessione condivisa tra dispositivi'));
   var t=formatTs(CURRENT_SESSION_DATA.updatedAt);if(t)parts.push('ultimo salvataggio '+t);
   if(sq('current-session-meta'))sq('current-session-meta').textContent=parts.join(' · ');
   if(sq('readonly-banner'))sq('readonly-banner').style.display=SESSION_READONLY?'block':'none';
@@ -1502,7 +1505,7 @@ function setWorkspaceReadOnly(ro){var next=!!ro;if(!next)clearWorkspaceReadOnlyL
 try{window.__RP_REAPPLY_READONLY__=function(){if(SESSION_READONLY)applyWorkspaceReadOnlyLocks();};}catch(e){}
 function payload(){
   var name=primaryPgName(),paz=patientLabel();
-  return {ownerUid:CURRENT_SESSION_DATA.ownerUid,initialPgName:CURRENT_SESSION_DATA.initialPgName||name,pgName:name,tipoPaziente:paz,updatedAt:firebase.firestore.FieldValue.serverTimestamp(),toolVersion:'v19',actionLog:SESSION_ACTIONS};
+  return {publicSession:true,ownerUid:CURRENT_SESSION_DATA.ownerUid,initialPgName:CURRENT_SESSION_DATA.initialPgName||name,pgName:name,tipoPaziente:paz,updatedAt:firebase.firestore.FieldValue.serverTimestamp(),toolVersion:'v19',actionLog:SESSION_ACTIONS};
 }
 function scheduleSave(){
   if(!CURRENT_SESSION||SESSION_READONLY||SESSION_DELETING||!sessionCanEdit(CURRENT_SESSION_DATA))return;
@@ -1557,8 +1560,8 @@ function loadSessionList(forceServer){
       var box=document.createElement('div');box.className='session-item';var row=document.createElement('div');row.className='session-item-row';
       var left=document.createElement('div');var ti=document.createElement('div');ti.className='session-title';ti.textContent=(d.pgName||d.initialPgName||'PG')+' — '+(d.tipoPaziente||'Paziente da determinare');left.appendChild(ti);
       var meta=document.createElement('div');meta.className='session-meta';var dt=formatTs(d.updatedAt);meta.textContent=dt?'Aggiornata '+dt:'';left.appendChild(meta);
-      var own=document.createElement('span');own.className='session-owner'+(mine?' mine':'');own.textContent=mine?'Tua Ricerca':(narr?'Gestibile dal Narratore':'Altro giocatore');left.appendChild(own);
-      var b=document.createElement('button');b.type='button';b.className='session-btn'+((mine||narr)?'':' ghost');b.setAttribute('data-session-control','1');b.textContent=(mine||narr)?'Riprendi':'Visualizza';b.addEventListener(EVT,function(){navigateToSession(r.id);});
+      var own=document.createElement('span');own.className='session-owner'+(mine?' mine':'');own.textContent=mine?'Tua Ricerca · condivisa':'Ricerca condivisa';left.appendChild(own);
+      var b=document.createElement('button');b.type='button';b.className='session-btn';b.setAttribute('data-session-control','1');b.textContent='Riprendi';b.addEventListener(EVT,function(){navigateToSession(r.id);});
       row.appendChild(left);row.appendChild(b);box.appendChild(row);host.appendChild(box);
     });
   }).catch(function(err){console.error(err);host.innerHTML='<div class="session-status bad">Non riesco a leggere le Ricerche in corso: '+String(err.message||err)+'</div>';});
@@ -1570,7 +1573,7 @@ function createSession(){
   if(!name){setStatus('session-home-msg','Inserisci prima il nome del PG principale.','bad');if(inp)inp.focus();return;}
   if(!FB.user){setStatus('session-home-msg','Firebase non è ancora pronto. Riprova tra un momento.','bad');return;}
   setCreatingSession(true);setStatus('session-home-msg','Creazione della Ricerca…','');
-  var data={ownerUid:FB.user.uid,initialPgName:name,pgName:name,tipoPaziente:'Paziente da determinare',createdAt:firebase.firestore.FieldValue.serverTimestamp(),updatedAt:firebase.firestore.FieldValue.serverTimestamp(),toolVersion:'v19',actionLog:[]};
+  var data={publicSession:true,ownerUid:FB.user.uid,initialPgName:name,pgName:name,tipoPaziente:'Paziente da determinare',createdAt:firebase.firestore.FieldValue.serverTimestamp(),updatedAt:firebase.firestore.FieldValue.serverTimestamp(),toolVersion:'v19',actionLog:[]};
   FB.db.collection(SESSION_COLLECTION).add(data).then(function(ref){
     setCreatingSession(false);if(inp)inp.value='';var localData={};Object.keys(data).forEach(function(k){localData[k]=data[k];});var now=firebase.firestore.Timestamp.now();localData.createdAt=now;localData.updatedAt=now;updateSessionListCacheEntry(ref.id,localData);
     try{
